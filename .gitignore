@@ -21,7 +21,7 @@
 # Uncomment this if it is not mobile development and you do not use remote debug feature.
 #*.deployproj
 #
-ovotext
+miniedit
 # Delphi compiler-generated binaries (safe to delete)
 *.exe
 *.dbg
@@ -52,11 +52,11 @@ ovotext
 *.projdata
 *.tvsconfig
 *.dsk
-/bin
+./src/bin
 # Delphi history and backups
-lib/
-backup/
+./src/lib/
+./src/backup/
 *.~*
 *.bak
-/.project
+./.project
 

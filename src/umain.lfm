@@ -1448,23 +1448,4 @@ object fMain: TfMain
     Left = 248
     Top = 251
   end
-  object SynCompletion1: TSynCompletion
-    Position = 0
-    LinesInWindow = 6
-    SelectedColor = clHighlight
-    CaseSensitive = False
-    Width = 262
-    AutoUseSingleIdent = True
-    ShortCut = 16416
-    EndOfTokenChr = '()[].'
-    ExecCommandID = ecSynCompletionExecute
-    ToggleReplaceWhole = False
-    Left = 600
-  end
-  object SynAutoComplete1: TSynAutoComplete
-    EndOfTokenChr = '()[].'
-    ShortCut = 8224
-    ExecCommandID = ecSynAutoCompletionExecute
-    Left = 776
-  end
 end

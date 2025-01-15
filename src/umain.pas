@@ -28,7 +28,7 @@ uses
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
   LazUtils, LazUTF8, SingleInstance, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
-  replacedialog, lclintf, jsontools, iconloader, LMessages;
+  SynHighlighterCpp, replacedialog, lclintf, jsontools, iconloader, LMessages;
 
 type
 
@@ -234,8 +234,6 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
-    SynAutoComplete1: TSynAutoComplete;
-    SynCompletion1: TSynCompletion;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;

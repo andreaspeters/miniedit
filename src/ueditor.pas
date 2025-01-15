@@ -32,7 +32,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,
-  ReplaceDialog, SupportFuncs, LCLVersion;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion;
 
 type
 
@@ -73,6 +73,8 @@ type
     FDiskEncoding: String;
     fDiskLineEndingType : TSynLinesFileLineEndType;
     fOldDiskLineEndingType : TSynLinesFileLineEndType;
+    SynCompletion: TSynCompletion;
+    SynAutoComplete: TSynAutoComplete;
     procedure CreateDefaultGutterParts;
     procedure GetDialogPosition(AWidth, AHeight: integer; out _Left, _Top: integer);
     function GetDiskEncoding: string;
@@ -788,7 +790,11 @@ begin
       Sheet := TEditorTabSheet(Pages[i]);
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
+        Sheet.Editor.SynAutoComplete := TSynAutoComplete.Create(Self);
+        Sheet.Editor.SynCompletion := TSynCompletion.Create(Self);
         Sheet.Editor.LoadFromfile(FileName);
+        Sheet.Editor.SynAutoComplete.Editor := Sheet.Editor;
+        Sheet.Editor.SynCompletion.Editor := Sheet.Editor;
         FWatcher.AddFile(FileName, Sheet.Editor);
         ActivePageIndex := i;
         exit;
