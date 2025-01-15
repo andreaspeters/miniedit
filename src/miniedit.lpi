@@ -52,6 +52,7 @@
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsDwarf3"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -64,9 +65,6 @@
           </Linking>
           <Other>
             <CustomOptions Value="-O4 -dRELEASE"/>
-            <OtherDefines Count="1">
-              <Define0 Value="RELEASE"/>
-            </OtherDefines>
           </Other>
         </CompilerOptions>
       </Item2>

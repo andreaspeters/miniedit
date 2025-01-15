@@ -281,6 +281,37 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
+#: tfabout.caption
+msgid "About"
+msgstr ""
+
+#: tfabout.label1.caption
+msgctxt "tfabout.label1.caption"
+msgid "MiniEdit"
+msgstr ""
+
+#: tfabout.label2.caption
+msgctxt "tfabout.label2.caption"
+msgid "Version"
+msgstr ""
+
+#: tfabout.label5.caption
+msgid "Lazarus"
+msgstr ""
+
+#: tfabout.label7.caption
+msgid "FPC"
+msgstr ""
+
+#: tfabout.label8.caption
+msgid "Build Date"
+msgstr ""
+
+#: tfabout.lversion.caption
+msgctxt "tfabout.lversion.caption"
+msgid "Version"
+msgstr ""
+
 #: tfmain.actcloseafter.caption
 msgid "Close all on the right"
 msgstr ""
@@ -359,45 +390,8 @@ msgstr ""
 msgid "lowercase"
 msgstr ""
 
-#: tfmain.actmacromanager.caption
-msgid "Manage…"
-msgstr ""
-
-#: tfmain.actmacroplayback.caption
-msgid "PlayBack"
-msgstr ""
-
-#: tfmain.actmacroplayback.hint
-msgid "playback recorded macro"
-msgstr ""
-
-#: tfmain.actmacroplaybackmulti.caption
-msgid "Playback multiple times…"
-msgstr ""
-
-#: tfmain.actmacroplaybackmulti.hint
-msgid "Playback macro multiple times …"
-msgstr ""
-
-#: tfmain.actmacrorecord.caption
-msgid "Record"
-msgstr ""
-
-#: tfmain.actmacrorecord.hint
-msgid "Begin macro recording"
-msgstr ""
-
 #: tfmain.actmacrosave.caption
 msgid "Save current recorded macro"
-msgstr ""
-
-#: tfmain.actmacrostop.caption
-msgid "Stop"
-msgstr ""
-
-#: tfmain.actmacrostop.hint
-msgctxt "tfmain.actmacrostop.hint"
-msgid "Stop recording"
 msgstr ""
 
 #: tfmain.actpathtoclipboard.caption
@@ -493,6 +487,7 @@ msgid "Zoom Reset"
 msgstr ""
 
 #: tfmain.caption
+msgctxt "tfmain.caption"
 msgid "MiniEdit"
 msgstr ""
 
@@ -631,6 +626,7 @@ msgid "Reload"
 msgstr ""
 
 #: tfmain.filereloadfolder.caption
+msgctxt "tfmain.filereloadfolder.caption"
 msgid "Reload Folder"
 msgstr ""
 
@@ -733,11 +729,6 @@ msgctxt "tfmain.menuitem8.caption"
 msgid "Find"
 msgstr ""
 
-#: tfmain.mishotspecialchar.caption
-msgctxt "tfmain.mishotspecialchar.caption"
-msgid "Show special char"
-msgstr ""
-
 #: tfmain.mnucleanrecent.caption
 msgid "Clean recent file list"
 msgstr ""
@@ -824,5 +815,10 @@ msgstr ""
 #: tfmain.sortdescending.hint
 msgctxt "tfmain.sortdescending.hint"
 msgid "Sort Descending"
+msgstr ""
+
+#: tfmain.toolbutton14.hint
+msgctxt "tfmain.toolbutton14.hint"
+msgid "Reload Folder"
 msgstr ""
 

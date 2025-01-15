@@ -65,11 +65,6 @@ type
     actZoomOut: TAction;
     actZoomReset: TAction;
     actToggleSpecialChar: TAction;
-    actMacroManager: TAction;
-    actMacroPlayBack: TAction;
-    actMacroStop: TAction;
-    actMacroPlaybackMulti: TAction;
-    actMacroRecord: TAction;
     FileReload: TAction;
     actPathToClipboard: TAction;
     actSQLPrettyPrint: TAction;
@@ -234,18 +229,14 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
-    ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
     ToolButton11: TToolButton;
     ToolButton12: TToolButton;
     ToolButton13: TToolButton;
+    ToolButton14: TToolButton;
     ToolButton15: TToolButton;
     ToolButton2: TToolButton;
-    ToolButton20: TToolButton;
-    ToolButton21: TToolButton;
-    ToolButton22: TToolButton;
-    ToolButton23: TToolButton;
     ToolButton3: TToolButton;
     tbbClose: TToolButton;
     tbbCloseAll: TToolButton;
@@ -647,7 +638,6 @@ begin
     TEditorTabSheet(EditorFactory.Pages[i]).Editor.Gutter.Visible := actShowRowNumber.Checked;
 
   ConfigObj.ShowRowNumber:=actShowRowNumber.Checked;
-
 end;
 
 procedure TfMain.actShowToolbarExecute(Sender: TObject);
@@ -655,7 +645,6 @@ begin
   actShowToolbar.Checked := not actShowToolbar.Checked;
   ConfigObj.ShowToolbar := actShowToolbar.Checked;
   MainToolbar.Visible := ConfigObj.ShowToolbar;
-
 end;
 
 procedure TfMain.actFileNameToClipboardExecute(Sender: TObject);
@@ -693,6 +682,7 @@ begin
   actToggleSpecialChar.Checked := not actToggleSpecialChar.Checked;
   EditorFactory.ChangeOptions(eoShowSpecialChars, actToggleSpecialChar.Checked);
   MIShotSpecialChar.Checked := actToggleSpecialChar.Checked;
+  ConfigObj.ShowSpecialChars := actToggleSpecialChar.Checked;
 end;
 
 procedure TfMain.actTrimExecute(Sender: TObject);
@@ -963,7 +953,6 @@ begin
     begin
       LoadDir(SelectDirectoryDialog1.FileName);
     end;
-
 end;
 
 procedure TfMain.FileReloadExecute(Sender: TObject);
@@ -982,7 +971,6 @@ begin
   ed.LoadFromFile(ed.FileName);
   ed.Modified := False;
   ed.PopPos;
-
 end;
 
 procedure TfMain.FileSaveAsAccept(Sender: TObject);
@@ -1053,14 +1041,18 @@ var
   str: string;
   Editor: TEditor;
 begin
-
   for str in aParams do
     begin
       if copy(str, 1, 2) <> '--' then
         begin
-          Editor := EditorFactory.AddEditor(str);
-          if Assigned(Editor) and not Editor.Untitled then
-            MRU.AddToRecent(str);
+          if DirectoryExists(str) then
+            LoadDir(str)
+          else
+          begin
+            Editor := EditorFactory.AddEditor(str);
+            if Assigned(Editor) and not Editor.Untitled then
+              MRU.AddToRecent(str);
+          end;
         end;
     end;
   Application.BringToFront;
@@ -1085,6 +1077,7 @@ begin
   MRU.Recent.Clear;
   actShowRowNumber.Checked:=ConfigObj.ShowRowNumber;
   actShowToolbar.Checked:=ConfigObj.ShowToolbar;
+  actToggleSpecialChar.Checked:=ConfigObj.ShowSpecialChars;
 
   ConfigObj.ReadStrings('Recent', 'Files', MRU.Recent);
   MRU.ShowRecentFiles;
@@ -1143,6 +1136,9 @@ begin
 
     CurrMenu.Add(mnuLang);
   end;
+
+  if Length(ConfigObj.LastDirectory) > 0 then
+    LoadDir(ConfigObj.LastDirectory);
 
   IF ParamCount > 0  then
    try
@@ -1777,6 +1773,8 @@ end;
 
 procedure TfMain.LoadDir(Path:string);
 begin
+  if Path <> '.' then
+    ConfigObj.LastDirectory := Path;
   pnlLeft.Visible := true;
   splLeftBar.Visible := true;
   BrowsingPath := Path;

@@ -146,11 +146,12 @@ type
     FFont: TFont;
     FShowRowNumber: boolean;
     FShowToolbar: boolean;
+    FShowSpecialChars: boolean;
+    FLastDirectory: String;
     ResourcesPath: string;
 //    fXMLConfigExtended: TXMLConfigExtended;
     fConfigHolder: TJsonNode;
     fColorSchema: TJsonNode;
-    fSchemaName: string;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
 
@@ -161,6 +162,8 @@ type
     procedure SetFont(AValue: TFont);
     procedure SetShowRowNumber(AValue: boolean);
     procedure SetShowToolbar(AValue: boolean);
+    procedure SetShowSpecialChars(AValue: boolean);
+    procedure SetLastDirectory(AValue: String);
     procedure WriteColor(const Section, Ident: string; const Value: TColor);
     procedure InitializeHighlighter(Highlighter: TSynCustomHighlighter);
     procedure FontAttribToAttribute(Attribute: TSynHighlighterAttributes; Attrib: TFontAttributes);
@@ -194,6 +197,8 @@ type
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
     property ShowToolbar: boolean read FShowToolbar write SetShowToolbar;
+    property ShowSpecialChars: boolean read FShowSpecialChars write SetShowSpecialChars;
+    property LastDirectory: String read FLastDirectory write SetLastDirectory;
     property AppSettings: RAppSettings read FAppSettings write FAppSettings;
     property BackGroundColor: TColor read GetBackGroundColor;
   end;
@@ -561,6 +566,8 @@ begin
   fConfigHolder.Find('Editor/Font/Size', true).AsInteger := FFont.Size;
   fConfigHolder.Find('Editor/ShowRowNumber', true).AsBoolean := FShowRowNumber;
   fConfigHolder.Find('Editor/ShowToolbar', true).AsBoolean := FShowToolbar;
+  fConfigHolder.Find('Editor/ShowSpecialChars', true).AsBoolean := FShowSpecialChars;
+  fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
 
 
   FDirty := false;
@@ -589,6 +596,8 @@ begin
 
   FShowRowNumber := fConfigHolder.GetValueDef('Editor/ShowRowNumber', True);
   FShowToolbar := fConfigHolder.GetValueDef('Editor/ShowToolbar', True);
+  FShowSpecialChars := fConfigHolder.GetValueDef('Editor/ShowSpecialChars', False);
+  FLastDirectory := fConfigHolder.GetValueDef('Editor/LastDirectory', '.');
 
   FDirty := False;
 end;
@@ -661,6 +670,20 @@ procedure TConfig.SetShowToolbar(AValue: boolean);
 begin
   if FShowToolbar = AValue then Exit;
   FShowToolbar := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetShowSpecialChars(AValue: boolean);
+begin
+  if FShowSpecialChars = AValue then Exit;
+  FShowSpecialChars := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetLastDirectory(AValue: String);
+begin
+  if FLastDirectory = AValue then Exit;
+  FLastDirectory := AValue;
   FDirty := True;
 end;
 
