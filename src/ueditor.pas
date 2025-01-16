@@ -32,7 +32,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread;
 
 type
 
@@ -116,11 +116,15 @@ type
   TEditorTabSheet = class(TTabSheet)
   private
     FEditor: TEditor;
+    FCmdBox: TCmdBox;
+    FCmdBoxThread: TCmdBoxThread;
   protected
     procedure DoShow; override;
 
   public
     property Editor: TEditor read FEditor;
+    property CmdBox: TCmdBox read FCmdBox;
+    property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
     //--//
   end;
 
@@ -134,6 +138,8 @@ type
     fUntitledCounter: integer;
     FWatcher: TFileWatcher;
     function GetCurrentEditor: TEditor;
+    function GetCurrentCmdBox: TCmdBox;
+    function GetCurrentCmdBoxThread: TCmdBoxThread;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
     procedure SetOnNewEditor(AValue: TOnEditorEvent);
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
@@ -146,6 +152,8 @@ type
 
   public
     property CurrentEditor: TEditor read GetCurrentEditor;
+    property CurrentCmdBox: TCmdBox read GetCurrentCmdBox;
+    property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
     property OnNewEditor: TOnEditorEvent read FOnNewEditor write SetOnNewEditor;
@@ -697,6 +705,22 @@ begin
 
 end;
 
+function TEditorFactory.GetCurrentCmdBox: TCmdBox;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).CmdBox;
+
+end;
+
+function TEditorFactory.GetCurrentCmdBoxThread: TCmdBoxThread;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).CmdBoxThread;
+
+end;
+
 procedure TEditorFactory.SetOnBeforeClose(AValue: TOnBeforeClose);
 begin
   if FOnBeforeClose = AValue then
@@ -758,6 +782,7 @@ end;
 function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
+  Cmd: TCmdBox;
   i: integer;
   DefaultAttr: TFontAttributes;
 begin
@@ -810,10 +835,19 @@ begin
   Result := TEditor.Create(Sheet);
   Result.DoubleBuffered := DoubleBuffered;
 
+  Cmd := TCmdBox.Create(Sheet);
+  Cmd.Parent := Sheet;
+  Cmd.Align := alBottom;
+  Cmd.Height := 300;
+  Cmd.EscapeCodeType := esctAnsi;
+  Sheet.FCmdBox := Cmd;
+  Sheet.FCmdBoxThread := TCmdBoxThread.Create;
+
   Result.Font.Assign(ConfigObj.Font);
   DefaultAttr := ConfigObj.ReadFontAttributes('Schema/Default/Text/', FontAttributes());
 
   Result.FSheet := Sheet;
+
 
   Result.Align := alClient;
   Sheet.FEditor := Result;

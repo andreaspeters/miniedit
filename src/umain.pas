@@ -29,7 +29,7 @@ uses
   LazUtils, LazUTF8, SingleInstance, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, iconloader, LMessages,
-  Process;
+  uCmdBox, Process, uinfo, ucmdboxthread;
 
 type
 
@@ -230,6 +230,7 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
+    Timer1: TTimer;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
     ToolButton11: TToolButton;
@@ -344,6 +345,7 @@ type
     procedure SortDescendingExecute(Sender: TObject);
     procedure actUpperCaseExecute(Sender: TObject);
     procedure StatusBarResize(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -868,16 +870,28 @@ begin
 end;
 
 procedure TfMain.actCompileRunExecute(Sender: TObject);
-var run: TProcess;
+var
+  run: TProcess;
+  Cmd: TCmdBox;
 begin
+  if not EditorAvalaible then
+    exit;
+
+  Cmd := EditorFactory.CurrentCmdBox;
+
   run := TProcess.Create(nil);
   try
     run.Executable := 'make';
-    run.CurrentDirectory := ConfigObj.LastDirectory;
+    Cmd.font := ConfigObj.Font;
+    Cmd.Writeln(BrowsingPath+' > ' + run.Executable);
+    run.CurrentDirectory := BrowsingPath;
 
-    run.Options := [poNoConsole, poDetached];
+    run.Options := [poUsePipes, poStderrToOutPut];
     run.Execute;
-  finally
+
+    EditorFactory.CurrentCmdBoxThread.Command := Run;
+    EditorFactory.CurrentCmdBoxThread.Start;
+  except
     run.Free;
   end;
 end;
@@ -1302,8 +1316,7 @@ end;
 
 procedure TfMain.HelpAboutExecute(Sender: TObject);
 begin
-  with TfAbout.Create(self) do
-    Show;
+  TFInfo.Show;
 end;
 
 procedure TfMain.actUpperCaseExecute(Sender: TObject);
@@ -1331,6 +1344,21 @@ begin
 
   StatusBar.Panels[0].Width := max(0, StatusBar.Width - pnlSize - (StatusBar.BorderWidth * 2));
 
+end;
+
+procedure TfMain.Timer1Timer(Sender: TObject);
+begin
+  if not EditorAvalaible then
+    exit;
+
+  if EditorFactory.CurrentCmdBoxThread <> nil then
+  begin
+    if Length(EditorFactory.CurrentCmdBoxThread.OutputString) > 0 then
+    begin
+      EditorFactory.CurrentCmdBox.Write(EditorFactory.CurrentCmdBoxThread.OutputString);
+      EditorFactory.CurrentCmdBoxThread.OutputString := '';
+    end;
+  end;
 end;
 
 procedure TfMain.actLowerCaseExecute(Sender: TObject);
@@ -1791,8 +1819,7 @@ end;
 
 procedure TfMain.LoadDir(Path:string);
 begin
-  if Path <> '.' then
-    ConfigObj.LastDirectory := Path;
+  ConfigObj.LastDirectory := ExpandFileName(Path);
   pnlLeft.Visible := true;
   splLeftBar.Visible := true;
   BrowsingPath := Path;

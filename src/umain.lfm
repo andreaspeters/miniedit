@@ -1,13 +1,14 @@
 object fMain: TfMain
   Left = 973
-  Height = 716
+  Height = 700
   Top = 141
-  Width = 945
+  Width = 859
   AllowDropFiles = True
   Caption = 'MiniEdit'
-  ClientHeight = 716
-  ClientWidth = 945
+  ClientHeight = 700
+  ClientWidth = 859
   Font.Height = -16
+  FormStyle = fsStayOnTop
   Menu = mnuMain
   OnActivate = FormActivate
   OnClose = FormClose
@@ -19,13 +20,13 @@ object fMain: TfMain
   OnResize = FormResize
   OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
-  Position = poOwnerFormCenter
+  Position = poDesktopCenter
   Visible = True
   object StatusBar: TStatusBar
     Left = 0
     Height = 27
-    Top = 689
-    Width = 945
+    Top = 673
+    Width = 859
     Panels = <    
       item
         Width = 200
@@ -55,7 +56,7 @@ object fMain: TfMain
     Left = 0
     Height = 30
     Top = 5
-    Width = 945
+    Width = 859
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -73,8 +74,7 @@ object fMain: TfMain
     object ToolButton2: TToolButton
       Left = 39
       Top = 0
-      Action = FileOpen
-      ImageIndex = 5
+      Action = FileOpenFolder
     end
     object ToolButton3: TToolButton
       Left = 105
@@ -175,7 +175,7 @@ object fMain: TfMain
     Left = 0
     Height = 24
     Top = 40
-    Width = 945
+    Width = 859
     Align = alTop
     Alignment = taCenter
     Caption = 'lbMessage'
@@ -189,18 +189,18 @@ object fMain: TfMain
   end
   object pnlLeft: TPanel
     Left = 0
-    Height = 625
+    Height = 609
     Top = 64
     Width = 189
     Align = alLeft
     BevelColor = clBlack
     BevelOuter = bvNone
-    ClientHeight = 625
+    ClientHeight = 609
     ClientWidth = 189
     TabOrder = 3
     object FilesTree: TTreeView
       Left = 0
-      Height = 625
+      Height = 609
       Top = 0
       Width = 189
       Align = alClient
@@ -223,7 +223,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 189
-    Height = 625
+    Height = 609
     Top = 64
     Width = 5
   end
@@ -302,6 +302,7 @@ object fMain: TfMain
         Action = FileExit
         Caption = '&Exit'
         ImageIndex = 16
+        ShortCut = 16465
         OnClick = FileExitExecute
       end
     end
@@ -1396,7 +1397,7 @@ object fMain: TfMain
     object FileOpenFolder: TAction
       Category = 'File'
       Caption = 'Open Folder…'
-      ImageIndex = 39
+      ImageIndex = 5
       OnExecute = FileOpenFolderExecute
     end
     object FileCloseFolder: TAction
@@ -1420,10 +1421,17 @@ object fMain: TfMain
       DisableIfNoHandler = False
       ImageIndex = 18
       OnExecute = actCompileRunExecute
+      ShortCut = 120
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Left = 248
     Top = 251
+  end
+  object Timer1: TTimer
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 656
+    Top = 72
   end
 end

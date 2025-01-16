@@ -21,16 +21,19 @@
 program miniedit;
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}{$ENDIF}
+  {$ENDIF}
+  {$IFDEF HASAMIGA}
+  athreads,
+  {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, DefaultTranslator, singleinstance,
+  Forms, DefaultTranslator, cmdbox, singleinstance,
   printer4lazarus, SynEditPrintExtProcs,
   //projects unit
-  umain, uabout, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
+  umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
-  SimpleSingleInstance, JsonTools, iconloader;
+  SimpleSingleInstance, JsonTools, iconloader, uinfo, ucmdboxthread;
 
 {$R *.res}
 begin
@@ -43,6 +46,7 @@ begin
     begin
       Application.CreateForm(TdmMain, dmMain);
       Application.CreateForm(TfMain, fMain);
+      Application.CreateForm(TTFInfo, TFInfo);
       Application.Run;
     end
   else

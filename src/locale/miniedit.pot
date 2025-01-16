@@ -281,37 +281,6 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
-#: tfabout.caption
-msgid "About"
-msgstr ""
-
-#: tfabout.label1.caption
-msgctxt "tfabout.label1.caption"
-msgid "MiniEdit"
-msgstr ""
-
-#: tfabout.label2.caption
-msgctxt "tfabout.label2.caption"
-msgid "Version"
-msgstr ""
-
-#: tfabout.label5.caption
-msgid "Lazarus"
-msgstr ""
-
-#: tfabout.label7.caption
-msgid "FPC"
-msgstr ""
-
-#: tfabout.label8.caption
-msgid "Build Date"
-msgstr ""
-
-#: tfabout.lversion.caption
-msgctxt "tfabout.lversion.caption"
-msgid "Version"
-msgstr ""
-
 #: tfmain.actcloseafter.caption
 msgid "Close all on the right"
 msgstr ""
@@ -824,5 +793,31 @@ msgstr ""
 #: tfmain.toolbutton14.hint
 msgctxt "tfmain.toolbutton14.hint"
 msgid "Reload Folder"
+msgstr ""
+
+#: ttfinfo.caption
+msgid "FlexPacket - Info"
+msgstr ""
+
+#: ttfinfo.label1.caption
+msgctxt "ttfinfo.label1.caption"
+msgid "MiniEdit"
+msgstr ""
+
+#: ttfinfo.label2.caption
+msgid "by Andreas Peters (DC6AP)"
+msgstr ""
+
+#: ttfinfo.label3.caption
+msgctxt "ttfinfo.label3.caption"
+msgid "Version"
+msgstr ""
+
+#: ttfinfo.lfpsourcecode.caption
+msgid "MiniEdit Source Code"
+msgstr ""
+
+#: ttfinfo.lgithubdonation.caption
+msgid "Please Donate a small amount"
 msgstr ""
 
