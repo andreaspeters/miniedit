@@ -324,6 +324,10 @@ msgstr ""
 msgid "Close all on the left"
 msgstr ""
 
+#: tfmain.actcompilerun.caption
+msgid "none"
+msgstr ""
+
 #: tfmain.actcompressspaces.caption
 msgctxt "tfmain.actcompressspaces.caption"
 msgid "Reduce multiple spaces"
@@ -388,10 +392,6 @@ msgstr ""
 
 #: tfmain.actlowercase.caption
 msgid "lowercase"
-msgstr ""
-
-#: tfmain.actmacrosave.caption
-msgid "Save current recorded macro"
 msgstr ""
 
 #: tfmain.actpathtoclipboard.caption
@@ -690,6 +690,10 @@ msgstr ""
 
 #: tfmain.menuitem39.caption
 msgid "Spaces operations"
+msgstr ""
+
+#: tfmain.menuitem4.caption
+msgid "Info"
 msgstr ""
 
 #: tfmain.menuitem52.caption

@@ -28,7 +28,8 @@ uses
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
   LazUtils, LazUTF8, SingleInstance, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
-  SynHighlighterCpp, replacedialog, lclintf, jsontools, iconloader, LMessages;
+  SynHighlighterCpp, replacedialog, lclintf, jsontools, iconloader, LMessages,
+  Process;
 
 type
 
@@ -52,12 +53,12 @@ type
     actFindLongestLine: TAction;
     actFullScreen: TAction;
     actFileNameToClipboard: TAction;
+    actCompileRun: TAction;
     actUnQuote: TAction;
     FileBrowseFolder: TAction;
     FileCloseFolder: TAction;
     FileReloadFolder: TAction;
     FileOpenFolder: TAction;
-    actMacroSave: TAction;
     actShowRowNumber: TAction;
     actShowToolbar: TAction;
     actJSONCompact: TAction;
@@ -236,6 +237,7 @@ type
     ToolButton13: TToolButton;
     ToolButton14: TToolButton;
     ToolButton15: TToolButton;
+    ToolButton16: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     tbbClose: TToolButton;
@@ -257,6 +259,7 @@ type
     procedure actFullNameToClipBoardExecute(Sender: TObject);
     procedure actFullScreenExecute(Sender: TObject);
     procedure actGoToExecute(Sender: TObject);
+    procedure actCompileRunExecute(Sender: TObject);
     procedure actJSONCompactExecute(Sender: TObject);
     procedure ActionListUpdate(AAction: TBasicAction; var Handled: boolean);
     procedure actJSONPrettyPrintExecute(Sender: TObject);
@@ -864,6 +867,21 @@ begin
 
 end;
 
+procedure TfMain.actCompileRunExecute(Sender: TObject);
+var run: TProcess;
+begin
+  run := TProcess.Create(nil);
+  try
+    run.Executable := 'make';
+    run.CurrentDirectory := ConfigObj.LastDirectory;
+
+    run.Options := [poNoConsole, poDetached];
+    run.Execute;
+  finally
+    run.Free;
+  end;
+end;
+
 procedure TfMain.actJSONCompactExecute(Sender: TObject);
 var
   Ed: TEditor;
@@ -1140,7 +1158,7 @@ begin
   if Length(ConfigObj.LastDirectory) > 0 then
     LoadDir(ConfigObj.LastDirectory);
 
-  IF ParamCount > 0  then
+  if ParamCount > 0  then
    try
      ParamList := TStringList.Create;
      for i := 1 to ParamCount do
