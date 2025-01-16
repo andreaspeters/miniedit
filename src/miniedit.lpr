@@ -28,32 +28,21 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, DefaultTranslator, cmdbox, singleinstance,
+  Forms, DefaultTranslator, cmdbox,
   printer4lazarus, SynEditPrintExtProcs,
   //projects unit
   umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
-  SimpleSingleInstance, JsonTools, iconloader, uinfo, ucmdboxthread;
+  JsonTools, iconloader, uinfo, ucmdboxthread;
 
 {$R *.res}
 begin
   RequireDerivedFormResource:=True;
-  Application.SingleInstanceClass:= DefaultSingleInstanceClass;
-  Application.SingleInstanceEnabled:= True;
-  TSimpleSingleInstance(Application.SingleInstance).DefaultMessage := '--show';
   Application.Initialize;
   Application.Scaled:=True;
-  if Application.SingleInstance.StartResult <> siClient then
-    begin
-      Application.CreateForm(TdmMain, dmMain);
-      Application.CreateForm(TfMain, fMain);
-      Application.CreateForm(TTFInfo, TFInfo);
-      Application.Run;
-    end
-  else
-    begin
-     Application.Free;
-   end;
-
+  Application.CreateForm(TdmMain, dmMain);
+  Application.CreateForm(TfMain, fMain);
+  Application.CreateForm(TTFInfo, TFInfo);
+  Application.Run;
 end.
 

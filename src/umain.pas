@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, Math, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ActnList, Menus, ComCtrls, StdActns, uEditor, LCLType, Clipbrd,
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
-  LazUtils, LazUTF8, SingleInstance, udmmain, uDglGoTo, SynEditPrint,
+  LazUtils, LazUTF8, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread;
@@ -289,7 +289,6 @@ type
     procedure actZoomResetExecute(Sender: TObject);
     procedure AppPropertiesActivate(Sender: TObject);
     procedure AppPropertiesDropFiles(Sender: TObject; const FileNames: array of String);
-    procedure AppPropertiesIdle(Sender: TObject; var Done: Boolean);
     procedure AppPropertiesShowHint(var HintStr: string; var CanShow: boolean; var HintInfo: THintInfo);
     procedure EditCopyExecute(Sender: TObject);
     procedure EditCutExecute(Sender: TObject);
@@ -320,7 +319,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
-    procedure FormDeactivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormResize(Sender: TObject);
@@ -346,10 +344,10 @@ type
     procedure actUpperCaseExecute(Sender: TObject);
     procedure StatusBarResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure CliParams(aParams: TStringList);
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
-    Macros: TMRUMenuManager;
 
     FindText, ReplaceText: string;
     SynOption: TMySynSearchOptions;
@@ -358,7 +356,6 @@ type
     rect: TRect;
     ws : TWindowState;
     BrowsingPath: string;
-    OrigWidth, OrigHeight: Integer;
 
     function AskFileName(Editor: TEditor): boolean;
     procedure ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -373,7 +370,6 @@ type
     procedure EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure RecentFileEvent(Sender: TObject; const AFileName: string; const AData: TObject);
     procedure NewEditor(Editor: TEditor);
-    procedure ServerReceivedParams(Sender: TBaseSingleInstance; aParams: TStringList);
     procedure ShowTabs(Sender: TObject);
     Procedure SetupSaveDialog(SaveMode: TSaveMode);
   public
@@ -796,11 +792,6 @@ begin
     EditorFactory.AddEditor(FileNames[i])
 end;
 
-procedure TfMain.AppPropertiesIdle(Sender: TObject; var Done: Boolean);
-begin
-  Application.SingleInstance.ServerCheckMessages;
-end;
-
 procedure TfMain.actFontExecute(Sender: TObject);
 var
   i: integer;
@@ -1060,8 +1051,7 @@ begin
     CanClose := True;
 end;
 
-procedure TfMain.ServerReceivedParams(Sender: TBaseSingleInstance;
-  aParams: TStringList);
+procedure TfMain.CliParams(aParams: TStringList);
 var
   str, dir: string;
   Editor: TEditor;
@@ -1102,7 +1092,6 @@ var
   ParamList: TstringList;
 
 begin
-  Application.SingleInstance.OnServerReceivedParams := @ServerReceivedParams;
   MRU := TMRUMenuManager.Create(Self);
   MRU.MenuItem := mnuOpenRecent;
   MRU.OnRecentFile := @RecentFileEvent;
@@ -1131,11 +1120,8 @@ begin
   EditorFactory.OnContextPopup := @ContextPopup;
   EditorFactory.Images := imgList;
   EditorFactory.Parent := PSSEditor;
-
-  //// move close button to right
-  //tbbCloseAll.Align := alRight;
-  //tbbSepClose.Align := alRight;
-  //tbbClose.Align := alRight;
+  EditorFactory.Height := PSSEditor.Height;
+  EditorFactory.Width  := PSSEditor.Width;
 
   // Parameters
   FileOpen.Dialog.Filter := configobj.GetFiters;
@@ -1178,8 +1164,8 @@ begin
      ParamList := TStringList.Create;
      for i := 1 to ParamCount do
        ParamList.Add(ParamStr(i));
-     ServerReceivedParams(Application.SingleInstance, ParamList);
    finally
+     CliParams(ParamList);
      FreeAndNil(ParamList);
    end;
 
@@ -1188,11 +1174,6 @@ begin
 
   splLeftBar.Visible := True;
   FilesTree.Font.Assign(ConfigObj.Font);
-end;
-
-procedure TfMain.FormDeactivate(Sender: TObject);
-begin
-  //ActionList.State := asSuspended;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

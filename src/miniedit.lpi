@@ -187,7 +187,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="20">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -265,38 +265,33 @@
         <UnitName Value="ReplaceDialog"/>
       </Unit13>
       <Unit14>
-        <Filename Value="simplesingleinstance.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleSingleInstance"/>
-      </Unit14>
-      <Unit15>
         <Filename Value="codegen.inc"/>
         <IsPartOfProject Value="True"/>
-      </Unit15>
-      <Unit16>
+      </Unit14>
+      <Unit15>
         <Filename Value="jsontools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JsonTools"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="uinfo.lfm"/>
+        <IsPartOfProject Value="True"/>
       </Unit16>
       <Unit17>
-        <Filename Value="uinfo.lfm"/>
+        <Filename Value="uinfo.lrj"/>
         <IsPartOfProject Value="True"/>
       </Unit17>
       <Unit18>
-        <Filename Value="uinfo.lrj"/>
-        <IsPartOfProject Value="True"/>
-      </Unit18>
-      <Unit19>
         <Filename Value="uinfo.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TFInfo"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit19>
-      <Unit20>
+      </Unit18>
+      <Unit19>
         <Filename Value="ucmdboxthread.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit20>
+      </Unit19>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
