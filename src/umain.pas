@@ -28,7 +28,7 @@ uses
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
   LazUtils, LazUTF8, SingleInstance, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
-  SynHighlighterCpp, replacedialog, lclintf, jsontools, iconloader, LMessages,
+  SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread;
 
 type
@@ -135,7 +135,9 @@ type
     mnuNone: TMenuItem;
     mnuLanguage: TMenuItem;
     mnuTabs: TMenuItem;
-    pnlLeft: TPanel;
+    PairSplitter1: TPairSplitter;
+    PairSplitterSide1: TPairSplitterSide;
+    PSSEditor: TPairSplitterSide;
     pumTabs: TPopupMenu;
     PrintDialog1: TPrintDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
@@ -316,14 +318,12 @@ type
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormResize(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure HelpAboutExecute(Sender: TObject);
     procedure actLowerCaseExecute(Sender: TObject);
@@ -358,6 +358,7 @@ type
     rect: TRect;
     ws : TWindowState;
     BrowsingPath: string;
+    OrigWidth, OrigHeight: Integer;
 
     function AskFileName(Editor: TEditor): boolean;
     procedure ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -367,7 +368,6 @@ type
     procedure BeforeCloseEditor(Editor: TEditor; var Cancel: boolean);
     procedure ExpandNode(NodeDir: TFileTreeNode; const Path: string);
     procedure LoadDir(Path: string);
-    procedure LoadImageList;
     procedure mnuLangClick(Sender: TObject);
     procedure mnuThemeClick(Sender: TObject);
     procedure EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
@@ -376,8 +376,6 @@ type
     procedure ServerReceivedParams(Sender: TBaseSingleInstance; aParams: TStringList);
     procedure ShowTabs(Sender: TObject);
     Procedure SetupSaveDialog(SaveMode: TSaveMode);
-    procedure SaveConfig;
-    procedure ReadConfig;
   public
     { public declarations }
   end;
@@ -385,9 +383,10 @@ type
 var
   fMain: TfMain;
 
+
 implementation
 
-uses lclproc, Stringcostants, uabout, SynExportHTML;
+uses lclproc, Stringcostants, SynExportHTML;
 
 {$R *.lfm}
 
@@ -624,7 +623,6 @@ end;
 
 procedure TfMain.FileCloseFolderExecute(Sender: TObject);
 begin
-  pnlLeft.Visible := false;
   splLeftBar.Visible := false;
 end;
 
@@ -1054,11 +1052,6 @@ begin
     EditorFactory.CurrentEditor.SetFocus;
 end;
 
-procedure TfMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  SaveConfig;
-end;
-
 procedure TfMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   if Assigned(EditorFactory) and (EditorFactory.PageCount > 0) then
@@ -1070,23 +1063,31 @@ end;
 procedure TfMain.ServerReceivedParams(Sender: TBaseSingleInstance;
   aParams: TStringList);
 var
-  str: string;
+  str, dir: string;
   Editor: TEditor;
 begin
   for str in aParams do
+  begin
+    writeln(str);
+    if copy(str, 1, 2) <> '--' then
     begin
-      if copy(str, 1, 2) <> '--' then
-        begin
-          if DirectoryExists(str) then
-            LoadDir(str)
-          else
-          begin
-            Editor := EditorFactory.AddEditor(str);
-            if Assigned(Editor) and not Editor.Untitled then
-              MRU.AddToRecent(str);
-          end;
-        end;
+      if DirectoryExists(str) then
+      begin
+        dir := str;
+        if dir = '.' then
+          dir := GetCurrentDir;
+        LoadDir(dir)
+      end
+      else
+      begin
+        Editor := EditorFactory.AddEditor(str);
+        Editor.FilePath := ExtractFilePath(str);
+        LoadDir(dir);
+        if Assigned(Editor) and not Editor.Untitled then
+          MRU.AddToRecent(str);
+      end;
     end;
+  end;
   Application.BringToFront;
   ShowOnTop;
 end;
@@ -1129,7 +1130,7 @@ begin
   EditorFactory.OnNewEditor := @NewEditor;
   EditorFactory.OnContextPopup := @ContextPopup;
   EditorFactory.Images := imgList;
-  EditorFactory.Parent := self;
+  EditorFactory.Parent := PSSEditor;
 
   //// move close button to right
   //tbbCloseAll.Align := alRight;
@@ -1185,7 +1186,6 @@ begin
   if EditorFactory.PageCount = 0 then
     FileNew.Execute;
 
-  pnlLeft.Visible := True;
   splLeftBar.Visible := True;
   FilesTree.Font.Assign(ConfigObj.Font);
 end;
@@ -1193,50 +1193,6 @@ end;
 procedure TfMain.FormDeactivate(Sender: TObject);
 begin
   //ActionList.State := asSuspended;
-end;
-
-procedure TfMain.LoadImageList;
-var
-  s:TResourceStream;
-  iconRender: TIconRenderer;
-{$R ovotextfont.res}
-
-begin
-  S := TResourceStream.Create(HInstance, 'OVOFONT', RT_RCDATA);
-  imgList.BeginUpdate;
-  imgList.Clear;
-  imgList.Scaled :=false;;
-  imgList.Height := MulDiv(24, Screen.PixelsPerInch, 96);
-  imgList.Width := imgList.Height;
-
-  iconRender:= TIconRenderer.Create(S);
-  iconRender.Color := GetSysColor(COLOR_BTNTEXT);
-  iconRender.SetSize(24, 22);
-  iconRender.AddToImageList(imglist, [$41,$42,$43,$44,$45,  //0.. 4
-                                      $46,$47,$48,$49,$4a,  // .. 9
-                                      $4b,$4c,$4f,$4e,$4f,  // ..14
-                                      $50,$51,$52,$53,$54,  // ..19
-                                      $55,$56,$57,$58,$59,  // ..24
-                                      $5a,$61,$62,$63,$64,  // ..29
-                                      $65,$66,$67,$68,$69,  // ..34
-                                      $6a,$6b,$6c,$6d,$3b,  // ..39
-                                      $3c,$5b]);
-
-  imgList.EndUpdate;
-  dmMain.imgBookMark.BeginUpdate;
-  dmMain.imgBookMark.Clear;
-  dmMain.imgBookMark.Height := MulDiv(16, Screen.PixelsPerInch, 96);
-  dmMain.imgBookMark.Width := dmMain.imgBookMark.Height;
-
-  iconRender.Color := GetSysColor(COLOR_HIGHLIGHT);
-  iconRender.SetSize(16, 16);
-  iconRender.AddToImageList(dmMain.imgBookMark, [$30,$31,$32,$33,$34,
-                                                 $35,$36,$37,$38,$39,
-                                                 $3a]);
-  iconRender.Color := GetSysColor(COLOR_BTNTEXT);
-  iconRender.AddToImageList(dmMain.imgBookMark, [$3b,$3c]);
-
-  dmMain.imgBookMark.EndUpdate;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
@@ -1280,7 +1236,6 @@ end;
 
 procedure TfMain.FormDestroy(Sender: TObject);
 begin
-  Application.SingleInstance.OnServerReceivedParams:= nil;
   ConfigObj.WriteStrings('Recent', 'Files', MRU.Recent);
   Mru.Free;
   FreeAndNil(EditorFactory);
@@ -1302,11 +1257,6 @@ end;
 procedure TfMain.FormResize(Sender: TObject);
 begin
   ConfigObj.Dirty := true;
-end;
-
-procedure TfMain.FormShow(Sender: TObject);
-begin
-  ReadConfig;
 end;
 
 procedure TfMain.FormWindowStateChange(Sender: TObject);
@@ -1465,58 +1415,6 @@ begin
              SaveDialog.Title:='Export as HTML File';
            end;
   end;
-end;
-
-
-procedure TfMain.SaveConfig;
-begin
-  with ConfigObj.ConfigHolder do begin
-    Find('MainForm/NormalLeft', true).AsInteger:= ScaleFormTo96(Left);
-    Find('MainForm/NormalTop', true).AsInteger:=  ScaleFormTo96(Top);
-    Find('MainForm/NormalWidth', true).AsInteger:=  ScaleFormTo96(Width);
-    Find('MainForm/NormalHeight', true).AsInteger:=  ScaleFormTo96(Height);
-
-    Find('MainForm/RestoredLeft', true).AsInteger:=  ScaleFormTo96(RestoredLeft);
-    Find('MainForm/RestoredTop', true).AsInteger:=  ScaleFormTo96(RestoredTop);
-    Find('MainForm/RestoredWidth', true).AsInteger:=  ScaleFormTo96(RestoredWidth);
-    Find('MainForm/RestoredHeight', true).AsInteger:=  ScaleFormTo96(RestoredHeight);
-
-    Find('MainForm/WindowState', true).AsInteger:=  Integer(WindowState);
-  end;
-
-end;
-
-procedure TfMain.ReadConfig;
-var
-  LastWindowState: TWindowState;
-begin
-  with ConfigObj.ConfigHolder do
-  begin
-    LastWindowState := TWindowState(GetValueDef('MainForm/WindowState', Integer(WindowState)));
-
-    if LastWindowState = wsMaximized then
-    begin
-      WindowState := wsNormal;
-      BoundsRect := Bounds(
-        Scale96ToForm(GetValueDef('MainForm/RestoredLeft', RestoredLeft)),
-        Scale96ToForm(GetValueDef('MainForm/RestoredTop', RestoredTop)),
-        Scale96ToForm(GetValueDef('MainForm/RestoredWidth', RestoredWidth)),
-        Scale96ToForm(GetValueDef('MainForm/RestoredHeight', RestoredHeight)));
-      WindowState := wsMaximized;
-      Application.ProcessMessages;
-      WindowState := wsMaximized;
-    end
-    else
-    begin
-      WindowState := wsNormal;
-      BoundsRect := Bounds(
-        Scale96ToForm(GetValueDef('MainForm/NormalLeft', Left)),
-        Scale96ToForm(GetValueDef('MainForm/NormalTop', Top)),
-        Scale96ToForm(GetValueDef('MainForm/NormalWidth', Width)),
-        Scale96ToForm(GetValueDef('MainForm/NormalHeight', Height)));
-    end;
-  end;
-
 end;
 
 procedure TfMain.mnuTabsClick(Sender: TObject);
@@ -1820,7 +1718,6 @@ end;
 procedure TfMain.LoadDir(Path:string);
 begin
   ConfigObj.LastDirectory := ExpandFileName(Path);
-  pnlLeft.Visible := true;
   splLeftBar.Visible := true;
   BrowsingPath := Path;
   FilesTree.Items.Clear;

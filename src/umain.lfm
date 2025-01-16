@@ -1,32 +1,33 @@
 object fMain: TfMain
   Left = 973
-  Height = 700
+  Height = 835
   Top = 141
-  Width = 859
+  Width = 1102
   AllowDropFiles = True
+  Anchors = []
   Caption = 'MiniEdit'
-  ClientHeight = 700
-  ClientWidth = 859
+  ClientHeight = 835
+  ClientWidth = 1102
+  DefaultMonitor = dmDesktop
   Font.Height = -16
-  FormStyle = fsStayOnTop
   Menu = mnuMain
   OnActivate = FormActivate
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   OnResize = FormResize
-  OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
   Position = poDesktopCenter
   Visible = True
   object StatusBar: TStatusBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Control = Owner
     Left = 0
     Height = 27
-    Top = 673
-    Width = 859
+    Top = 808
+    Width = 1102
     Panels = <    
       item
         Width = 200
@@ -56,7 +57,7 @@ object fMain: TfMain
     Left = 0
     Height = 30
     Top = 5
-    Width = 859
+    Width = 1102
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -175,7 +176,7 @@ object fMain: TfMain
     Left = 0
     Height = 24
     Top = 40
-    Width = 859
+    Width = 1102
     Align = alTop
     Alignment = taCenter
     Caption = 'lbMessage'
@@ -187,45 +188,70 @@ object fMain: TfMain
     TabOrder = 2
     Visible = False
   end
-  object pnlLeft: TPanel
-    Left = 0
-    Height = 609
-    Top = 64
-    Width = 189
-    Align = alLeft
-    BevelColor = clBlack
-    BevelOuter = bvNone
-    ClientHeight = 609
-    ClientWidth = 189
-    TabOrder = 3
-    object FilesTree: TTreeView
-      Left = 0
-      Height = 609
-      Top = 0
-      Width = 189
-      Align = alClient
-      DragMode = dmAutomatic
-      HideSelection = False
-      Images = dmMain.imgBookMark
-      MultiSelect = True
-      ReadOnly = True
-      RightClickSelect = True
-      RowSelect = True
-      ScrollBars = ssAutoBoth
-      TabOrder = 0
-      OnCreateNodeClass = FilesTreeCreateNodeClass
-      OnDblClick = FilesTreeDblClick
-      OnExpanding = FilesTreeExpanding
-      OnGetImageIndex = FilesTreeGetImageIndex
-      OnGetSelectedIndex = FilesTreeGetSelectedIndex
-      Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-    end
-  end
   object splLeftBar: TSplitter
-    Left = 189
-    Height = 609
+    Left = 0
+    Height = 744
     Top = 64
     Width = 5
+  end
+  object PairSplitter1: TPairSplitter
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbMessage
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar
+    Cursor = crDefault
+    Left = 0
+    Height = 744
+    Top = 64
+    Width = 1102
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Position = 300
+    object PairSplitterSide1: TPairSplitterSide
+      Cursor = crArrow
+      Left = 0
+      Height = 744
+      Top = 0
+      Width = 300
+      ClientWidth = 300
+      ClientHeight = 744
+      object FilesTree: TTreeView
+        AnchorSideLeft.Control = PairSplitterSide1
+        AnchorSideTop.Control = PairSplitterSide1
+        AnchorSideRight.Control = PairSplitterSide1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = PairSplitterSide1
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 744
+        Top = 0
+        Width = 300
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        DragMode = dmAutomatic
+        HideSelection = False
+        Images = dmMain.imgBookMark
+        MultiSelect = True
+        ReadOnly = True
+        RightClickSelect = True
+        RowSelect = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        OnCreateNodeClass = FilesTreeCreateNodeClass
+        OnDblClick = FilesTreeDblClick
+        OnExpanding = FilesTreeExpanding
+        OnGetImageIndex = FilesTreeGetImageIndex
+        OnGetSelectedIndex = FilesTreeGetSelectedIndex
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      end
+    end
+    object PSSEditor: TPairSplitterSide
+      Cursor = crArrow
+      Left = 305
+      Height = 744
+      Top = 0
+      Width = 797
+    end
   end
   object mnuMain: TMainMenu
     Images = imgList

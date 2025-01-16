@@ -63,6 +63,7 @@ type
   TEditor = class(TSynEdit)
   private
     FFileName: TFilename;
+    FFilePath: String;
     FOnSearchReplace: TOnSearchReplaceEvent;
     FSheet: TEditorTabSheet;
     FUntitled: boolean;
@@ -84,6 +85,7 @@ type
     procedure QuickSort(L, R: integer; CompareFn: TStringsSortCompare);
     procedure SetDiskEncoding(AValue: string);
     procedure SetFileName(AValue: TFileName);
+    procedure SetFilePath(AValue: String);
     procedure SetLineEndingType(AValue: TSynLinesFileLineEndType);
     procedure SetOnSearcReplace(AValue: TOnSearchReplaceEvent);
     procedure SetText(NewText: string);
@@ -99,6 +101,7 @@ type
     procedure SetLineText(Index: integer; NewText: string);
     // -- File handling//
     property FileName: TFileName read FFileName write SetFileName;
+    property FilePath: String read FFilePath write SetFilePath;
     property Untitled: boolean read FUntitled write SetUntitled;
     property DiskEncoding:string read GetDiskEncoding write SetDiskEncoding;
     property LineEndingType: TSynLinesFileLineEndType read GetLineEndingType write SetLineEndingType;
@@ -211,7 +214,14 @@ begin
   end
   else
     FUntitled := True;
+end;
 
+procedure TEditor.SetFilePath(AValue: String);
+begin
+  if FFilePath = AValue then
+    Exit;
+
+  FFilePath := AValue;
 end;
 
 procedure TEditor.SetLineEndingType(AValue: TSynLinesFileLineEndType);
@@ -1066,6 +1076,11 @@ var
   r: TRect;
   i, h: integer;
 begin
+  if Button = mbMiddle then
+  begin
+    CloseEditor(CurrentEditor);
+    Exit;
+  end;
   if Button = mbLeft then
   begin
     i := IndexOfTabAt(Point(X, Y));

@@ -37,6 +37,7 @@ uses
 
 {$R *.res}
 begin
+  RequireDerivedFormResource:=True;
   Application.SingleInstanceClass:= DefaultSingleInstanceClass;
   Application.SingleInstanceEnabled:= True;
   TSimpleSingleInstance(Application.SingleInstance).DefaultMessage := '--show';
