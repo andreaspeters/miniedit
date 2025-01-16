@@ -16,6 +16,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
   OnCreate = FormCreate
   PopupMode = pmAuto
   Position = poMainFormCenter
+  LCLVersion = '3.6.0.0'
   object TextLabel: TLabel
     Left = 40
     Height = 23
@@ -70,7 +71,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 90
+    ClientHeight = 88
     ClientWidth = 230
     Items.Strings = (
       'Normal'
@@ -99,7 +100,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 56
+    ClientHeight = 54
     ClientWidth = 296
     TabOrder = 5
     object SelectedRadioButton: TRadioButton
@@ -151,7 +152,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     Width = 234
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 139
+    ClientHeight = 137
     ClientWidth = 232
     TabOrder = 4
     object WholeWordsOnlyCheckBox: TCheckBox
@@ -243,7 +244,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 53
+    ClientHeight = 51
     ClientWidth = 296
     TabOrder = 7
     object BackwardRadioButton: TRadioButton

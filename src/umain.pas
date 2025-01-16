@@ -1,22 +1,3 @@
-{ Ovotext - simple text editor
-
-  Copyright (C) 2015 Marco Caselli <marcocas@gmail.com>
-
-  This source is free software; you can redistribute it and/or modify it under
-  the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
-
-  This code is distributed in the hope that it will be useful, but WITHOUT ANY
-  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
-
-  A copy of the GNU General Public License is available on the World Wide Web
-  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
-  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-  MA 02111-1307, USA.
-}
 {$I codegen.inc}
 unit umain;
 
@@ -806,6 +787,7 @@ begin
     ConfigObj.Dirty := true;
   end;
   FilesTree.Font.Assign(FontDialog.Font);
+  FilesTree.Font.Size := FilesTree.Font.Size - 2;
 end;
 
 procedure TfMain.actFullNameToClipBoardExecute(Sender: TObject);
@@ -1173,7 +1155,7 @@ begin
     FileNew.Execute;
 
   splLeftBar.Visible := True;
-  FilesTree.Font.Assign(ConfigObj.Font);
+  FilesTree.Font.Size := ConfigObj.Font.Size - 2;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
@@ -1517,6 +1499,8 @@ begin
       StatusBar.Panels[6].Text := RSStatusBarInsMode
     else
       StatusBar.Panels[6].Text := RSStatusBarOvrMode;
+
+ StatusBar.Panels[3].Text := BrowsingPath;
 end;
 
 procedure TfMain.RecentFileEvent(Sender: TObject; const AFileName: string; const AData: TObject);
@@ -1553,11 +1537,17 @@ var
   sOpt: TMySynSearchOptions;
   Ed: TEditor;
 begin
-  if (FindText = EmptyStr) then
-    Exit;
   Ed := EditorFactory.CurrentEditor;
   if Assigned(Ed) then
   begin
+    if (FindText = EmptyStr) then
+    begin
+      if Ed.SelAvail and (Ed.BlockBegin.Y = Ed.BlockEnd.Y) then
+        FindText := Ed.SelText;
+      if (FindText = EmptyStr) then
+        Exit;
+    end;
+
     sOpt := SynOption;
     sOpt := sOpt - [ssoBackWards];
     if Ed.SearchReplace(FindText, '', TSynSearchOptions(sOpt)) = 0 then

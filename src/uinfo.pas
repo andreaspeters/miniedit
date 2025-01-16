@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ButtonPanel, LCLIntf, Buttons;
+  ButtonPanel, LCLIntf, Buttons, stringcostants;
 
 type
 
@@ -25,6 +25,7 @@ type
     LFPSourceCode: TLabel;
     Memo1: TMemo;
     procedure CloseInfo(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure IGithubDonationClick(Sender: TObject);
     procedure IFlexPacketSourceCodeClick(Sender: TObject);
   private
@@ -45,6 +46,11 @@ implementation
 procedure TTFInfo.CloseInfo(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TTFInfo.FormShow(Sender: TObject);
+begin
+  Label3.Caption := AppVersion;
 end;
 
 procedure TTFInfo.IGithubDonationClick(Sender: TObject);
