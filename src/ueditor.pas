@@ -12,7 +12,7 @@ uses
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
-  uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,
+  uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
   ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread;
 
 type
@@ -776,6 +776,7 @@ var
   Cmd: TCmdBox;
   i: integer;
   DefaultAttr: TFontAttributes;
+  Beauty: TSynBeautifier;
 begin
   result := nil;
   if FileName <> EmptyStr then
@@ -816,15 +817,31 @@ begin
         exit;
       end;
     end;
-
   end;
 
   Sheet := TEditorTabSheet.Create(Self);
   Sheet.DoubleBuffered := DoubleBuffered;
   Sheet.PageControl := Self;
 
+  // sbitSpace,
+  // sbitCopySpaceTab,        - copy indent as it is on previous line.
+  // sbitPositionCaret,
+  // sbitConvertToTabSpace,   - convert to tabs, fill with spcaces if needed
+  // sbitConvertToTabOnly     - convert to tabs, even if shorter
+  Beauty := TSynBeautifier.Create(Sheet);
+  Beauty.IndentType := sbitCopySpaceTab;
+
+
   Result := TEditor.Create(Sheet);
   Result.DoubleBuffered := DoubleBuffered;
+  Result.RightEdge := 80;
+  Result.RightEdgeColor := clSilver;
+  Result.Options := [eoAutoIndent,eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoSmartTabs,eoTabsToSpaces,eoTrimTrailingSpaces];
+  Result.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
+  Result.Font.Quality := fqCleartypeNatural;
+  Result.Gutter.Color := clBtnFace;
+  Result.Beautifier := Beauty;
+
 
   Cmd := TCmdBox.Create(Sheet);
   Cmd.Parent := Sheet;

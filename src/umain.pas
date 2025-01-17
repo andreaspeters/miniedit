@@ -10,7 +10,7 @@ uses
   LazUtils, LazUTF8, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
-  uCmdBox, Process, uinfo, ucmdboxthread;
+  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas;
 
 type
 
@@ -247,6 +247,7 @@ type
     procedure actJSONCompactExecute(Sender: TObject);
     procedure ActionListUpdate(AAction: TBasicAction; var Handled: boolean);
     procedure actJSONPrettyPrintExecute(Sender: TObject);
+    procedure actJumpFileTreeExecute(Sender: TObject);
     procedure actLanguageNoneExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
@@ -302,6 +303,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
+    procedure FormKeyPressDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure HelpAboutExecute(Sender: TObject);
@@ -526,6 +529,11 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@FormatJSON, [tomFullText]);
+end;
+
+procedure TfMain.actJumpFileTreeExecute(Sender: TObject);
+begin
+
 end;
 
 procedure TfMain.actLanguageNoneExecute(Sender: TObject);
@@ -786,7 +794,6 @@ begin
     ConfigObj.Font.Assign(FontDialog.Font);
     ConfigObj.Dirty := true;
   end;
-  FilesTree.Font.Assign(FontDialog.Font);
   FilesTree.Font.Size := FilesTree.Font.Size - 2;
 end;
 
@@ -1215,6 +1222,32 @@ begin
     MRU.AddToRecent(FileNames[i]);
   end;
 
+end;
+
+procedure TfMain.FormKeyPressDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var ActiveCtrl: TControl;
+    Ed: TEditor;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  if Key = VK_TAB then
+  begin
+    if ssShift in Shift then
+    begin
+      Ed := EditorFactory.CurrentEditor;
+      ActiveCtrl := Screen.ActiveControl;
+      writeln(ActiveCtrl.Name);
+      if Assigned(ActiveCtrl) then
+      begin
+        if (ActiveCtrl.Name = 'FilesTree') then
+          Ed.Sheet.SetFocus
+        else
+          FilesTree.SetFocus;
+      end;
+    end;
+  end;
 end;
 
 procedure TfMain.FormResize(Sender: TObject);

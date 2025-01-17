@@ -7,3 +7,4 @@
 - DEL: Remove toolbar for filetree.
 - ADD: Quick Search the selected text with F3.
 - ADD: Show CurrentDirectory in Statusbar.
+- ADD: use "SHIFT-TAB" to switch between filetree and editor.
