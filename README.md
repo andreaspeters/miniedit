@@ -23,4 +23,4 @@ my own Dev-Editor with all the features I need and all the shortcuts my fingers 
 
 ## Screenshot
 
-[MiniEdit](assets/screenshot.png)
+![MiniEdit](assets/screenshot.png)
