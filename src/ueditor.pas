@@ -13,7 +13,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread, ulsp;
 
 type
 
@@ -102,6 +102,7 @@ type
     FEditor: TEditor;
     FCmdBox: TCmdBox;
     FCmdBoxThread: TCmdBoxThread;
+    FLSP: TLSP;
   protected
     procedure DoShow; override;
 
@@ -109,6 +110,7 @@ type
     property Editor: TEditor read FEditor;
     property CmdBox: TCmdBox read FCmdBox;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
+    property LSP: TLSP read FLSP;
     //--//
   end;
 
@@ -124,6 +126,7 @@ type
     function GetCurrentEditor: TEditor;
     function GetCurrentCmdBox: TCmdBox;
     function GetCurrentCmdBoxThread: TCmdBoxThread;
+    function GetCurrentLSP: TLSP;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
     procedure SetOnNewEditor(AValue: TOnEditorEvent);
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
@@ -138,6 +141,7 @@ type
     property CurrentEditor: TEditor read GetCurrentEditor;
     property CurrentCmdBox: TCmdBox read GetCurrentCmdBox;
     property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
+    property CurrentLSP: TLSP read GetCurrentLSP;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
     property OnNewEditor: TOnEditorEvent read FOnNewEditor write SetOnNewEditor;
@@ -709,7 +713,13 @@ begin
   Result := nil;
   if (PageCount > 0) and (ActivePageIndex >= 0) then
     Result := TEditorTabSheet(ActivePage).CmdBoxThread;
+end;
 
+function TEditorFactory.GetCurrentLSP: TLSP;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).LSP;
 end;
 
 procedure TEditorFactory.SetOnBeforeClose(AValue: TOnBeforeClose);
@@ -777,6 +787,7 @@ var
   i: integer;
   DefaultAttr: TFontAttributes;
   Beauty: TSynBeautifier;
+  FileType: TSynCustomHighlighter;
 begin
   result := nil;
   if FileName <> EmptyStr then
@@ -812,6 +823,13 @@ begin
         Sheet.Editor.LoadFromfile(FileName);
         Sheet.Editor.SynAutoComplete.Editor := Sheet.Editor;
         Sheet.Editor.SynCompletion.Editor := Sheet.Editor;
+        FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
+        if Assigned(FileType) then
+        begin
+          Sheet.LSP.SetLanguage(FileType.LanguageName);
+          Sheet.LSP.Initialize(ExtractFilePath(FileName));
+          Sheet.LSP.OpenFile(FileName);
+        end;
         FWatcher.AddFile(FileName, Sheet.Editor);
         ActivePageIndex := i;
         exit;
@@ -852,6 +870,7 @@ begin
   Cmd.Font.Size := Cmd.Font.Size - 2;
   Sheet.FCmdBox := Cmd;
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;
+  Sheet.FLSP := TLSP.Create;
 
   Result.Font.Assign(ConfigObj.Font);
   DefaultAttr := ConfigObj.ReadFontAttributes('Schema/Default/Text/', FontAttributes());
@@ -889,6 +908,14 @@ begin
   end
   else
   begin
+    Result.Sheet.LSP.Start;
+    FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
+    if Assigned(FileType) then
+    begin
+      Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
+      Result.Sheet.LSP.Initialize(ExtractFilePath(FileName));
+      Result.Sheet.LSP.OpenFile(FileName);
+    end;
     Result.LoadFromfile(FileName);
     FWatcher.AddFile(FileName, Result);
   end;

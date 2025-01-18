@@ -14,7 +14,7 @@ uses
   //projects unit
   umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
-  JsonTools, iconloader, uinfo, ucmdboxthread;
+  JsonTools, iconloader, uinfo, ucmdboxthread, uLSP;
 
 {$R *.res}
 begin
