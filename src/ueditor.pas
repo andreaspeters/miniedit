@@ -812,6 +812,7 @@ begin
         Sheet.Editor.LoadFromfile(FileName);
         Sheet.Editor.SynAutoComplete.Editor := Sheet.Editor;
         Sheet.Editor.SynCompletion.Editor := Sheet.Editor;
+        ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
         FWatcher.AddFile(FileName, Sheet.Editor);
         ActivePageIndex := i;
         exit;
@@ -842,7 +843,6 @@ begin
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
 
-
   Cmd := TCmdBox.Create(Sheet);
   Cmd.Parent := Sheet;
   Cmd.Align := alBottom;
@@ -850,6 +850,7 @@ begin
   Cmd.EscapeCodeType := esctAnsi;
   Cmd.Font.Assign(ConfigObj.Font);
   Cmd.Font.Size := Cmd.Font.Size - 2;
+  Cmd.Visible := False;
   Sheet.FCmdBox := Cmd;
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;
 
@@ -889,6 +890,7 @@ begin
   end
   else
   begin
+    ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
     Result.LoadFromfile(FileName);
     FWatcher.AddFile(FileName, Result);
   end;

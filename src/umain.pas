@@ -35,6 +35,7 @@ type
     actFullScreen: TAction;
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
+    actOpenInHexEditor: TAction;
     actUnQuote: TAction;
     FileBrowseFolder: TAction;
     FileCloseFolder: TAction;
@@ -250,6 +251,7 @@ type
     procedure actJSONPrettyPrintExecute(Sender: TObject);
     procedure actJumpFileTreeExecute(Sender: TObject);
     procedure actLanguageNoneExecute(Sender: TObject);
+    procedure actOpenInHexEditorExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
@@ -546,6 +548,28 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.Highlighter := nil;
+end;
+
+procedure TfMain.actOpenInHexEditorExecute(Sender: TObject);
+var
+  run: TProcess;
+  Ed: TEditor;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  Ed := EditorFactory.CurrentEditor;
+
+  run := TProcess.Create(nil);
+  try
+    run.Executable := 'Hex';
+    run.CurrentDirectory := BrowsingPath;
+
+    run.Options := [poNoConsole, poNewProcessGroup];
+    run.Execute;
+  except
+    run.Free;
+  end;
 end;
 
 
@@ -856,6 +880,7 @@ begin
     exit;
 
   Cmd := EditorFactory.CurrentCmdBox;
+  Cmd.Visible := True;
 
   run := TProcess.Create(nil);
   try
@@ -1166,6 +1191,7 @@ begin
 
   splLeftBar.Visible := True;
   FilesTree.Font := Font;
+  FilesTree.Font.Size := FilesTree.Font.Size - 1;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

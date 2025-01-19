@@ -3442,6 +3442,11 @@ object fMain: TfMain
       OnExecute = actCompileRunExecute
       ShortCut = 120
     end
+    object actOpenInHexEditor: TAction
+      Caption = 'Open in Hex Editor'
+      OnExecute = actOpenInHexEditorExecute
+      ShortCut = 115
+    end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Left = 248
