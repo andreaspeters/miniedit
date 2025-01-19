@@ -794,7 +794,6 @@ begin
     ConfigObj.Font.Assign(FontDialog.Font);
     ConfigObj.Dirty := true;
   end;
-  FilesTree.Font.Size := FilesTree.Font.Size - 2;
 end;
 
 procedure TfMain.actFullNameToClipBoardExecute(Sender: TObject);
@@ -1081,6 +1080,9 @@ var
   ParamList: TstringList;
 
 begin
+  Font.Name := 'Arial';
+  Font.Size := 11;
+
   MRU := TMRUMenuManager.Create(Self);
   MRU.MenuItem := mnuOpenRecent;
   MRU.OnRecentFile := @RecentFileEvent;
@@ -1162,7 +1164,7 @@ begin
     FileNew.Execute;
 
   splLeftBar.Visible := True;
-  FilesTree.Font.Size := ConfigObj.Font.Size - 2;
+  FilesTree.Font := Font;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

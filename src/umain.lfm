@@ -2016,8 +2016,8 @@ object fMain: TfMain
     AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = Owner
     Left = 0
-    Height = 27
-    Top = 808
+    Height = 21
+    Top = 814
     Width = 1102
     Panels = <    
       item
@@ -2181,7 +2181,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 0
-    Height = 744
+    Height = 750
     Top = 64
     Width = 5
   end
@@ -2194,7 +2194,7 @@ object fMain: TfMain
     AnchorSideBottom.Control = StatusBar
     Cursor = crDefault
     Left = 0
-    Height = 744
+    Height = 750
     Top = 64
     Width = 1102
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2202,11 +2202,11 @@ object fMain: TfMain
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 744
+      Height = 750
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 744
+      ClientHeight = 750
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2215,14 +2215,17 @@ object fMain: TfMain
         AnchorSideBottom.Control = PairSplitterSide1
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 744
+        Height = 750
         Top = 0
         Width = 300
         Anchors = [akTop, akLeft, akRight, akBottom]
         DragMode = dmAutomatic
+        Font.Height = -11
+        Font.Name = 'Sans'
         HideSelection = False
         Images = dmMain.imgBookMark
         MultiSelect = True
+        ParentFont = False
         ReadOnly = True
         RightClickSelect = True
         RowSelect = True
@@ -2239,7 +2242,7 @@ object fMain: TfMain
     object PSSEditor: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 744
+      Height = 750
       Top = 0
       Width = 797
     end
