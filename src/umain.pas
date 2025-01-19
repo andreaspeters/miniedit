@@ -129,6 +129,7 @@ type
     pumTabs: TPopupMenu;
     PrintDialog1: TPrintDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
+    Separator1: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;

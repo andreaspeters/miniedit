@@ -275,7 +275,7 @@ msgstr ""
 
 #: tfmain.aclfoldernew.caption
 msgctxt "tfmain.aclfoldernew.caption"
-msgid "Create New Folder"
+msgid "New Folder"
 msgstr ""
 
 #: tfmain.actcloseafter.caption
@@ -478,7 +478,7 @@ msgid "Cut"
 msgstr ""
 
 #: tfmain.editdelete.caption
-msgid "&Delete"
+msgid "&Delete File"
 msgstr ""
 
 #: tfmain.editdelete.hint
@@ -648,6 +648,10 @@ msgstr ""
 
 #: tfmain.menuitem2.caption
 msgid "&Exit"
+msgstr ""
+
+#: tfmain.menuitem20.caption
+msgid "New File"
 msgstr ""
 
 #: tfmain.menuitem3.caption
