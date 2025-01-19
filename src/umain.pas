@@ -10,7 +10,7 @@ uses
   LazUtils, LazUTF8, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
-  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas;
+  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname;
 
 type
 
@@ -35,6 +35,7 @@ type
     actFullScreen: TAction;
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
+    aclFolderNew: TAction;
     actOpenInHexEditor: TAction;
     actUnQuote: TAction;
     FileBrowseFolder: TAction;
@@ -242,6 +243,7 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
+    procedure aclFolderNewExecute(Sender: TObject);
     procedure actCloseAfterExecute(Sender: TObject);
     procedure actCloseAllExceptThisExecute(Sender: TObject);
     procedure actCloseBeforeExecute(Sender: TObject);
@@ -999,6 +1001,33 @@ begin
   EditorFactory.CloseAfter
 end;
 
+procedure TfMain.aclFolderNewExecute(Sender: TObject);
+var Path: String;
+    CreateDirectory: TFCreateDirectory;
+begin
+  if FilesTree.Selected = nil then
+    Exit;
+
+  CreateDirectory := TFCreateDirectory.Create(Self);
+  if CreateDirectory.ShowModal = mrOk then
+  begin
+    Path := ExtractFilePath(GetSelectedFileTreePath)+PathDelim+CreateDirectory.DirectoryName;
+    if DirectoryExists(Path) then
+    begin
+      ShowMessage('Directory already exist');
+    end
+    else
+    begin
+      if CreateDir(Path) then
+        LoadDir(BrowsingPath)
+      else
+        ShowMessage('Could not create directory');
+    end;
+  end;
+
+
+end;
+
 procedure TfMain.actCloseBeforeExecute(Sender: TObject);
 begin
   EditorFactory.CloseBefore;
@@ -1012,7 +1041,6 @@ end;
 procedure TfMain.FileNewExecute(Sender: TObject);
 begin
   EditorFactory.AddEditor();
-
 end;
 
 procedure TfMain.FileOpenAccept(Sender: TObject);

@@ -10,3 +10,4 @@
 - ADD: use "SHIFT-TAB" to switch between filetree and editor.
 - ADD: Support to run Hex Editor (F4).
 - CHANGE: Only show CmdBox after run make (F9).
+- ADD: Popup Menu to the FileTree.

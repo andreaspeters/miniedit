@@ -55,7 +55,7 @@
 {"hash":147287488,"name":"tfmain.filesaveas.hint","sourcebytes":[83,97,118,101,32,97,115,32],"value":"Save as "},
 {"hash":363439,"name":"tfmain.editredo.caption","sourcebytes":[82,101,100,111],"value":"Redo"},
 {"hash":363439,"name":"tfmain.editredo.hint","sourcebytes":[82,101,100,111],"value":"Redo"},
-{"hash":179055749,"name":"tfmain.editdelete.caption","sourcebytes":[38,68,101,108,101,116,101],"value":"&Delete"},
+{"hash":148770533,"name":"tfmain.editdelete.caption","sourcebytes":[38,68,101,108,101,116,101,32,70,105,108,101],"value":"&Delete File"},
 {"hash":78392485,"name":"tfmain.editdelete.hint","sourcebytes":[68,101,108,101,116,101],"value":"Delete"},
 {"hash":21703,"name":"tfmain.filenew.caption","sourcebytes":[78,101,119],"value":"New"},
 {"hash":21703,"name":"tfmain.filenew.hint","sourcebytes":[78,101,119],"value":"New"},
@@ -122,5 +122,5 @@
 {"hash":189415987,"name":"tfmain.actunquote.caption","sourcebytes":[85,110,113,117,111,116,101,32,108,105,110,101,115],"value":"Unquote lines"},
 {"hash":480837,"name":"tfmain.actcompilerun.caption","sourcebytes":[110,111,110,101],"value":"none"},
 {"hash":265889698,"name":"tfmain.actopeninhexeditor.caption","sourcebytes":[79,112,101,110,32,105,110,32,72,101,120,32,69,100,105,116,111,114],"value":"Open in Hex Editor"},
-{"hash":252440018,"name":"tfmain.menuitem85.caption","sourcebytes":[67,114,101,97,116,101,32,78,101,119,32,70,111,108,100,101,114],"value":"Create New Folder"}
+{"hash":252440018,"name":"tfmain.aclfoldernew.caption","sourcebytes":[67,114,101,97,116,101,32,78,101,119,32,70,111,108,100,101,114],"value":"Create New Folder"}
 ]}

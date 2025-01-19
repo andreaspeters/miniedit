@@ -265,6 +265,19 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
+#: tfcreatedirectory.caption
+msgid "CreateDirectory"
+msgstr ""
+
+#: tfcreatedirectory.ledirectoryname.editlabel.caption
+msgid "Directory Name"
+msgstr ""
+
+#: tfmain.aclfoldernew.caption
+msgctxt "tfmain.aclfoldernew.caption"
+msgid "Create New Folder"
+msgstr ""
+
 #: tfmain.actcloseafter.caption
 msgid "Close all on the right"
 msgstr ""
@@ -688,10 +701,6 @@ msgstr ""
 #: tfmain.menuitem8.caption
 msgctxt "tfmain.menuitem8.caption"
 msgid "Find"
-msgstr ""
-
-#: tfmain.menuitem85.caption
-msgid "Create New Folder"
 msgstr ""
 
 #: tfmain.mnucleanrecent.caption

@@ -12,9 +12,9 @@ uses
   Forms, DefaultTranslator, cmdbox,
   printer4lazarus, SynEditPrintExtProcs,
   //projects unit
-  umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
-  ReplaceDialog, LazLogger,
-  JsonTools, iconloader, uinfo, ucmdboxthread;
+  umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange,
+  udglgoto, simplemrumanager, ReplaceDialog, LazLogger, JsonTools, iconloader,
+  uinfo, ucmdboxthread, udirectoryname;
 
 {$R *.res}
 begin
