@@ -213,6 +213,7 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
+    SynEdit1: TSynEdit;
     Timer1: TTimer;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
@@ -1294,6 +1295,7 @@ end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
 begin
+  //CheckSynchronize;
   if not EditorAvalaible then
     exit;
 

@@ -11,8 +11,10 @@ type
   private
     Language: String;
     Init: Boolean;
+    HoverSupport: Boolean;
     Connected: Boolean;
     FSocket: TSocket;
+    FileName: String;
     procedure Connect;
     function Send(Params: TJSONObject; const method: String): TJSONData;
     function ReceiveDataUntilZero:String;
@@ -20,9 +22,10 @@ type
     procedure Execute; override;
   public
     Port: Integer;
-    procedure Initialize(const FilePath: String);
-    procedure OpenFile(const FileName: String);
-    procedure Hover(const FileName: String; const Line, Character: Integer);
+    procedure Initialize(const FFileName: String);
+    procedure AddView(const FFileName: String);
+    procedure OpenFile(const FFileName: String);
+    procedure Hover(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
     constructor Create;
   end;
@@ -31,23 +34,48 @@ implementation
 
 constructor TLSP.Create;
 begin
-  inherited Create(True);
+  inherited Create(False);
   Init := False;
+  HoverSupport := False;
   FreeOnTerminate := False;
 end;
 
 procedure TLSP.Execute;
 var Response: String;
+    ResponseJSON: TJSONObject;
 begin
   try
     while not Terminated do
     begin
+      write('.');
       if not Connected then
         Connect;
       Response := ReceiveDataUntilZero;
       if Length(Response) > 0 then
+      begin
         writeln(Response);
-      sleep(10);
+        try
+          if GetJSON(Response).JSONType = jtObject then
+          begin
+            ResponseJSON := TJSONObject(GetJSON(Response));
+            if ResponseJSON.FindPath('result.capabilities') <> nil then
+            begin
+              Init := True;
+              AddView(FileName);
+            end;
+            if ResponseJSON.FindPath('result.capabilities.hoverProvider') <> nil then
+              HoverSupport := ResponseJSON.FindPath('result.capabilities.hoverProvider').AsBoolean;
+            if ResponseJSON.FindPath('error') <> nil then
+              if ResponseJSON.FindPath('error.code').AsInteger = 0 then
+                OpenFile(FileName);
+          end;
+        except
+          {$IFDEF UNIX}
+          writeln('JSON Error');
+          {$ENDIF}
+        end;
+      end;
+      sleep(100);
     end;
   except
     on E: Exception do
@@ -154,24 +182,56 @@ begin
   end;
 end;
 
-procedure TLSP.Initialize(const FilePath: String);
+procedure TLSP.Initialize(const FFileName: String);
 var Params: TJSONObject;
 begin
-  if (Init) or (Length(FilePath) <= 0) then
+  if (Length(FFileName) <= 0) then
     Exit;
+
+  FileName := FFileName;
 
   Params := TJSONObject.Create;
-  Params.Add('rootUri', 'file://'+FilePath);
+  Params.Add('rootUri', 'file://'+ExtractFilePath(FileName));
 
   Send(Params, 'initialize');
-  Init := True;
 end;
 
-procedure TLSP.OpenFile(const FileName: String);
+
+
+procedure TLSP.AddView(const FFileName: String);
+var Params: TJSONObject;
+    Event: TJSONObject;
+    Added: TJSONArray;
+    FolderObject: TJSONObject;
+begin
+  if (Length(FFileName) <= 0) then
+    Exit;
+
+  FileName := FFileName;
+
+  Params := TJSONObject.Create;
+  Event := TJSONObject.Create;
+  Added := TJSONArray.Create;
+
+  // Einen WorkspaceFolder hinzufügen
+  FolderObject := TJSONObject.Create;
+  FolderObject.Add('uri', 'file://'+ExtractFilePath(FileName));
+  FolderObject.Add('name', 'lsp');
+
+  Added.Add(FolderObject);
+  Event.Add('added', Added);
+  Params.Add('event', Event);
+
+  Send(Params, 'workspace/didChangeWorkspaceFolders');
+end;
+
+procedure TLSP.OpenFile(const FFileName: String);
 var Params, TextDoc: TJSONObject;
 begin
-  if not (Init) or (Length(FileName) <= 0) then
+  if Length(FFileName) <= 0 then
     Exit;
+
+  FileName := FFileName;
 
   Params := TJSONObject.Create;
   TextDoc := TJSONObject.Create;
@@ -183,10 +243,10 @@ begin
   Send(Params, 'textDocument/didOpen');
 end;
 
-procedure TLSP.Hover(const FileName: String; const Line, Character: Integer);
+procedure TLSP.Hover(const Line, Character: Integer);
 var Params, TextDoc, Position: TJSONObject;
 begin
-  if not (Init) or (Length(FileName) <= 0) then
+  if Length(FileName) <= 0 then
     Exit;
 
   Params := TJSONObject.Create;

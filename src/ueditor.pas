@@ -132,6 +132,7 @@ type
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     function CreateEmptyFile(AFileName: TFileName): boolean;
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
+    procedure EditorOnDblClick(Sender: TObject);
   protected
     procedure DoChange; override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -826,8 +827,9 @@ begin
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
+          Sheet.LSP.Start;
           Sheet.LSP.SetLanguage(FileType.LanguageName);
-          Sheet.LSP.Initialize(ExtractFilePath(FileName));
+          Sheet.LSP.Initialize(FileName);
           Sheet.LSP.OpenFile(FileName);
         end;
         FWatcher.AddFile(FileName, Sheet.Editor);
@@ -859,6 +861,7 @@ begin
   Result.Font.Quality := fqCleartypeNatural;
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
+  Result.OnDblClick := @EditorOnDblClick;
 
 
   Cmd := TCmdBox.Create(Sheet);
@@ -913,7 +916,7 @@ begin
     if Assigned(FileType) then
     begin
       Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
-      Result.Sheet.LSP.Initialize(ExtractFilePath(FileName));
+      Result.Sheet.LSP.Initialize(FileName);
       Result.Sheet.LSP.OpenFile(FileName);
     end;
     Result.LoadFromfile(FileName);
@@ -925,6 +928,17 @@ begin
   if Assigned(FOnNewEditor) then
     FOnNewEditor(Result);
 
+end;
+
+
+procedure TEditorFactory.EditorOnDblClick(Sender: TObject);
+var Ed: TEditor;
+begin
+  Ed := GetCurrentEditor;
+  if not Assigned(Ed) then
+    Exit;
+
+  Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
 end;
 
 function TEditorFactory.CloseEditor(Editor: TEditor; Force: boolean = False): boolean;
