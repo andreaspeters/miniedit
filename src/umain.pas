@@ -63,6 +63,7 @@ type
     ExportRTFToClipBoard: TAction;
     ExportRTFToFile: TAction;
     FilesTree: TTreeView;
+    imgListSmall: TImageList;
     MenuItem28: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
@@ -148,7 +149,7 @@ type
     EditUndo: TEditUndo;
     FileOpen: TFileOpen;
     FileSaveAs: TFileSaveAs;
-    imgList: TImageList;
+    imgListBig: TImageList;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
@@ -1109,7 +1110,7 @@ begin
   EditorFactory.OnBeforeClose := @BeforeCloseEditor;
   EditorFactory.OnNewEditor := @NewEditor;
   EditorFactory.OnContextPopup := @ContextPopup;
-  EditorFactory.Images := imgList;
+  EditorFactory.Images := imgListBig;
   EditorFactory.Parent := PSSEditor;
   EditorFactory.Height := PSSEditor.Height;
   EditorFactory.Width  := PSSEditor.Width;
