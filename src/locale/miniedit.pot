@@ -690,6 +690,10 @@ msgctxt "tfmain.menuitem8.caption"
 msgid "Find"
 msgstr ""
 
+#: tfmain.menuitem85.caption
+msgid "Create New Folder"
+msgstr ""
+
 #: tfmain.mnucleanrecent.caption
 msgid "Clean recent file list"
 msgstr ""

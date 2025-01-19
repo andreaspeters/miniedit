@@ -66,6 +66,9 @@ type
     FilesTree: TTreeView;
     imgListSmall: TImageList;
     MenuItem28: TMenuItem;
+    MenuItem29: TMenuItem;
+    MenuItem84: TMenuItem;
+    MenuItem85: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
@@ -120,6 +123,7 @@ type
     mnuTabs: TMenuItem;
     PairSplitter1: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
+    pumFileTree: TPopupMenu;
     PSSEditor: TPairSplitterSide;
     pumTabs: TPopupMenu;
     PrintDialog1: TPrintDialog;
@@ -224,6 +228,9 @@ type
     ToolButton14: TToolButton;
     ToolButton15: TToolButton;
     ToolButton16: TToolButton;
+    ToolButton17: TToolButton;
+    ToolButton18: TToolButton;
+    ToolButton19: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     tbbClose: TToolButton;
@@ -256,6 +263,7 @@ type
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
+    procedure EditDeleteExecute(Sender: TObject);
     procedure FileBrowseFolderExecute(Sender: TObject);
     procedure FileCloseFolderExecute(Sender: TObject);
     procedure FileReloadFolderExecute(Sender: TObject);
@@ -332,6 +340,7 @@ type
     procedure StatusBarResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CliParams(aParams: TStringList);
+    function GetSelectedFileTreePath:String;
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -624,10 +633,56 @@ begin
   Ed.TextOperation(@ExtractQuotedStr, [tomLines]);
 end;
 
+procedure TfMain.EditDeleteExecute(Sender: TObject);
+var Path: String;
+begin
+  if FilesTree.Selected = nil then
+    Exit;
+
+  Path := GetSelectedFileTreePath;
+
+  if MessageDlg('Sure you want delete this file?', mtConfirmation, [mbOK, mbCancel], 0) = mrOK then
+  begin
+    if FileExists(Path) then
+    begin
+      if DeleteFile(Path) then
+        LoadDir(BrowsingPath)
+      else
+        ShowMessage('Could not delete file.');
+    end
+    else
+      ShowMessage('File does not exist.');
+  end;
+end;
+
+function TfMain.GetSelectedFileTreePath:String;
+var
+  Node: TTreeNode;
+  Path: string;
+begin
+  if FilesTree.Selected = nil then
+    Exit;
+
+  Node := FilesTree.Selected;
+  Path := Node.Text;
+
+  while Node.Parent <> nil do
+  begin
+    Node := Node.Parent;
+    Path := Node.Text + PathDelim + Path;
+  end;
+
+  Result := BrowsingPath+PathDelim+Path;
+end;
+
+
 procedure TfMain.FileBrowseFolderExecute(Sender: TObject);
 var
   Ed: TEditor;
 begin
+  if not EditorAvalaible then
+    exit;
+
   Ed := EditorFactory.CurrentEditor;
   LoadDir(ExtractFileDir(Ed.FileName));
 end;
