@@ -849,7 +849,7 @@ object TFInfo: TTFInfo
     }
   end
   object Label1: TLabel
-    Left = 200
+    Left = 224
     Height = 55
     Top = 40
     Width = 152
@@ -867,7 +867,6 @@ object TFInfo: TTFInfo
     Lines.Strings = (
       'Special thanks to: My Family.'
       ''
-      ''
       'This Software is provided under the term of EUPL:'
       'https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12'
       ''
@@ -881,22 +880,22 @@ object TFInfo: TTFInfo
   end
   object Label2: TLabel
     Left = 224
-    Height = 25
+    Height = 19
     Top = 104
-    Width = 218
+    Width = 167
     Caption = 'by Andreas Peters (DC6AP)'
   end
   object Label3: TLabel
     Left = 408
-    Height = 25
+    Height = 19
     Top = 64
-    Width = 60
+    Width = 47
     Caption = 'Version'
   end
   object BPDefaultButtons: TButtonPanel
     Left = 6
-    Height = 49
-    Top = 370
+    Height = 44
+    Top = 375
     Width = 513
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -974,9 +973,9 @@ object TFInfo: TTFInfo
   end
   object LGithubDonation: TLabel
     Left = 224
-    Height = 25
+    Height = 19
     Top = 160
-    Width = 248
+    Width = 184
     Caption = 'Please Donate a small amount'
     Font.Color = clBlue
     ParentFont = False
@@ -984,9 +983,9 @@ object TFInfo: TTFInfo
   end
   object LFPSourceCode: TLabel
     Left = 224
-    Height = 25
+    Height = 19
     Top = 208
-    Width = 174
+    Width = 129
     Caption = 'MiniEdit Source Code'
     Font.Color = clBlue
     ParentFont = False

@@ -562,7 +562,8 @@ begin
 
   run := TProcess.Create(nil);
   try
-    run.Executable := 'Hex';
+    run.Executable := '/home/andreas/bin/Hex';
+    run.Parameters.Add(Ed.FileName);
     run.CurrentDirectory := BrowsingPath;
 
     run.Options := [poNoConsole, poNewProcessGroup];
