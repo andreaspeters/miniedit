@@ -1,0 +1,42 @@
+object FCreateDirectory: TFCreateDirectory
+  Left = 502
+  Height = 142
+  Top = 31
+  Width = 312
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'CreateDirectory'
+  ClientHeight = 142
+  ClientWidth = 312
+  OnShow = FormShow
+  object LEDirectoryName: TLabeledEdit
+    Left = 24
+    Height = 36
+    Top = 32
+    Width = 264
+    EditLabel.Height = 19
+    EditLabel.Width = 264
+    EditLabel.Caption = 'Directory Name'
+    TabOrder = 0
+    OnChange = LEDirectoryNameChange
+  end
+  object BPDefaultButtons: TButtonPanel
+    Left = 6
+    Height = 44
+    Top = 92
+    Width = 300
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.Enabled = False
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+end
