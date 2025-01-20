@@ -1,5 +1,5 @@
 LazRGBGraphics
 BGRABitmap
 BGRAControls
-CmdBox
+CmdLine
 HtmlViewer

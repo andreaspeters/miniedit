@@ -30,6 +30,29 @@ object FLSPMessage: TFLSPMessage
     PrintScale = 1
     Align = alClient
     TabOrder = 0
+    Visible = False
     OnMouseMove = FormMouseMove
+  end
+  object VLECompletion: TValueListEditor
+    Left = 0
+    Height = 288
+    Top = 0
+    Width = 814
+    Align = alClient
+    AutoEdit = False
+    Color = clSkyBlue
+    DefaultColWidth = 200
+    FixedCols = 0
+    GridLineWidth = 0
+    RowCount = 1
+    TabOrder = 1
+    Visible = False
+    OnKeyDown = VLECompletionKeyDown
+    DisplayOptions = [doAutoColResize, doKeyColFixed]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goAlwaysShowEditor, goThumbTracking, goCellHints]
+    ColWidths = (
+      200
+      612
+    )
   end
 end

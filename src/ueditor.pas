@@ -133,6 +133,7 @@ type
     function CreateEmptyFile(AFileName: TFileName): boolean;
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnDblClick(Sender: TObject);
+    procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure DoChange; override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -836,6 +837,7 @@ begin
           Sheet.LSP.Initialize(ExtractFilePath(FileName));
           Sheet.LSP.OpenFile(FileName);
           Sheet.Editor.OnDblClick := @EditorOnDblClick;
+          Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
         FWatcher.AddFile(FileName, Sheet.Editor);
@@ -868,6 +870,7 @@ begin
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
   Result.OnDblClick := @EditorOnDblClick;
+  Result.OnKeyDown := @EditorOnKeyDown;
 
   Cmd := TCmdBox.Create(Sheet);
   Cmd.Parent := Sheet;
@@ -946,6 +949,21 @@ begin
     Exit;
 
   Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
+end;
+
+
+procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var Ed: TEditor;
+begin
+  if Key = VK_OEM_PERIOD then
+  begin
+    Ed := GetCurrentEditor;
+    if not Assigned(Ed) then
+      Exit;
+
+    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX);
+  end;
 end;
 
 function TEditorFactory.CloseEditor(Editor: TEditor; Force: boolean = False): boolean;

@@ -1431,6 +1431,17 @@ begin
       Message.Show;
       EditorFactory.CurrentLSP.Message := '';
     end;
+
+    if EditorFactory.CurrentLSP.MessageList.Count > 0 then
+    begin
+      MousePos := Mouse.CursorPos;
+      Message := TFLSPMessage.Create(Self);
+      Message.Top := EditorFactory.CurrentEditor.CaretYPix + Top;
+      Message.Left := EditorFactory.CurrentEditor.CaretXPix + Left;
+      Message.MessageList := EditorFactory.CurrentLSP.MessageList;
+      Message.Show;
+      EditorFactory.CurrentLSP.MessageList.Clear;
+    end;
 end;
 
 procedure TfMain.actLowerCaseExecute(Sender: TObject);

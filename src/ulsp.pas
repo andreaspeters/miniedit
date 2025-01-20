@@ -27,11 +27,13 @@ type
     ServerExec: String;
     ServerParameter: TStringList;
     Message: String;
+    MessageList: TStringList;
     procedure Initialize(const AFilePath: String);
     procedure Initialized;
     procedure AddView(const AFileName: String);
     procedure OpenFile(const AFileName: String);
     procedure Hover(const Line, Character: Integer);
+    procedure Completion(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
     constructor Create;
   end;
@@ -44,12 +46,14 @@ begin
   Init := False;
   HoverSupport := False;
   FreeOnTerminate := False;
+  MessageList := TStringList.Create;
   ServerParameter := TStringList.Create;
 end;
 
 procedure TLSP.Execute;
-var Response: String;
+var Response, Key, Value: String;
     ResponseJSON: TJSONObject;
+    i: Integer;
 begin
   try
     while (not Terminated) do
@@ -63,6 +67,7 @@ begin
         try
           if GetJSON(Response).JSONType = jtObject then
           begin
+            //writeln(Response);
             ResponseJSON := TJSONObject(GetJSON(Response));
             if ResponseJSON.FindPath('result.capabilities') <> nil then
             begin
@@ -77,6 +82,16 @@ begin
                 OpenFile(FileName);
             if ResponseJSON.FindPath('result.contents.value') <> nil then
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
+            if ResponseJSON.FindPath('result.items') <> nil then
+            begin
+              if ResponseJSON.FindPath('result.items').Count > 0 then
+                for i := 0 to ResponseJSON.FindPath('result.items').Count - 1 do
+                begin
+                  Key := ResponseJSON.FindPath('result.items').Items[i].FindPath('label').AsString;
+                  Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
+                  MessageList.Add(Key + '=' + Value);
+                end;
+            end;
           end;
         except
           on E: Exception do
@@ -323,6 +338,28 @@ begin
   Params.Add('position', Position);
 
   Send(Params, 'textDocument/hover');
+end;
+
+procedure TLSP.Completion(const Line, Character: Integer);
+var Params, TextDoc, Position, Context: TJSONObject;
+begin
+  if Length(FileName) <= 0 then
+    Exit;
+
+  Params := TJSONObject.Create;
+  TextDoc := TJSONObject.Create;
+  Position := TJSONObject.Create;
+  Context := TJSONObject.Create;
+  TextDoc.Add('uri', 'file://'+FileName);
+  Position.Add('line', Line - 1 );
+  Position.Add('character', Character - 1);
+  Context.Add('triggerKind', 1);
+
+  Params.Add('textDocument', TextDoc);
+  Params.Add('position', Position);
+  Params.Add('context', Context);
+
+  Send(Params, 'textDocument/completion');
 end;
 
 function TLSP.Send(Params: TJSONObject; const method: String): TJSONData;
