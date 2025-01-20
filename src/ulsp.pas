@@ -36,18 +36,30 @@ type
     procedure Completion(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
     constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
 
 constructor TLSP.Create;
 begin
-  inherited Create(False);
+  inherited Create(True);
   Init := False;
+  Stop := False;
   HoverSupport := False;
-  FreeOnTerminate := False;
+  FreeOnTerminate := True;
   MessageList := TStringList.Create;
   ServerParameter := TStringList.Create;
+end;
+
+destructor TLSP.Destroy;
+begin
+  Connected := False;
+  if FSocket < 0 then
+    fpShutdown(FSocket, SHUT_RDWR);
+
+  MessageList.Free;
+  inherited Destroy;
 end;
 
 procedure TLSP.Execute;
@@ -63,11 +75,9 @@ begin
       Response := ReceiveDataUntilZero;
       if Length(Response) > 0 then
       begin
-        //writeln(Response);
         try
           if GetJSON(Response).JSONType = jtObject then
           begin
-            //writeln(Response);
             ResponseJSON := TJSONObject(GetJSON(Response));
             if ResponseJSON.FindPath('result.capabilities') <> nil then
             begin
@@ -112,8 +122,7 @@ begin
       {$ENDIF}
     end;
   end;
-
-  Free;
+  WaitFor;
 end;
 
 function TLSP.ReceiveDataUntilZero:String;
@@ -129,6 +138,8 @@ begin
   Result := '';
   Line := '';
   Found := False;
+  ContentLength := 0;
+  BytesRead := 0;
   repeat
     BytesRead := fpRead(FSocket, Buffer, 1);
     if BytesRead > 0 then
@@ -149,7 +160,10 @@ begin
         Line := Line + Chr(Buffer);
       end;
     end;
-  until Found;
+  until (BytesRead = 0) or (Found);
+
+  if ContentLength = 0 then
+    Exit;
 
   i := 0;
   Line := '';
@@ -161,6 +175,7 @@ begin
     end;
     inc(i);
   until i-2 = ContentLength;
+
   if Length(Line) > 0 then
   begin
     Result := Line;

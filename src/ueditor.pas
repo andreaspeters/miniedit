@@ -400,7 +400,7 @@ begin
       if FDiskEncoding <> EncodingUTF8 then
         s:= ConvertEncodingFromUTF8(S, FDiskEncoding, b);
 
-      fStream:= TFileStream.Create(FFileName, fmOpenWrite+fmCreate , fmShareExclusive);
+      fStream:= TFileStream.Create(FFileName, fmOpenWrite+fmCreate);
       try
         fStream.Write(S[1], Length(s));
       finally
@@ -829,10 +829,9 @@ begin
         if Assigned(FileType) then
         begin
           if Sheet.FLSP = nil then
-          begin
             Sheet.FLSP := TLSP.Create;
-            Sheet.LSP.Start;
-          end;
+
+          Sheet.LSP.Start;
           Sheet.LSP.SetLanguage(FileType.LanguageName);
           Sheet.LSP.Initialize(ExtractFilePath(FileName));
           Sheet.LSP.OpenFile(FileName);
@@ -983,6 +982,7 @@ begin
   if (not Cancel) or Force then
   begin
     Sheet := Editor.FSheet;
+    Sheet.LSP.Terminate;
     Editor.PopupMenu := nil;
     FWatcher.RemoveFile(Editor.FileName);
     Application.ReleaseComponent(Editor);

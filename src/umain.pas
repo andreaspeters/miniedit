@@ -1420,7 +1420,8 @@ begin
     end;
   end;
 
-  if EditorFactory.CurrentLSP <> nil then
+  if Assigned(EditorFactory.CurrentLSP) then
+  begin
     if Length(EditorFactory.CurrentLSP.Message) > 0 then
     begin
       MousePos := Mouse.CursorPos;
@@ -1436,8 +1437,8 @@ begin
     begin
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Top := EditorFactory.CurrentEditor.CaretYPix + 130 +  Top;
-      Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 20 + Left;
+      Message.Top := EditorFactory.CurrentEditor.CaretYPix + 132 +  Top;
+      Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 15 + Left;
       Message.MessageList := EditorFactory.CurrentLSP.MessageList;
       if Message.ShowModal = mrOk then
       begin
@@ -1446,6 +1447,7 @@ begin
       end;
       EditorFactory.CurrentLSP.MessageList.Clear;
     end;
+  end;
 end;
 
 procedure TfMain.actLowerCaseExecute(Sender: TObject);

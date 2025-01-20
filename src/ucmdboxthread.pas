@@ -19,6 +19,7 @@ type
     OutputString: string;
     Command: TProcess;
     constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -29,6 +30,11 @@ constructor TCmdBoxThread.Create;
 begin
   inherited Create(True);
   FreeOnTerminate := False;
+end;
+
+destructor TCmdBoxThread.Destroy;
+begin
+  inherited Destroy;
 end;
 
 procedure TCmdBoxThread.Execute;
@@ -44,6 +50,7 @@ begin
       SetString(Line, PAnsiChar(@FBuffer[0]), BytesRead);
       OutputString := OutputString + Line;
     end;
+    sleep(1000);
   end;
 end;
 
