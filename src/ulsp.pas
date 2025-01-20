@@ -5,17 +5,19 @@ unit uLSP;
 interface
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, Sockets, netdb, baseunix, RegExpr, Process;
+  Classes, SysUtils, fpjson, jsonparser, Sockets, netdb, baseunix, RegExpr, Process,
+  syncobjs;
 type
   TLSP = class(TThread)
   private
     Language: String;
     Init: Boolean;
-    HoverSupport: Boolean;
     Connected: Boolean;
     FSocket: TSocket;
     FileName: String;
     FilePath: String;
+    FEvent: PRTLEvent;
+    Pause: Boolean;
     procedure Connect;
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
@@ -35,6 +37,8 @@ type
     procedure Hover(const Line, Character: Integer);
     procedure Completion(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
+    procedure Suspend;
+    procedure Resume;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -45,11 +49,11 @@ constructor TLSP.Create;
 begin
   inherited Create(True);
   Init := False;
-  Stop := False;
-  HoverSupport := False;
   FreeOnTerminate := True;
   MessageList := TStringList.Create;
   ServerParameter := TStringList.Create;
+  FEvent := RTLEventCreate;
+  Pause := False;
 end;
 
 destructor TLSP.Destroy;
@@ -72,6 +76,10 @@ begin
     begin
       if not Connected then
         Connect;
+
+      if Pause then
+        RTLEventWaitFor(FEvent);
+
       Response := ReceiveDataUntilZero;
       if Length(Response) > 0 then
       begin
@@ -84,14 +92,16 @@ begin
               Init := True;
               Initialized;
               AddView(FileName);
+              Suspend;
             end;
-            if ResponseJSON.FindPath('result.capabilities.hoverProvider') <> nil then
-              HoverSupport := ResponseJSON.FindPath('result.capabilities.hoverProvider').AsBoolean;
             if ResponseJSON.FindPath('error') <> nil then
               if ResponseJSON.FindPath('error.code').AsInteger = 0 then
                 OpenFile(FileName);
             if ResponseJSON.FindPath('result.contents.value') <> nil then
+            begin
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
+              Suspend;
+            end;
             if ResponseJSON.FindPath('result.items') <> nil then
             begin
               if ResponseJSON.FindPath('result.items').Count > 0 then
@@ -101,6 +111,7 @@ begin
                   Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
                   MessageList.Add(Key + '=' + Value);
                 end;
+                Suspend;
             end;
           end;
         except
@@ -123,6 +134,17 @@ begin
     end;
   end;
   WaitFor;
+end;
+
+procedure TLSP.Suspend;
+begin
+  Pause := True;
+end;
+
+procedure TLSP.Resume;
+begin
+  Pause := False;
+  RTLEventSetEvent(FEvent);
 end;
 
 function TLSP.ReceiveDataUntilZero:String;

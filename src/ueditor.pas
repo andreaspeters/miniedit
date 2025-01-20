@@ -947,6 +947,7 @@ begin
   if not Assigned(Ed) then
     Exit;
 
+  Ed.Sheet.LSP.Resume;
   Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
 end;
 
@@ -961,6 +962,7 @@ begin
     if not Assigned(Ed) then
       Exit;
 
+    Ed.Sheet.LSP.Resume;
     Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX);
   end;
 end;

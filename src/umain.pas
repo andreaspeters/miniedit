@@ -1424,6 +1424,7 @@ begin
   begin
     if Length(EditorFactory.CurrentLSP.Message) > 0 then
     begin
+      EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
       Message.Top := MousePos.Y - 5;
@@ -1435,6 +1436,7 @@ begin
 
     if EditorFactory.CurrentLSP.MessageList.Count > 0 then
     begin
+      EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
       Message.Top := EditorFactory.CurrentEditor.CaretYPix + 132 +  Top;
