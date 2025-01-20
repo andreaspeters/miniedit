@@ -7,41 +7,29 @@ object FLSPMessage: TFLSPMessage
   Caption = 'FLSPMessage'
   ClientHeight = 288
   ClientWidth = 814
+  Color = clSkyBlue
   DefaultMonitor = dmDesktop
   KeyPreview = True
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnShow = FormShow
-  object BPDefaultButtons: TButtonPanel
-    Left = 6
-    Height = 49
-    Top = 233
-    Width = 802
-    OKButton.Name = 'OKButton'
-    OKButton.DefaultCaption = True
-    HelpButton.Name = 'HelpButton'
-    HelpButton.DefaultCaption = True
-    CloseButton.Name = 'CloseButton'
-    CloseButton.DefaultCaption = True
-    CloseButton.OnClick = CloseButtonClick
-    CancelButton.Name = 'CancelButton'
-    CancelButton.DefaultCaption = True
-    TabOrder = 0
-    ShowButtons = [pbClose]
-  end
   object HtmlViewer: THtmlViewer
-    Left = 6
-    Height = 222
-    Top = 8
-    Width = 808
-    BorderStyle = htFocused
-    DefBackground = clForm
+    Left = 0
+    Height = 288
+    Top = 0
+    Width = 814
+    BorderStyle = htNone
+    DefBackground = clSkyBlue
     HistoryMaxCount = 0
+    HtOptions = [htOverLinksActive, htShowDummyCaret, htNoLinkHilite, htNoFocusRect]
     NoSelect = False
     PrintMarginBottom = 2
     PrintMarginLeft = 2
     PrintMarginRight = 2
     PrintMarginTop = 2
     PrintScale = 1
-    TabOrder = 1
+    Align = alClient
+    TabOrder = 0
+    OnMouseMove = FormMouseMove
   end
 end

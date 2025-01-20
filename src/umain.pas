@@ -1425,8 +1425,8 @@ begin
     begin
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Top := MousePos.Y;
-      Message.Left := MousePos.X;
+      Message.Top := MousePos.Y-5;
+      Message.Left := MousePos.X-5;
       Message.Message := EditorFactory.CurrentLSP.Message;
       Message.Show;
       EditorFactory.CurrentLSP.Message := '';

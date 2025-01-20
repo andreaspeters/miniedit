@@ -25,7 +25,7 @@ type
   public
     ServerPort: Integer;
     ServerExec: String;
-    ServerParameter: String;
+    ServerParameter: TStringList;
     Message: String;
     procedure Initialize(const AFilePath: String);
     procedure Initialized;
@@ -44,6 +44,7 @@ begin
   Init := False;
   HoverSupport := False;
   FreeOnTerminate := False;
+  ServerParameter := TStringList.Create;
 end;
 
 procedure TLSP.Execute;
@@ -78,9 +79,12 @@ begin
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
           end;
         except
-          {$IFDEF UNIX}
-          writeln('JSON Error');
-          {$ENDIF}
+          on E: Exception do
+          begin
+            {$IFDEF UNIX}
+            writeln('JSON Error: ' + E.Message);
+            {$ENDIF}
+          end;
         end;
       end;
       sleep(100);
@@ -149,20 +153,18 @@ begin
 end;
 
 procedure TLSP.RunLSPServer;
-var
-  run: TProcess;
+var run: TProcess;
 begin
   run := TProcess.Create(nil);
   try
     run.Executable := ServerExec;
-    run.Parameters.Add(ServerParameter);
+    run.Parameters := ServerParameter;
 
-    run.Options := [poNoConsole, poNewProcessGroup];
+    run.Options := [poNoConsole];
     run.Execute;
   except
-    run.Free;
   end;
-  Sleep(100);
+  Sleep(200);
 end;
 
 procedure TLSP.Connect;
@@ -188,7 +190,7 @@ begin
   begin
     //Disconnect;
     {$IFDEF UNIX}
-    write('Failed to connect to LSP server');
+    write('Failed to connect to LSP server: ' + IntToStr(ServerPort));
     {$ENDIF}
     Exit;
   end;
@@ -206,7 +208,15 @@ begin
      Language := 'go';
      ServerPort := 37374;
      ServerExec := 'gopls';
-     ServerParameter := '-listen=:37374';
+     ServerParameter.Add('-listen=:' + IntToStr(ServerPort));
+    end;
+    'python':
+    begin
+     Language := 'python';
+     ServerPort := 37375;
+     ServerExec := 'pylsp';
+     ServerParameter.Add('--tcp');
+     ServerParameter.Add('--port=' + IntToStr(ServerPort));
     end
   else
   end;
