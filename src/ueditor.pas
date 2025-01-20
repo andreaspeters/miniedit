@@ -827,11 +827,17 @@ begin
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
-          Sheet.LSP.Start;
+          if Sheet.FLSP = nil then
+          begin
+            Sheet.FLSP := TLSP.Create;
+            Sheet.LSP.Start;
+          end;
           Sheet.LSP.SetLanguage(FileType.LanguageName);
-          Sheet.LSP.Initialize(FileName);
+          Sheet.LSP.Initialize(ExtractFilePath(FileName));
           Sheet.LSP.OpenFile(FileName);
+          Sheet.Editor.OnDblClick := @EditorOnDblClick;
         end;
+        ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
         FWatcher.AddFile(FileName, Sheet.Editor);
         ActivePageIndex := i;
         exit;
@@ -863,7 +869,6 @@ begin
   Result.Beautifier := Beauty;
   Result.OnDblClick := @EditorOnDblClick;
 
-
   Cmd := TCmdBox.Create(Sheet);
   Cmd.Parent := Sheet;
   Cmd.Align := alBottom;
@@ -871,6 +876,7 @@ begin
   Cmd.EscapeCodeType := esctAnsi;
   Cmd.Font.Assign(ConfigObj.Font);
   Cmd.Font.Size := Cmd.Font.Size - 2;
+  Cmd.Visible := False;
   Sheet.FCmdBox := Cmd;
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;
   Sheet.FLSP := TLSP.Create;
@@ -916,9 +922,10 @@ begin
     if Assigned(FileType) then
     begin
       Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
-      Result.Sheet.LSP.Initialize(FileName);
+      Result.Sheet.LSP.Initialize(ExtractFilePath(FileName));
       Result.Sheet.LSP.OpenFile(FileName);
     end;
+    ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
     Result.LoadFromfile(FileName);
     FWatcher.AddFile(FileName, Result);
   end;

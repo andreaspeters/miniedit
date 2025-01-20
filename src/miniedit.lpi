@@ -164,31 +164,43 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="11">
       <Item1>
-        <PackageName Value="cmdbox"/>
+        <PackageName Value="FrameViewer09"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEditDsgn"/>
+        <PackageName Value="fpc_markdown"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="richmemo_design"/>
       </Item3>
       <Item4>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="richmemopackage"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="cmdbox"/>
       </Item5>
       <Item6>
-        <PackageName Value="SynEdit"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="SynEditDsgn"/>
       </Item6>
       <Item7>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LazUtils"/>
       </Item7>
+      <Item8>
+        <PackageName Value="Printer4Lazarus"/>
+      </Item8>
+      <Item9>
+        <PackageName Value="FCL"/>
+      </Item9>
+      <Item10>
+        <PackageName Value="SynEdit"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item10>
+      <Item11>
+        <PackageName Value="LCL"/>
+      </Item11>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="22">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -298,6 +310,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLSP"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="ushowlspmessage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FLSPMessage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit21>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

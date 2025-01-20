@@ -265,6 +265,15 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
+#: tflspmessage.caption
+msgid "FLSPMessage"
+msgstr ""
+
+#: tfmain.aclfoldernew.caption
+msgctxt "tfmain.aclfoldernew.caption"
+msgid "New Folder"
+msgstr ""
+
 #: tfmain.actcloseafter.caption
 msgid "Close all on the right"
 msgstr ""
@@ -345,6 +354,10 @@ msgstr ""
 
 #: tfmain.actlowercase.caption
 msgid "lowercase"
+msgstr ""
+
+#: tfmain.actopeninhexeditor.caption
+msgid "Open in Hex Editor"
 msgstr ""
 
 #: tfmain.actpathtoclipboard.caption
@@ -461,7 +474,7 @@ msgid "Cut"
 msgstr ""
 
 #: tfmain.editdelete.caption
-msgid "&Delete"
+msgid "&Delete File"
 msgstr ""
 
 #: tfmain.editdelete.hint
@@ -571,6 +584,10 @@ msgstr ""
 
 #: tfmain.fileopenfolder.caption
 msgid "Open Folder…"
+msgstr ""
+
+#: tfmain.fileopenfolder.hint
+msgid "Open Folder"
 msgstr ""
 
 #: tfmain.filereload.caption
@@ -776,6 +793,15 @@ msgstr ""
 
 #: tfmain.toolbutton14.hint
 msgctxt "tfmain.toolbutton14.hint"
+msgid "Reload Folder"
+msgstr ""
+
+#: tfmain.toolbutton16.hint
+msgid "Run Make"
+msgstr ""
+
+#: tfmain.toolbutton17.hint
+msgctxt "tfmain.toolbutton17.hint"
 msgid "Reload Folder"
 msgstr ""
 

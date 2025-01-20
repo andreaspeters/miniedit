@@ -5,7 +5,7 @@ unit uLSP;
 interface
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, Sockets, netdb, baseunix, RegExpr;
+  Classes, SysUtils, fpjson, jsonparser, Sockets, netdb, baseunix, RegExpr, Process;
 type
   TLSP = class(TThread)
   private
@@ -15,16 +15,22 @@ type
     Connected: Boolean;
     FSocket: TSocket;
     FileName: String;
+    FilePath: String;
     procedure Connect;
+    procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
     function ReceiveDataUntilZero:String;
   protected
     procedure Execute; override;
   public
-    Port: Integer;
-    procedure Initialize(const FFileName: String);
-    procedure AddView(const FFileName: String);
-    procedure OpenFile(const FFileName: String);
+    ServerPort: Integer;
+    ServerExec: String;
+    ServerParameter: String;
+    Message: String;
+    procedure Initialize(const AFilePath: String);
+    procedure Initialized;
+    procedure AddView(const AFileName: String);
+    procedure OpenFile(const AFileName: String);
     procedure Hover(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
     constructor Create;
@@ -45,15 +51,14 @@ var Response: String;
     ResponseJSON: TJSONObject;
 begin
   try
-    while not Terminated do
+    while (not Terminated) do
     begin
-      write('.');
       if not Connected then
         Connect;
       Response := ReceiveDataUntilZero;
       if Length(Response) > 0 then
       begin
-        writeln(Response);
+        //writeln(Response);
         try
           if GetJSON(Response).JSONType = jtObject then
           begin
@@ -61,6 +66,7 @@ begin
             if ResponseJSON.FindPath('result.capabilities') <> nil then
             begin
               Init := True;
+              Initialized;
               AddView(FileName);
             end;
             if ResponseJSON.FindPath('result.capabilities.hoverProvider') <> nil then
@@ -68,6 +74,8 @@ begin
             if ResponseJSON.FindPath('error') <> nil then
               if ResponseJSON.FindPath('error.code').AsInteger = 0 then
                 OpenFile(FileName);
+            if ResponseJSON.FindPath('result.contents.value') <> nil then
+              Message := ResponseJSON.FindPath('result.contents.value').AsString;
           end;
         except
           {$IFDEF UNIX}
@@ -85,6 +93,8 @@ begin
       {$ENDIF}
     end;
   end;
+
+  Free;
 end;
 
 function TLSP.ReceiveDataUntilZero:String;
@@ -138,12 +148,28 @@ begin
   end;
 end;
 
+procedure TLSP.RunLSPServer;
+var
+  run: TProcess;
+begin
+  run := TProcess.Create(nil);
+  try
+    run.Executable := ServerExec;
+    run.Parameters.Add(ServerParameter);
+
+    run.Options := [poNoConsole, poNewProcessGroup];
+    run.Execute;
+  except
+    run.Free;
+  end;
+  Sleep(100);
+end;
 
 procedure TLSP.Connect;
 var Addr: TInetSockAddr;
     Flags: Integer;
 begin
-  if Port <= 0 then
+  if ServerPort <= 0 then
     Exit;
 
   FSocket := fpSocket(AF_INET, SOCK_STREAM, 0);
@@ -155,13 +181,15 @@ begin
 
   Addr.sin_family := AF_INET;
 
-  Addr.sin_port := htons(Port);
+  Addr.sin_port := htons(ServerPort);
   Addr.sin_addr := StrToNetAddr('127.0.0.1');
 
   if fpConnect(FSocket, @Addr, SizeOf(Addr)) < 0 then
   begin
     //Disconnect;
+    {$IFDEF UNIX}
     write('Failed to connect to LSP server');
+    {$ENDIF}
     Exit;
   end;
   Flags := FpFcntl(FSocket, F_GETFL, 0);
@@ -176,38 +204,52 @@ begin
     'go':
     begin
      Language := 'go';
-     Port := 37374;
+     ServerPort := 37374;
+     ServerExec := 'gopls';
+     ServerParameter := '-listen=:37374';
     end
   else
   end;
+
+  if Length(Language) > 0 then
+    RunLSPServer;
 end;
 
-procedure TLSP.Initialize(const FFileName: String);
+procedure TLSP.Initialize(const AFilePath: String);
 var Params: TJSONObject;
 begin
-  if (Length(FFileName) <= 0) then
+  if (Length(AFilePath) <= 0) then
     Exit;
 
-  FileName := FFileName;
+  FilePath := AFilePath;
 
   Params := TJSONObject.Create;
-  Params.Add('rootUri', 'file://'+ExtractFilePath(FileName));
+  Params.Add('rootUri', 'file://'+FilePath);
+  Params.Add('rootPath', FilePath);
+  Params.Add('trace', 'verbose');
 
   Send(Params, 'initialize');
 end;
 
+procedure TLSP.Initialized;
+var Params: TJSONObject;
+begin
+  Params := TJSONObject.Create;
+
+  Send(Params, 'initialized');
+end;
 
 
-procedure TLSP.AddView(const FFileName: String);
+procedure TLSP.AddView(const AFileName: String);
 var Params: TJSONObject;
     Event: TJSONObject;
     Added: TJSONArray;
     FolderObject: TJSONObject;
 begin
-  if (Length(FFileName) <= 0) then
+  if (Length(AFileName) <= 0) then
     Exit;
 
-  FileName := FFileName;
+  FileName := AFileName;
 
   Params := TJSONObject.Create;
   Event := TJSONObject.Create;
@@ -225,17 +267,28 @@ begin
   Send(Params, 'workspace/didChangeWorkspaceFolders');
 end;
 
-procedure TLSP.OpenFile(const FFileName: String);
+procedure TLSP.OpenFile(const AFileName: String);
 var Params, TextDoc: TJSONObject;
+    FileContent: String;
+    StringList: TStringList;
 begin
-  if Length(FFileName) <= 0 then
+  if Length(AFileName) <= 0 then
     Exit;
 
-  FileName := FFileName;
+  FileName := AFileName;
+
+  try
+    StringList := TStringList.Create;
+    StringList.LoadFromFile(FileName);
+    FileContent := StringList.Text;
+  finally
+    StringList.Free;
+  end;
 
   Params := TJSONObject.Create;
   TextDoc := TJSONObject.Create;
   TextDoc.Add('uri', 'file://'+FileName);
+  TextDoc.Add('text', FileContent);
   TextDoc.Add('languageID', Language);
   TextDoc.Add('version', 1);
   Params.Add('textDocument', TextDoc);
@@ -253,7 +306,7 @@ begin
   TextDoc := TJSONObject.Create;
   Position := TJSONObject.Create;
   TextDoc.Add('uri', 'file://'+FileName);
-  Position.Add('line', Line - 1);
+  Position.Add('line', Line - 1 );
   Position.Add('character', Character - 1);
 
   Params.Add('textDocument', TextDoc);
@@ -269,13 +322,7 @@ var RequestText, SendString: string;
 begin
   // try to connect
   if not Connected then
-    repeat
-      Connect;
-      {$IFDEF UNIX}
-      writeln('Try to Reconnect with LSP Server');
-      {$ENDIF}
-      sleep(10);
-    until Connected;
+    Connect;
 
   RequestJSON := TJSONObject.Create;
   try

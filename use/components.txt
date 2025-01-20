@@ -2,3 +2,4 @@ LazRGBGraphics
 BGRABitmap
 BGRAControls
 CmdBox
+HtmlViewer

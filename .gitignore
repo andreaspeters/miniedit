@@ -54,8 +54,8 @@ miniedit
 *.dsk
 src/bin/**/*
 # Delphi history and backups
-src/lib/**/*
-src/backup/**/*
+src/**/lib/**/*
+src/**/backup/**/*
 *.~*
 *.bak
 .project

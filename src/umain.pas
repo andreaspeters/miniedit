@@ -10,7 +10,8 @@ uses
   LazUtils, LazUTF8, udmmain, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
-  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas;
+  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
+  ushowlspmessage;
 
 type
 
@@ -35,6 +36,8 @@ type
     actFullScreen: TAction;
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
+    aclFolderNew: TAction;
+    actOpenInHexEditor: TAction;
     actUnQuote: TAction;
     FileBrowseFolder: TAction;
     FileCloseFolder: TAction;
@@ -63,7 +66,11 @@ type
     ExportRTFToClipBoard: TAction;
     ExportRTFToFile: TAction;
     FilesTree: TTreeView;
+    imgListSmall: TImageList;
     MenuItem28: TMenuItem;
+    MenuItem29: TMenuItem;
+    MenuItem84: TMenuItem;
+    MenuItem85: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
@@ -118,10 +125,12 @@ type
     mnuTabs: TMenuItem;
     PairSplitter1: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
+    pumFileTree: TPopupMenu;
     PSSEditor: TPairSplitterSide;
     pumTabs: TPopupMenu;
     PrintDialog1: TPrintDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
+    Separator1: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -148,7 +157,7 @@ type
     EditUndo: TEditUndo;
     FileOpen: TFileOpen;
     FileSaveAs: TFileSaveAs;
-    imgList: TImageList;
+    imgListBig: TImageList;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
@@ -223,6 +232,9 @@ type
     ToolButton14: TToolButton;
     ToolButton15: TToolButton;
     ToolButton16: TToolButton;
+    ToolButton17: TToolButton;
+    ToolButton18: TToolButton;
+    ToolButton19: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     tbbClose: TToolButton;
@@ -234,6 +246,7 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
+    procedure aclFolderNewExecute(Sender: TObject);
     procedure actCloseAfterExecute(Sender: TObject);
     procedure actCloseAllExceptThisExecute(Sender: TObject);
     procedure actCloseBeforeExecute(Sender: TObject);
@@ -250,10 +263,12 @@ type
     procedure actJSONPrettyPrintExecute(Sender: TObject);
     procedure actJumpFileTreeExecute(Sender: TObject);
     procedure actLanguageNoneExecute(Sender: TObject);
+    procedure actOpenInHexEditorExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
+    procedure EditDeleteExecute(Sender: TObject);
     procedure FileBrowseFolderExecute(Sender: TObject);
     procedure FileCloseFolderExecute(Sender: TObject);
     procedure FileReloadFolderExecute(Sender: TObject);
@@ -330,6 +345,7 @@ type
     procedure StatusBarResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CliParams(aParams: TStringList);
+    function GetSelectedFileTreePath:String;
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -548,6 +564,29 @@ begin
   Ed.Highlighter := nil;
 end;
 
+procedure TfMain.actOpenInHexEditorExecute(Sender: TObject);
+var
+  run: TProcess;
+  Ed: TEditor;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  Ed := EditorFactory.CurrentEditor;
+
+  run := TProcess.Create(nil);
+  try
+    run.Executable := '/home/andreas/bin/Hex';
+    run.Parameters.Add(Ed.FileName);
+    run.CurrentDirectory := BrowsingPath;
+
+    run.Options := [poNoConsole, poNewProcessGroup];
+    run.Execute;
+  except
+    run.Free;
+  end;
+end;
+
 
 procedure TfMain.actPathToClipboardExecute(Sender: TObject);
 var
@@ -599,10 +638,57 @@ begin
   Ed.TextOperation(@ExtractQuotedStr, [tomLines]);
 end;
 
+procedure TfMain.EditDeleteExecute(Sender: TObject);
+var Path: String;
+begin
+  if FilesTree.Selected = nil then
+    Exit;
+
+  Path := GetSelectedFileTreePath;
+
+  if MessageDlg('Sure you want delete this file?', mtConfirmation, [mbOK, mbCancel], 0) = mrOK then
+  begin
+    if FileExists(Path) then
+    begin
+      if DeleteFile(Path) then
+        LoadDir(BrowsingPath)
+      else
+        ShowMessage('Could not delete file.');
+    end
+    else
+      ShowMessage('File does not exist.');
+  end;
+end;
+
+function TfMain.GetSelectedFileTreePath:String;
+var
+  Node: TTreeNode;
+  Path: string;
+begin
+  Result := '';
+  if FilesTree.Selected = nil then
+    Exit;
+
+  Node := FilesTree.Selected;
+  Path := Node.Text;
+
+  while Node.Parent <> nil do
+  begin
+    Node := Node.Parent;
+    Path := Node.Text + PathDelim + Path;
+  end;
+
+  Result := BrowsingPath+PathDelim+Path;
+end;
+
+
 procedure TfMain.FileBrowseFolderExecute(Sender: TObject);
 var
   Ed: TEditor;
 begin
+  if not EditorAvalaible then
+    exit;
+
   Ed := EditorFactory.CurrentEditor;
   LoadDir(ExtractFileDir(Ed.FileName));
 end;
@@ -795,7 +881,6 @@ begin
     ConfigObj.Font.Assign(FontDialog.Font);
     ConfigObj.Dirty := true;
   end;
-  FilesTree.Font.Size := FilesTree.Font.Size - 2;
 end;
 
 procedure TfMain.actFullNameToClipBoardExecute(Sender: TObject);
@@ -807,8 +892,6 @@ begin
 end;
 
 procedure TfMain.actFullScreenExecute(Sender: TObject);
-var
-  r : TRect;
 begin
 
   if WindowState <> wsFullScreen then
@@ -857,6 +940,7 @@ begin
     exit;
 
   Cmd := EditorFactory.CurrentCmdBox;
+  Cmd.Visible := True;
 
   run := TProcess.Create(nil);
   try
@@ -919,6 +1003,33 @@ begin
   EditorFactory.CloseAfter
 end;
 
+procedure TfMain.aclFolderNewExecute(Sender: TObject);
+var Path: String;
+    CreateDirectory: TFCreateDirectory;
+begin
+  if FilesTree.Selected = nil then
+    Exit;
+
+  CreateDirectory := TFCreateDirectory.Create(Self);
+  if CreateDirectory.ShowModal = mrOk then
+  begin
+    Path := ExtractFilePath(GetSelectedFileTreePath)+PathDelim+CreateDirectory.DirectoryName;
+    if DirectoryExists(Path) then
+    begin
+      ShowMessage('Directory already exist');
+    end
+    else
+    begin
+      if CreateDir(Path) then
+        LoadDir(BrowsingPath)
+      else
+        ShowMessage('Could not create directory');
+    end;
+  end;
+
+
+end;
+
 procedure TfMain.actCloseBeforeExecute(Sender: TObject);
 begin
   EditorFactory.CloseBefore;
@@ -932,7 +1043,6 @@ end;
 procedure TfMain.FileNewExecute(Sender: TObject);
 begin
   EditorFactory.AddEditor();
-
 end;
 
 procedure TfMain.FileOpenAccept(Sender: TObject);
@@ -1108,7 +1218,7 @@ begin
   EditorFactory.OnBeforeClose := @BeforeCloseEditor;
   EditorFactory.OnNewEditor := @NewEditor;
   EditorFactory.OnContextPopup := @ContextPopup;
-  EditorFactory.Images := imgList;
+  EditorFactory.Images := imgListBig;
   EditorFactory.Parent := PSSEditor;
   EditorFactory.Height := PSSEditor.Height;
   EditorFactory.Width  := PSSEditor.Width;
@@ -1163,7 +1273,8 @@ begin
     FileNew.Execute;
 
   splLeftBar.Visible := True;
-  FilesTree.Font.Size := ConfigObj.Font.Size - 2;
+  Font := Screen.SystemFont;
+  FilesTree.Font := Screen.SystemFont;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
@@ -1294,8 +1405,9 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
+var MousePos: TPoint;
+    Message: TFLSPMessage;
 begin
-  //CheckSynchronize;
   if not EditorAvalaible then
     exit;
 
@@ -1307,6 +1419,18 @@ begin
       EditorFactory.CurrentCmdBoxThread.OutputString := '';
     end;
   end;
+
+  if EditorFactory.CurrentLSP <> nil then
+    if Length(EditorFactory.CurrentLSP.Message) > 0 then
+    begin
+      MousePos := Mouse.CursorPos;
+      Message := TFLSPMessage.Create(Self);
+      Message.Top := MousePos.Y;
+      Message.Left := MousePos.X;
+      Message.Message := EditorFactory.CurrentLSP.Message;
+      Message.Show;
+      EditorFactory.CurrentLSP.Message := '';
+    end;
 end;
 
 procedure TfMain.actLowerCaseExecute(Sender: TObject);
