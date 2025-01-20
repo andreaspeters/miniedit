@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel,
   LazHelpHTML, RichMemo, HtmlView, MarkdownProcessor, MarkdownUtils, LCLType,
-  ValEdit, Grids;
+  ValEdit, Grids, StdCtrls;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TFLSPMessage = class(TForm)
     HtmlViewer: THtmlViewer;
+    LSearchText: TLabel;
     VLECompletion: TValueListEditor;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -31,13 +32,13 @@ type
 
 var
   FLSPMessage: TFLSPMessage;
+  FilterText: String;
 
 implementation
 
 {$R *.lfm}
 
-procedure TFLSPMessage.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFLSPMessage.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
   begin
@@ -63,6 +64,9 @@ end;
 procedure TFLSPMessage.FormShow(Sender: TObject);
 var markdown: TMarkdownProcessor;
 begin
+  LSearchText.Caption := '';
+  FilterText := '';
+
   if Length(message) > 0 then
   begin
     markdown := TMarkdownProcessor.createDialect(mdCommonMark);
@@ -73,20 +77,52 @@ begin
     HTMLViewer.Visible := True;
   end;
 
-  if MessageList.Count > 0 then
-  begin
-    VLECompletion.Strings.Assign(MessageList);
-    VLECompletion.Visible := True;
-  end;
+  if MessageList <> nil then
+    if MessageList.Count > 0 then
+    begin
+      VLECompletion.Col := 0;
+      VLECompletion.Strings.Assign(MessageList);
+      VLECompletion.Visible := True;
+      LSearchText.Visible := True;
+    end;
 end;
 
-procedure TFLSPMessage.VLECompletionKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFLSPMessage.VLECompletionKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var i: Integer;
+    KeyName: String;
+    KeyChar: String;
 begin
   if Key = VK_RETURN then
   begin
     LSPKey := VLECompletion.Cells[0, VLECompletion.Row];
+    FilterText := '';
     ModalResult := mrOk;
+  end;
+
+  if Key = VK_BACK then
+  begin
+    Delete(FilterText, Length(FilterText), 1);
+    LSearchText.Caption := FilterText;
+    Exit;
+  end;
+
+  if Key in [VK_A..VK_Z, VK_0..VK_9, VK_SPACE] then
+  begin
+    KeyChar := LowerCase(Chr(Key));
+    if ssShift in Shift then
+      KeyChar := Chr(Key);
+
+    FilterText := FilterText + KeyChar;
+    LSearchText.Caption := FilterText;
+    for i := 1 to VLECompletion.RowCount - 1 do
+      begin
+        KeyName := VLECompletion.Cells[0, i];
+        if Pos(FilterText, KeyName) = 1 then
+        begin
+          VLECompletion.Row := i;
+          Exit;
+        end;
+      end;
   end;
 end;
 
