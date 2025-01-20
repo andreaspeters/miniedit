@@ -1425,8 +1425,8 @@ begin
     begin
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Top := MousePos.Y-5;
-      Message.Left := MousePos.X-5;
+      Message.Top := MousePos.Y - 5;
+      Message.Left := MousePos.X - 5;
       Message.Message := EditorFactory.CurrentLSP.Message;
       Message.Show;
       EditorFactory.CurrentLSP.Message := '';
@@ -1436,10 +1436,14 @@ begin
     begin
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Top := EditorFactory.CurrentEditor.CaretYPix + Top;
-      Message.Left := EditorFactory.CurrentEditor.CaretXPix + Left;
+      Message.Top := EditorFactory.CurrentEditor.CaretYPix + 130 +  Top;
+      Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 20 + Left;
       Message.MessageList := EditorFactory.CurrentLSP.MessageList;
-      Message.Show;
+      if Message.ShowModal = mrOk then
+      begin
+        EditorFactory.CurrentEditor.InsertTextAtCaret(Message.LSPKey);
+        Message.LSPKey := '';
+      end;
       EditorFactory.CurrentLSP.MessageList.Clear;
     end;
 end;

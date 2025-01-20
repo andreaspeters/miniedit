@@ -200,7 +200,7 @@
         <PackageName Value="LCL"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="22">
+    <Units Count="25">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -317,6 +317,21 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit21>
+      <Unit22>
+        <Filename Value="udirectoryname.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="udirectoryname.lrj"/>
+        <IsPartOfProject Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="udirectoryname.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FCreateDirectory"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit24>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

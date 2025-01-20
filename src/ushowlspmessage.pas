@@ -26,6 +26,7 @@ type
   public
     Message: String;
     MessageList: TStringList;
+    LSPKey: String;
   end;
 
 var
@@ -84,7 +85,8 @@ procedure TFLSPMessage.VLECompletionKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
   begin
-    writeln('test');
+    LSPKey := VLECompletion.Cells[0, VLECompletion.Row];
+    ModalResult := mrOk;
   end;
 end;
 

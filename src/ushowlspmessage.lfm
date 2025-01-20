@@ -7,7 +7,7 @@ object FLSPMessage: TFLSPMessage
   Caption = 'FLSPMessage'
   ClientHeight = 288
   ClientWidth = 814
-  Color = clSkyBlue
+  Color = clForm
   DefaultMonitor = dmDesktop
   KeyPreview = True
   OnKeyDown = FormKeyDown
@@ -19,7 +19,7 @@ object FLSPMessage: TFLSPMessage
     Top = 0
     Width = 814
     BorderStyle = htNone
-    DefBackground = clSkyBlue
+    DefBackground = cl3DLight
     HistoryMaxCount = 0
     HtOptions = [htOverLinksActive, htShowDummyCaret, htNoLinkHilite, htNoFocusRect]
     NoSelect = False
@@ -40,7 +40,7 @@ object FLSPMessage: TFLSPMessage
     Width = 814
     Align = alClient
     AutoEdit = False
-    Color = clSkyBlue
+    Color = cl3DLight
     DefaultColWidth = 200
     FixedCols = 0
     GridLineWidth = 0

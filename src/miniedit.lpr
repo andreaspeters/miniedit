@@ -26,6 +26,7 @@ begin
   Application.CreateForm(TfMain, fMain);
   Application.CreateForm(TTFInfo, TFInfo);
   Application.CreateForm(TFLSPMessage, FLSPMessage);
+  Application.CreateForm(TFCreateDirectory, FCreateDirectory);
   Application.Run;
 end.
 
