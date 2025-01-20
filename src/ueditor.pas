@@ -1146,10 +1146,11 @@ var
 begin
   if Button = mbMiddle then
   begin
-    CloseEditor(CurrentEditor);
+    i := IndexOfTabAt(Point(X, Y));
+    CloseEditor(TEditorTabSheet(Page[i]).Editor);
     Exit;
   end;
-  if Button = mbLeft then
+  if (Button = mbLeft) then
   begin
     i := IndexOfTabAt(Point(X, Y));
     {$IFDEF NEEDCLOSEBTN}

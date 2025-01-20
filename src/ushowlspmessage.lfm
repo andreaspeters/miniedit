@@ -15,8 +15,8 @@ object FLSPMessage: TFLSPMessage
   OnShow = FormShow
   object HtmlViewer: THtmlViewer
     Left = 0
-    Height = 288
-    Top = 32
+    Height = 320
+    Top = 0
     Width = 814
     BorderStyle = htNone
     DefBackground = cl3DLight
@@ -28,6 +28,7 @@ object FLSPMessage: TFLSPMessage
     PrintMarginRight = 2
     PrintMarginTop = 2
     PrintScale = 1
+    Align = alClient
     TabOrder = 0
     Visible = False
     OnMouseMove = FormMouseMove
