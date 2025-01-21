@@ -19,12 +19,10 @@ type
     VLECompletion: TValueListEditor;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure FormShow(Sender: TObject);
+    procedure ShowMessageList(const MessageList: TStringList);
+    procedure ShowMessage(const Message: String);
   private
-
   public
-    Message: String;
-    MessageList: TStringList;
     LSPKey: String;
   end;
 
@@ -95,7 +93,7 @@ begin
   end;
 end;
 
-procedure TFLSPMessage.FormShow(Sender: TObject);
+procedure TFLSPMessage.ShowMessage(const Message: String);
 var markdown: TMarkdownProcessor;
 begin
   LSearchText.Caption := '';
@@ -103,7 +101,7 @@ begin
   HTMLViewer.Clear;
   VLECompletion.Clear;
 
-  if Length(message) > 0 then
+  if Length(Message) > 0 then
   begin
     markdown := TMarkdownProcessor.createDialect(mdCommonMark);
     HTMLViewer.DefFontName := Screen.SystemFont.Name;
@@ -111,17 +109,24 @@ begin
     HTMLViewer.LoadFromString(markdown.Process(message));
     HTMLViewer.Visible := True;
   end;
+end;
+
+procedure TFLSPMessage.ShowMessageList(const MessageList: TStringList);
+begin
+  LSearchText.Caption := '';
+  FilterText := '';
+  HTMLViewer.Clear;
+  VLECompletion.Clear;
 
   if MessageList <> nil then
     if MessageList.Count > 0 then
     begin
-      VLECompletion.Col := 0;
-      VLECompletion.Strings.Assign(MessageList);
       VLECompletion.Visible := True;
       LSearchText.Visible := True;
+      VLECompletion.Strings.Assign(MessageList);
+      VLECompletion.Col := 0;
     end;
 end;
-
 
 end.
 

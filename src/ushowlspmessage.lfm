@@ -1,21 +1,20 @@
 object FLSPMessage: TFLSPMessage
   Left = 490
-  Height = 320
+  Height = 329
   Top = 250
   Width = 814
   BorderStyle = bsDialog
   Caption = 'FLSPMessage'
-  ClientHeight = 320
+  ClientHeight = 329
   ClientWidth = 814
   Color = clForm
   DefaultMonitor = dmDesktop
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnMouseMove = FormMouseMove
-  OnShow = FormShow
   object HtmlViewer: THtmlViewer
     Left = 0
-    Height = 320
+    Height = 329
     Top = 0
     Width = 814
     BorderStyle = htNone
@@ -34,25 +33,32 @@ object FLSPMessage: TFLSPMessage
     OnMouseMove = FormMouseMove
   end
   object VLECompletion: TValueListEditor
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LSearchText
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 288
-    Top = 32
+    Height = 289
+    Top = 40
     Width = 814
+    AlternateColor = clNone
+    Anchors = [akLeft, akRight, akBottom]
     AutoEdit = False
     Color = cl3DLight
     DefaultColWidth = 200
+    ExtendedSelect = False
     FixedCols = 0
-    Flat = True
     GridLineWidth = 0
     RowCount = 1
     TabOrder = 1
     Visible = False
     DisplayOptions = [doAutoColResize, doKeyColFixed]
-    Options = [goVertLine, goHorzLine, goColSizing, goAlwaysShowEditor, goThumbTracking, goCellHints]
+    Options = [goVertLine, goHorzLine, goColSizing, goAlwaysShowEditor, goThumbTracking, goSmoothScroll, goCellHints]
     ColWidths = (
       200
-      613
+      612
     )
   end
   object LSearchText: TLabel
@@ -61,10 +67,11 @@ object FLSPMessage: TFLSPMessage
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = VLECompletion
+    AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 1
+    Height = 329
     Top = 0
     Width = 814
-    Anchors = [akTop, akLeft, akRight]
+    Anchors = [akTop, akLeft, akRight, akBottom]
   end
 end

@@ -1161,7 +1161,6 @@ var
 begin
   for str in aParams do
   begin
-    writeln(str);
     if copy(str, 1, 2) <> '--' then
     begin
       if DirectoryExists(str) then
@@ -1445,8 +1444,8 @@ begin
       Message := TFLSPMessage.Create(Self);
       Message.Top := MousePos.Y - 5;
       Message.Left := MousePos.X - 5;
-      Message.Message := EditorFactory.CurrentLSP.Message;
       Message.Show;
+      Message.ShowMessage(EditorFactory.CurrentLSP.Message);
       EditorFactory.CurrentLSP.Message := '';
     end;
 
@@ -1457,7 +1456,7 @@ begin
       Message := TFLSPMessage.Create(Self);
       Message.Top := EditorFactory.CurrentEditor.CaretYPix + 132 +  Top;
       Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 15 + Left;
-      Message.MessageList := EditorFactory.CurrentLSP.MessageList;
+      Message.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
       if Message.ShowModal = mrOk then
       begin
         EditorFactory.CurrentEditor.InsertTextAtCaret(Message.LSPKey);
