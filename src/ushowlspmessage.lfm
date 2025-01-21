@@ -48,7 +48,6 @@ object FLSPMessage: TFLSPMessage
     RowCount = 1
     TabOrder = 1
     Visible = False
-    OnKeyDown = VLECompletionKeyDown
     DisplayOptions = [doAutoColResize, doKeyColFixed]
     Options = [goVertLine, goHorzLine, goColSizing, goAlwaysShowEditor, goThumbTracking, goCellHints]
     ColWidths = (

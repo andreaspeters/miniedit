@@ -376,6 +376,11 @@ function TEditor.Save: boolean;
 begin
   Result := SaveAs(FFileName);
   TEditorFactory(Sheet.Owner).FWatcher.Update(FFileName);
+  if Sheet.FLSP <> nil then
+  begin
+    Sheet.FLSP.Resume;
+    Sheet.FLSP.Reload;
+  end;
 end;
 
 function TEditor.SaveAs(AFileName: TFileName): boolean;
@@ -956,17 +961,15 @@ procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var Ed: TEditor;
 begin
-  if Key = VK_OEM_PERIOD then
+  if (Key = VK_OEM_PERIOD) and (Shift = [ssAlt]) then
   begin
     Ed := GetCurrentEditor;
     if not Assigned(Ed) then
       Exit;
 
     Ed.Sheet.LSP.Resume;
-    if Shift = [ssAlt] then
-      Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 2)
-    else
-      Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1);
+    Ed.Sheet.LSP.Change(Ed.Text);
+    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)
   end;
 end;
 

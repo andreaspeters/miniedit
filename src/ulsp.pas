@@ -34,6 +34,8 @@ type
     procedure Initialized;
     procedure AddView(const AFileName: String);
     procedure OpenFile(const AFileName: String);
+    procedure Reload;
+    procedure Change(const Text: String);
     procedure Hover(const Line, Character: Integer);
     procedure Completion(const Line, Character, Trigger: Integer);
     procedure SetLanguage(const ALanguage: String);
@@ -81,7 +83,6 @@ begin
         RTLEventWaitFor(FEvent);
 
       Response := ReceiveDataUntilZero;
-      writeln(Response);
       if Length(Response) > 0 then
       begin
         try
@@ -279,7 +280,8 @@ begin
 end;
 
 procedure TLSP.Initialize(const AFilePath: String);
-var Params: TJSONObject;
+var Params, Caps,  Compl, FolderObject: TJSONObject;
+    Trigger: TJSONArray;
 begin
   if (Length(AFilePath) <= 0) then
     Exit;
@@ -287,9 +289,25 @@ begin
   FilePath := AFilePath;
 
   Params := TJSONObject.Create;
+  Caps := TJSONObject.Create;
+  Compl := TJSONObject.Create;
+  Trigger := TJSONArray.Create;
+
+
+  FolderObject := TJSONObject.Create;
+  FolderObject.Add('.');
+
+  Trigger.Add(FolderObject);
+  Compl.Add('triggerCharacters', Trigger);
+
   Params.Add('rootUri', 'file://'+FilePath);
   Params.Add('rootPath', FilePath);
   Params.Add('trace', 'verbose');
+
+
+  Caps.Add('completionProvider', Trigger);
+  Params.Add('capabilities', Caps);
+
 
   Send(Params, 'initialize');
 end;
@@ -302,6 +320,64 @@ begin
   Send(Params, 'initialized');
 end;
 
+procedure TLSP.Reload;
+var Params: TJSONObject;
+    Changes: TJSONArray;
+    FolderObject: TJSONObject;
+begin
+  if (Length(FileName) <= 0) then
+    Exit;
+
+  Params := TJSONObject.Create;
+  Changes := TJSONArray.Create;
+
+  // Einen WorkspaceFolder hinzufügen
+  FolderObject := TJSONObject.Create;
+  FolderObject.Add('uri', 'file://'+FileName);
+  FolderObject.Add('type', 2);
+
+  Changes.Add(FolderObject);
+  Params.Add('changes', changes);
+
+  Send(Params, 'workspace/didChangeWatchedFiles');
+end;
+
+procedure TLSP.Change(const Text: String);
+var Params, TextDoc, FolderObject: TJSONObject;
+    Changes: TJSONArray;
+
+begin
+  if (Length(FileName) <= 0) then
+    Exit;
+
+  Params := TJSONObject.Create;
+  TextDoc := TJSONObject.Create;
+  Changes := TJSONArray.Create;
+
+  TextDoc.Add('uri', 'file://'+FileName);
+  TextDoc.Add('version', 2);
+
+  FolderObject := TJSONObject.Create;
+  FolderObject.Add('text', Text);
+
+  Changes.Add(FolderObject);
+  Params.Add('textDocument', TextDoc);
+  Params.Add('contentChanges', Changes);
+
+  Send(Params, 'textDocument/didChange');
+end;
+
+{
+  "textDocument": {
+    "uri": "file:///Users/octref/Code/css-test/test.less",
+    "version": 2
+  },
+  "contentChanges": [
+    {
+      "text": "."
+    }
+  ]
+}
 
 procedure TLSP.AddView(const AFileName: String);
 var Params: TJSONObject;
