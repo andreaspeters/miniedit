@@ -312,6 +312,9 @@ type
     procedure FilesTreeExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
     procedure FilesTreeGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+    procedure FilesTreeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FilesTreeKeyPRess(Sender: TObject; var Key: char);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -1340,17 +1343,30 @@ procedure TfMain.FormKeyPressDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var ActiveCtrl: TControl;
     Ed: TEditor;
+    intKey: Integer;
 begin
-  if not EditorAvalaible then
-    exit;
-
+  if (Shift = [ssAlt]) and (Key in [VK_0..VK_9]) then
+  begin
+    if StrToInt(Char(Key)) <= EditorFactory.PageCount then
+    begin
+      intKey := StrToInt(Char(Key));
+      if Key = VK_0 then
+        intKey := 10;
+      EditorFactory.PageIndex := intKey - 1;
+    end;
+  end;
   if Key = VK_TAB then
   begin
     if ssShift in Shift then
     begin
+      if not EditorAvalaible then
+      begin
+        FilesTree.SetFocus;
+        Exit;
+      end;
+
       Ed := EditorFactory.CurrentEditor;
       ActiveCtrl := Screen.ActiveControl;
-      writeln(ActiveCtrl.Name);
       if Assigned(ActiveCtrl) then
       begin
         if (ActiveCtrl.Name = 'FilesTree') then
@@ -1937,7 +1953,6 @@ begin
      begin
         EditorFactory.AddEditor(Node.FullPath);
      end;
-
 end;
 
 procedure TfMain.FilesTreeExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
@@ -1978,5 +1993,28 @@ begin
   myNode.SelectedIndex:=myNode.ImageIndex;
 end;
 
+procedure TfMain.FilesTreeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var Node: TFileTreeNode;
+begin
+  if Key = VK_RETURN then
+  begin
+    Node := TFileTreeNode(FilesTree.Selected);
+    if Node = nil then
+       exit;
+
+    if Node.isDir then
+      exit
+    else
+      begin
+         EditorFactory.AddEditor(Node.FullPath);
+      end;
+  end;
+end;
+
+procedure TfMain.FilesTreeKeyPRess(Sender: TObject; var Key: char);
+begin
+
+end;
 
 end.

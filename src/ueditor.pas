@@ -948,7 +948,7 @@ begin
     Exit;
 
   Ed.Sheet.LSP.Resume;
-  Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
+  Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX-2);
 end;
 
 

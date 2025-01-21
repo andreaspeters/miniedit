@@ -21,6 +21,16 @@ my own Dev-Editor with all the features I need and all the shortcuts my fingers 
 
 - Install Lazarus 3.6
 
+## Shortcuts
+
+- F3 - Search the selected text
+- F4 - View File in Hex Editor
+- F9 - Run Make
+- (SHIFT)+TAB - Jump between FileTree and Editor
+- ALT+0 .. ALT+1 - Select Editor Tab 1 to 10
+- ALT+Right/Left - Move selected Editor Tab 
+
+
 ## Screenshot
 
 ![MiniEdit](assets/screenshot.png)
