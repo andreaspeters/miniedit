@@ -35,7 +35,7 @@ type
     procedure AddView(const AFileName: String);
     procedure OpenFile(const AFileName: String);
     procedure Hover(const Line, Character: Integer);
-    procedure Completion(const Line, Character: Integer);
+    procedure Completion(const Line, Character, Trigger: Integer);
     procedure SetLanguage(const ALanguage: String);
     procedure Suspend;
     procedure Resume;
@@ -81,6 +81,7 @@ begin
         RTLEventWaitFor(FEvent);
 
       Response := ReceiveDataUntilZero;
+      writeln(Response);
       if Length(Response) > 0 then
       begin
         try
@@ -111,7 +112,7 @@ begin
                   Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
                   MessageList.Add(Key + '=' + Value);
                 end;
-                Suspend;
+              Suspend;
             end;
           end;
         except
@@ -377,7 +378,7 @@ begin
   Send(Params, 'textDocument/hover');
 end;
 
-procedure TLSP.Completion(const Line, Character: Integer);
+procedure TLSP.Completion(const Line, Character, Trigger: Integer);
 var Params, TextDoc, Position, Context: TJSONObject;
 begin
   if Length(FileName) <= 0 then
@@ -389,8 +390,8 @@ begin
   Context := TJSONObject.Create;
   TextDoc.Add('uri', 'file://'+FileName);
   Position.Add('line', Line - 1 );
-  Position.Add('character', Character - 1);
-  Context.Add('triggerKind', 1);
+  Position.Add('character', Character-1);
+  Context.Add('triggerKind', Trigger);
 
   Params.Add('textDocument', TextDoc);
   Params.Add('position', Position);

@@ -948,7 +948,7 @@ begin
     Exit;
 
   Ed.Sheet.LSP.Resume;
-  Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX-2);
+  Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
 end;
 
 
@@ -963,7 +963,10 @@ begin
       Exit;
 
     Ed.Sheet.LSP.Resume;
-    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX);
+    if Shift = [ssAlt] then
+      Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 2)
+    else
+      Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1);
   end;
 end;
 
