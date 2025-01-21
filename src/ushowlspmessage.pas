@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Config,
-  HtmlView, MarkdownProcessor, MarkdownUtils, LCLType,
-  ValEdit, Grids, StdCtrls;
+  HtmlView, MarkdownProcessor, MarkdownUtils, LCLType, LCLIntf,
+  ValEdit, Grids, StdCtrls, HtmlGlobals;
 
 type
 
@@ -19,6 +19,8 @@ type
     VLECompletion: TValueListEditor;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure HtmlViewerHotSpotClick(Sender: TObject; const SRC: ThtString;
+      var Handled: Boolean);
     procedure ShowMessageList(const MessageList: TStringList);
     procedure ShowMessage(const Message: String);
   private
@@ -91,6 +93,13 @@ begin
   begin
     Close;
   end;
+end;
+
+procedure TFLSPMessage.HtmlViewerHotSpotClick(Sender: TObject;
+  const SRC: ThtString; var Handled: Boolean);
+begin
+  if (SRC <> '') then
+    OpenURL(SRC);
 end;
 
 procedure TFLSPMessage.ShowMessage(const Message: String);

@@ -27,6 +27,7 @@ object FLSPMessage: TFLSPMessage
     PrintMarginRight = 2
     PrintMarginTop = 2
     PrintScale = 1
+    OnHotSpotClick = HtmlViewerHotSpotClick
     Align = alClient
     TabOrder = 0
     Visible = False
