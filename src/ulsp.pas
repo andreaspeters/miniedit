@@ -280,8 +280,7 @@ begin
 end;
 
 procedure TLSP.Initialize(const AFilePath: String);
-var Params, Caps,  Compl, FolderObject: TJSONObject;
-    Trigger: TJSONArray;
+var Params: TJSONObject;
 begin
   if (Length(AFilePath) <= 0) then
     Exit;
@@ -289,25 +288,10 @@ begin
   FilePath := AFilePath;
 
   Params := TJSONObject.Create;
-  Caps := TJSONObject.Create;
-  Compl := TJSONObject.Create;
-  Trigger := TJSONArray.Create;
-
-
-  FolderObject := TJSONObject.Create;
-  FolderObject.Add('.');
-
-  Trigger.Add(FolderObject);
-  Compl.Add('triggerCharacters', Trigger);
 
   Params.Add('rootUri', 'file://'+FilePath);
   Params.Add('rootPath', FilePath);
   Params.Add('trace', 'verbose');
-
-
-  Caps.Add('completionProvider', Trigger);
-  Params.Add('capabilities', Caps);
-
 
   Send(Params, 'initialize');
 end;

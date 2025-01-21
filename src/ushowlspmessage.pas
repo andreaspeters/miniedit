@@ -5,7 +5,7 @@ unit ushowlspmessage;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Config,
   HtmlView, MarkdownProcessor, MarkdownUtils, LCLType,
   ValEdit, Grids, StdCtrls;
 
@@ -121,6 +121,8 @@ begin
   if MessageList <> nil then
     if MessageList.Count > 0 then
     begin
+      VLECompletion.Font := ConfigObj.Font;
+      VLECompletion.Font.Size := ConfigObj.Font.Size - 1;
       VLECompletion.Visible := True;
       LSearchText.Visible := True;
       VLECompletion.Strings.Assign(MessageList);
@@ -129,4 +131,5 @@ begin
 end;
 
 end.
+
 
