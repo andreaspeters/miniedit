@@ -67,6 +67,7 @@ type
     ExportRTFToClipBoard: TAction;
     ExportRTFToFile: TAction;
     FilesTree: TTreeView;
+    imgListFileIcons: TImageList;
     imgListSmall: TImageList;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
@@ -1985,9 +1986,32 @@ begin
      exit;
 
   if (myNode.isDir) then
-    myNode.ImageIndex := 11
+    myNode.ImageIndex := 1
   else
-    myNode.ImageIndex := 12;
+  begin
+    case LowerCase(ExtractFileExt(myNode.FullPath)) of
+      '.go': myNode.ImageIndex := 3;
+      '.cpp': myNode.ImageIndex := 4;
+      '.c': myNode.ImageIndex := 5;
+      '.cc': myNode.ImageIndex := 5;
+      '.h': myNode.ImageIndex := 6;
+      '.hpp': myNode.ImageIndex := 7;
+      '.hcl': myNode.ImageIndex := 8;
+      '.yaml': myNode.ImageIndex := 9;
+      '.json': myNode.ImageIndex := 10;
+      '.nix': myNode.ImageIndex := 11;
+      '.cmake': myNode.ImageIndex := 13;
+      '.md': myNode.ImageIndex := 14;
+    else
+      myNode.ImageIndex := 2;
+    end;
+
+    case LowerCase(ExtractFileName(myNode.FullPath)) of
+      'makefile': myNode.ImageIndex := 12;
+      'cmake_install.txt': myNode.ImageIndex := 13;
+      'cmakelists.txt': myNode.ImageIndex := 13;
+    end;
+  end;
 
 end;
 

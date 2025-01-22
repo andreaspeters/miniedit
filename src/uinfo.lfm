@@ -2366,8 +2366,11 @@ object TFInfo: TTFInfo
       'This Software is provided under the term of EUPL:'
       'https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12'
       ''
-      'Some of the glyphs are provided by figma.com/glyphs.fyi under CC BY 4.0:'
+      'Some of the glyphs are provided by https://figma.com/glyphs.fyi under CC BY 4.0:'
       'https://creativecommons.org/licenses/by/4.0/'
+      ''
+      'The FileType Icons are provided by https://github.com/uiwjs/file-icons under the MIT License:'
+      'https://opensource.org/licenses/MIT'
     )
     ParentFont = False
     ReadOnly = True

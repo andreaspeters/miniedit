@@ -47,8 +47,12 @@ my own Dev-Editor with all the features I need and all the shortcuts my fingers 
 - My own Syntax highligthing files are using [SynFacilBasic](https://github.com/t-edson/SynFacilSyn) from Por Tito Hinostroza.
 It's a great way to create own Syntax highligthing files for SynEdit. So, also many thanks to him.
 
+## 3rdParty Licenses
 
-
+- Some of the glyphs are provided by https://figma.com/glyphs.fyi under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- The FileType Icons are provided by https://github.com/uiwjs/file-icons under [MIT License](https://opensource.org/licenses/MIT)
+- The Syntax Highlighting modules provided by SynEdit are under [Mozilla MPL](http://www.mozilla.org/MPL/)
+- The Syntax Highlighting modules provided by PiNote are under GPL.
 
 ## Screenshot
 
