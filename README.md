@@ -2,20 +2,19 @@
 
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=ZDB5ZSNJNK9XQ)
 
-MiniEdit is based on ovotext from [Marco Caselli](https://github.com/varianus/ovotext/). It was a perfect "template" to create
-my own Dev-Editor with all the features I need and all the shortcuts my fingers like to have. Thanks to you Marco. :-)
 
 ## Features
 
 - Tabbed editor
-- Syntax highligthing for a lot of programming languages and file formats
+- Syntax highligthing for 61 languages/file formats
 - Export formatted text to RTF or HTML file/clipboard
 - Undo/Redo support
 - Tools for text editing (change line endings, native XML/JSON/SQL beautifier, sort, change case and so on)
 - Support for various encoding (UTF-8, UCS2, ISO-8859-1, ecc.)
 - Print with syntax highligthing
 - Run 'Make' with realtime output into CMD Box.
-- ShortCut Support
+- Open File in a Hexeditor
+- Shortcut Support
 
 ## How to compile
 
@@ -23,12 +22,32 @@ my own Dev-Editor with all the features I need and all the shortcuts my fingers 
 
 ## Shortcuts
 
-- F3 - Search the selected text
+- F3 - Search the selected text and/or find next
+- SHIFT+F3 - Find previous
 - F4 - View File in Hex Editor
 - F9 - Run Make
 - (SHIFT)+TAB - Jump between FileTree and Editor
 - ALT+0 .. ALT+1 - Select Editor Tab 1 to 10
-- ALT+Right/Left - Move selected Editor Tab 
+- ALT+Right/Left - Move selected Editor Tab
+- ALT+L - Go to line
+- CTRL+F - Search
+- CTRL+R - Replease
+- CTRL+Z - Undo
+- CTRL+N - New File
+- CTRL+O - Open File
+- CTRL+S - Save File
+- CTRL+F4 - Close File
+- CTRL+Q - Exit without to ask
+- SHIFT+CTRL+Z - Redo
+
+## Thanks
+
+- MiniEdit is based on ovotext from [Marco Caselli](https://github.com/varianus/ovotext/). It was a perfect "template" to create
+my own Dev-Editor with all the features I need and all the shortcuts my fingers like to have. :-) Thanks to you Marco.
+- My own Syntax highligthing files are using [SynFacilBasic](https://github.com/t-edson/SynFacilSyn) from Por Tito Hinostroza.
+It's a great way to create own Syntax highligthing files for SynEdit. So, also many thanks to him.
+
+
 
 
 ## Screenshot

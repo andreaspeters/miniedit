@@ -56,6 +56,7 @@ implementation
 
 procedure TdlgGoTo.FormShow(Sender: TObject);
 begin
+  Font := Screen.SystemFont;
   seLine.MaxValue:= Editor.Lines.Count;
 end;
 

@@ -108,6 +108,7 @@ begin
 
   // Define string delimiters
   DefTokDelim('"', '"', tnString);
+  DefTokDelim('''', '''', tnString);
 
   // Comments
   DefTokDelim('//', '', tnComment);
