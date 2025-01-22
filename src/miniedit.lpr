@@ -15,7 +15,7 @@ uses
   umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
   JsonTools, iconloader, uinfo, ucmdboxthread, uLSP, udirectoryname,
-ushowlspmessage;
+ushowlspmessage, usettings;
 
 {$R *.res}
 begin
@@ -27,6 +27,7 @@ begin
   Application.CreateForm(TTFInfo, TFInfo);
   Application.CreateForm(TFLSPMessage, FLSPMessage);
   Application.CreateForm(TFCreateDirectory, FCreateDirectory);
+  Application.CreateForm(TFSettings, FSettings);
   Application.Run;
 end.
 

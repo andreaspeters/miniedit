@@ -221,7 +221,7 @@ ResourceString
   SYNS_FilterBatch           = 'MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd';
   SYNS_FilterDFM             = 'Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm';
   SYNS_FilterGembase         = 'GEMBASE Files (*.dml;*.gem)|*.dml;*.gem';
-  SYNS_FilterINI             = 'INI Files (*.ini)|*.ini';
+  SYNS_FilterINI             = 'INI Files (*.ini;*.service)|*.ini;*.service';
   SYNS_FilterSML             = 'Standard ML Files (*.sml)|*.sml';
   SYNS_FilterVisualBASIC     = 'Visual Basic Files (*.bas)|*.bas';
   SYNS_FilterADSP21xx        = 'DSP Files (*.dsp;*.inc)|*.dsp;*.inc';

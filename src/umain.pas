@@ -11,7 +11,7 @@ uses
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
-  ushowlspmessage;
+  ushowlspmessage, usettings;
 
 type
 
@@ -37,6 +37,7 @@ type
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
     aclFolderNew: TAction;
+    actOpenProperties: TAction;
     actOpenInHexEditor: TAction;
     actUnQuote: TAction;
     FileBrowseFolder: TAction;
@@ -71,6 +72,8 @@ type
     MenuItem29: TMenuItem;
     MenuItem84: TMenuItem;
     MenuItem85: TMenuItem;
+    MenuItem86: TMenuItem;
+    MenuItem87: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
@@ -264,6 +267,7 @@ type
     procedure actJumpFileTreeExecute(Sender: TObject);
     procedure actLanguageNoneExecute(Sender: TObject);
     procedure actOpenInHexEditorExecute(Sender: TObject);
+    procedure actOpenPropertiesExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
@@ -579,7 +583,7 @@ begin
 
   run := TProcess.Create(nil);
   try
-    run.Executable := '/home/andreas/bin/Hex';
+    run.Executable := ConfigObj.HexEditor;
     run.Parameters.Add(Ed.FileName);
     run.CurrentDirectory := BrowsingPath;
 
@@ -588,6 +592,11 @@ begin
   except
     run.Free;
   end;
+end;
+
+procedure TfMain.actOpenPropertiesExecute(Sender: TObject);
+begin
+  FSettings.Show;
 end;
 
 

@@ -368,6 +368,10 @@ msgstr ""
 msgid "Open in Hex Editor"
 msgstr ""
 
+#: tfmain.actopenproperties.caption
+msgid "Properties"
+msgstr ""
+
 #: tfmain.actpathtoclipboard.caption
 msgid "File Path to clipboard"
 msgstr ""
@@ -711,6 +715,10 @@ msgctxt "tfmain.menuitem8.caption"
 msgid "Find"
 msgstr ""
 
+#: tfmain.menuitem86.caption
+msgid "Settings"
+msgstr ""
+
 #: tfmain.mnucleanrecent.caption
 msgid "Clean recent file list"
 msgstr ""
@@ -811,6 +819,14 @@ msgstr ""
 #: tfmain.toolbutton17.hint
 msgctxt "tfmain.toolbutton17.hint"
 msgid "Reload Folder"
+msgstr ""
+
+#: tfsettings.caption
+msgid "MiniEdit - Settings"
+msgstr ""
+
+#: tfsettings.lehexeditor.editlabel.caption
+msgid "Hex Editor"
 msgstr ""
 
 #: ttfinfo.caption

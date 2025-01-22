@@ -147,12 +147,14 @@ type
 //    fXMLConfigExtended: TXMLConfigExtended;
     fConfigHolder: TJsonNode;
     fColorSchema: TJsonNode;
+    FHexEditor: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
 
 
     function GetBackGroundColor: TColor;
     procedure LoadAliases;
+    procedure SetHexEditor(AValue: String);
     procedure SetDirty(AValue: boolean);
     procedure SetFont(AValue: TFont);
     procedure SetShowRowNumber(AValue: boolean);
@@ -189,6 +191,7 @@ type
     property ConfigHolder: TJsonNode read  fConfigHolder;
     property ConfigDir: string read fConfigDir;
     property ConfigFile: string read FConfigFile;
+    property HexEditor: string read FHexEditor write SetHexEditor;
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
     property ShowToolbar: boolean read FShowToolbar write SetShowToolbar;
@@ -593,6 +596,7 @@ begin
   FShowToolbar := fConfigHolder.GetValueDef('Editor/ShowToolbar', True);
   FShowSpecialChars := fConfigHolder.GetValueDef('Editor/ShowSpecialChars', False);
   FLastDirectory := fConfigHolder.GetValueDef('Editor/LastDirectory', '.');
+  FHexEditor := fConfigHolder.GetValueDef('External/HexEditor', 'Hex');
 
   FDirty := False;
 end;
@@ -639,6 +643,12 @@ end;
 function TConfig.GetBackGroundColor: TColor;
 begin
   Result := ReadColor('Default/Text', 'Background', clWindow);
+end;
+
+procedure TConfig.SetHexEditor(AValue: String);
+begin
+  FHexEditor := AValue;
+  FDirty := True;
 end;
 
 procedure TConfig.SetDirty(AValue: boolean);

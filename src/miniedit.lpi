@@ -200,7 +200,7 @@
         <PackageName Value="LCL"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="25">
+    <Units Count="26">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -332,6 +332,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit24>
+      <Unit25>
+        <Filename Value="usettings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FSettings"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit25>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
