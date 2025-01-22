@@ -31,7 +31,7 @@ uses
   MySEHighlighter68K, MySEHighlighterCMake, MySEHighlighterADA,
   MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf,
   // from minieditor
-  MEHighlighterYAML, MEHighlighterHCL
+  MEHighlighterYAML, MEHighlighterHCL, MEHighlighterNix
   ;
 
 type
@@ -42,7 +42,7 @@ type
   end;
 
 const
-  HIGHLIGHTERCOUNT = 60;
+  HIGHLIGHTERCOUNT = 61;
   ARHighlighter: array [0..HIGHLIGHTERCOUNT - 1] of RHighlighter = (
     (HLClass: TSynAWKSyn; Filter: SYNS_FilterAWK; HL: nil),
     (HLClass: TMySEHighlighterADA; Filter: SYNS_FilterADA; HL: nil),
@@ -79,6 +79,7 @@ const
     (HLClass: TSynLuaSyn; Filter: SYNS_FilterLua; HL: nil),
     (HLClass: TSynModelicaSyn; Filter: SYNS_FilterModelica; HL: nil),
     (HLClass: TSynM3Syn; Filter: SYNS_FilterModula3; HL: nil),
+    (HLClass: TMEHighlighterNix; Filter: SYNS_FilterNix; HL: nil),
     (HLClass: TSynMDSyn; Filter: SYNS_FilterMarkdown; HL: nil),
     (HLClass: TSynVBScriptSyn; Filter: SYNS_FilterVBScript; HL: nil),
     (HLClass: TSynBatSyn; Filter: SYNS_FilterBatch; HL: nil),
