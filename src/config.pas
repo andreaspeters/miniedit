@@ -27,7 +27,9 @@ uses
   SynHighlighterProlog, SynHighlighterRC, SynHighlighterR,
   SynHighlighterMD,
   // from Pinote Editor
-  MySEHighlighterGO, MySEHighlighterRust
+  MySEHighlighterGO, MySEHighlighterRust, MySEHighlighterPowerShell,
+  MySEHighlighter68K, MySEHighlighterCMake, MySEHighlighterADA,
+  MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf
   ;
 
 type
@@ -38,11 +40,17 @@ type
   end;
 
 const
-  HIGHLIGHTERCOUNT = 51;
+  HIGHLIGHTERCOUNT = 58;
   ARHighlighter: array [0..HIGHLIGHTERCOUNT - 1] of RHighlighter = (
     (HLClass: TSynAWKSyn; Filter: SYNS_FilterAWK; HL: nil),
+    (HLClass: TMySEHighlighterADA; Filter: SYNS_FilterADA; HL: nil),
+    (HLClass: TMySyn68KSyn; Filter: SYNS_Filter68KAssembly; HL: nil),
+    (HLClass: TSynAsmSyn; Filter: SYNS_FilterX86Asm; HL: nil),
+    (HLClass: TMySynATMEGASyn; Filter: SYNS_FilterATMegaAssembly; HL: nil),
+    (HLClass: TMySynZ80Syn; Filter: SYNS_FilterZ80Assembly; HL: nil),
     (HLClass: TSynBaanSyn; Filter: SYNS_FilterBaan; HL: nil),
     (HLClass: TSynCppSyn; Filter: SYNS_FilterCPP; HL: nil),
+    (HLClass: TMySEHighlighterCMake; Filter: SYNS_FilterCMake; HL: nil),
     (HLClass: TSynCACSyn; Filter: SYNS_FilterCAClipper; HL: nil),
     (HLClass: TSynCssSyn; Filter: SYNS_FilterCSS; HL: nil),
     (HLClass: TSynCobolSyn; Filter: SYNS_FilterCOBOL; HL: nil),
@@ -72,6 +80,8 @@ const
     (HLClass: TSynVBScriptSyn; Filter: SYNS_FilterVBScript; HL: nil),
     (HLClass: TSynBatSyn; Filter: SYNS_FilterBatch; HL: nil),
     (HLClass: TSynPasSyn; Filter: SYNS_FilterPascal; HL: nil),
+    (HLClass: TMySEHighlighterProtoBuf; Filter: SYNS_FilterProtoBuf; HL: nil),
+    (HLClass: TSEHighlighterPowerShell; Filter: SYNS_FilterPowerShell; HL: nil),
     (HLClass: TSynPerlSyn; Filter: SYNS_FilterPerl; HL: nil),
     (HLClass: TSynPHPSyn; Filter: SYNS_FilterPHP; HL: nil),
     (HLClass: TSynPoSyn; Filter: SYNS_FilterPo; HL: nil),
@@ -89,7 +99,6 @@ const
     (HLClass: TSynUNIXShellScriptSyn; Filter: SYNS_FilterUNIXShellScript; HL: nil),
     (HLClass: TSynVBSyn; Filter: SYNS_FilterVisualBASIC; HL: nil),
     (HLClass: TSynVrml97Syn; Filter: SYNS_FilterVrml97; HL: nil),
-    (HLClass: TSynAsmSyn; Filter: SYNS_FilterX86Asm; HL: nil),
     (HLClass: TSynXMLSyn; Filter: SYNS_FilterXML; HL: nil)
      );
 

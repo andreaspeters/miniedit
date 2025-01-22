@@ -280,7 +280,7 @@ ResourceString
   SYNS_LangGalaxy              = 'Galaxy';
   SYNS_LangGeneral             = 'General';
   SYNS_LangPascal              = 'Object Pascal';
-  SYNS_LangX86Asm              = 'x86 Assembly';
+  SYNS_LangX86Asm              = 'Assembly x86';
   SYNS_LangPython              = 'Python';
   SYNS_LangTclTk               = 'Tcl/Tk';
   SYNS_LangSQL                 = 'SQL';
