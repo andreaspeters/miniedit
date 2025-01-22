@@ -29,7 +29,9 @@ uses
   // from Pinote Editor
   MySEHighlighterGO, MySEHighlighterRust, MySEHighlighterPowerShell,
   MySEHighlighter68K, MySEHighlighterCMake, MySEHighlighterADA,
-  MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf
+  MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf,
+  // from minieditor
+  MEHighlighterYAML
   ;
 
 type
@@ -40,7 +42,7 @@ type
   end;
 
 const
-  HIGHLIGHTERCOUNT = 58;
+  HIGHLIGHTERCOUNT = 59;
   ARHighlighter: array [0..HIGHLIGHTERCOUNT - 1] of RHighlighter = (
     (HLClass: TSynAWKSyn; Filter: SYNS_FilterAWK; HL: nil),
     (HLClass: TMySEHighlighterADA; Filter: SYNS_FilterADA; HL: nil),
@@ -99,6 +101,7 @@ const
     (HLClass: TSynUNIXShellScriptSyn; Filter: SYNS_FilterUNIXShellScript; HL: nil),
     (HLClass: TSynVBSyn; Filter: SYNS_FilterVisualBASIC; HL: nil),
     (HLClass: TSynVrml97Syn; Filter: SYNS_FilterVrml97; HL: nil),
+    (HLClass: TMEHighlighterYAML; Filter: SYNS_FilterYAML; HL: nil),
     (HLClass: TSynXMLSyn; Filter: SYNS_FilterXML; HL: nil)
      );
 
