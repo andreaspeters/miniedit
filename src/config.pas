@@ -8,8 +8,7 @@ uses
   LResources, FGL, SupportFuncs, Stringcostants,
   SynEditHighlighter, SynEditStrConst, SynEditStrConstExtra,
   // included with Lazarus
-  SynHighlighterPas,
-  SynHighlighterCpp, SynHighlighterJava, SynHighlighterPerl, SynHighlighterHTML,
+  SynHighlighterJava, SynHighlighterPerl, SynHighlighterHTML,
   SynHighlighterXML, SynHighlighterLFM, synhighlighterunixshellscript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterVB, SynHighlighterBat, SynHighlighterIni,
@@ -31,7 +30,8 @@ uses
   MySEHighlighter68K, MySEHighlighterCMake, MySEHighlighterADA,
   MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf,
   // from minieditor
-  MEHighlighterYAML, MEHighlighterHCL, MEHighlighterNix
+  MEHighlighterYAML, MEHighlighterHCL, MEHighlighterNix, MEHighlighterCPP,
+  MEHighlighterPascal
   ;
 
 type
@@ -51,7 +51,7 @@ const
     (HLClass: TMySynATMEGASyn; Filter: SYNS_FilterATMegaAssembly; HL: nil),
     (HLClass: TMySynZ80Syn; Filter: SYNS_FilterZ80Assembly; HL: nil),
     (HLClass: TSynBaanSyn; Filter: SYNS_FilterBaan; HL: nil),
-    (HLClass: TSynCppSyn; Filter: SYNS_FilterCPP; HL: nil),
+    (HLClass: TMEHighlighterCPP; Filter: SYNS_FilterC_CPP; HL: nil),
     (HLClass: TMySEHighlighterCMake; Filter: SYNS_FilterCMake; HL: nil),
     (HLClass: TSynCACSyn; Filter: SYNS_FilterCAClipper; HL: nil),
     (HLClass: TSynCssSyn; Filter: SYNS_FilterCSS; HL: nil),
@@ -83,7 +83,7 @@ const
     (HLClass: TSynMDSyn; Filter: SYNS_FilterMarkdown; HL: nil),
     (HLClass: TSynVBScriptSyn; Filter: SYNS_FilterVBScript; HL: nil),
     (HLClass: TSynBatSyn; Filter: SYNS_FilterBatch; HL: nil),
-    (HLClass: TSynPasSyn; Filter: SYNS_FilterPascal; HL: nil),
+    (HLClass: TMEHighlighterPascal; Filter: SYNS_FilterPascal; HL: nil),
     (HLClass: TMySEHighlighterProtoBuf; Filter: SYNS_FilterProtoBuf; HL: nil),
     (HLClass: TSEHighlighterPowerShell; Filter: SYNS_FilterPowerShell; HL: nil),
     (HLClass: TSynPerlSyn; Filter: SYNS_FilterPerl; HL: nil),
@@ -566,6 +566,7 @@ begin
   fConfigHolder.Find('Editor/ShowToolbar', true).AsBoolean := FShowToolbar;
   fConfigHolder.Find('Editor/ShowSpecialChars', true).AsBoolean := FShowSpecialChars;
   fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
+  fConfigHolder.Find('External/HexEditor', true).AsString := FHexEditor;
 
 
   FDirty := false;

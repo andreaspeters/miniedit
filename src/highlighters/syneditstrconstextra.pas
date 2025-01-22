@@ -207,7 +207,6 @@ ResourceString
   SYNS_FilterCAClipper       = 'CA-Clipper Files (*.prg;*.ch;*.inc)|*.prg;*.ch;*.inc';
   SYNS_FilterCORBAIDL        = 'CORBA IDL Files (*.idl)|*.idl';
   SYNS_FilterCPM             = 'CPM Reports (*.rdf;*.rif;*.rmf;*.rxf)|*.rdf;*.rif;*.rmf;*.rxf';
-  SYNS_FilterCPP             = 'C/C++ Files (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp';
   SYNS_FilterJava            = 'Java Files (*.java)|*.java';
   SYNS_FilterPerl            = 'Perl Files (*.pl;*.pm;*.cgi)|*.pl;*.pm;*.cgi';
   SYNS_FilterAWK             = 'AWK Scripts (*.awk)|*.awk';
@@ -267,7 +266,6 @@ ResourceString
   SYNS_LangHP48                = 'HP48';
   SYNS_LangCAClipper           = 'CA-Clipper';
   SYNS_LangCPM                 = 'COAS Product Manager Report';
-  SYNS_LangCPP                 = 'C/C++';
   SYNS_LangCS                  = 'C#';
   SYNS_LangJava                = 'Java';
   SYNS_LangPerl                = 'Perl';
