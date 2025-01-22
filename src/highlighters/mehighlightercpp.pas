@@ -5,7 +5,7 @@ unit MEHighlighterCPP;
 interface
 
 uses
-  Classes, SysUtils, SynFacilHighlighter, SynEditHighlighter;
+  Classes, SysUtils, SynFacilHighlighter, SynEditHighlighter, Graphics;
 
 type
 
@@ -59,8 +59,6 @@ const
                  'int8_t,int16_t,int32_t,int64_t,uint8_t,uint16_t,uint32_t,uint64_t,'+
                  'uintptr_t,intptr_t';
 
-  CPPPreprocessor = 'include';
-
 { TMEHighlighterCPP }
 
 function TMEHighlighterCPP.IsFilterStored: Boolean;
@@ -98,7 +96,6 @@ begin
   DefTokIdentif('[A-Za-z_]', '[A-Za-z0-9_]*');
 
   tnDataType := NewTokType(SYNS_AttrDataType);
-  tnPreprocessor := NewTokType(SYNS_AttrPreprocessor);
 
   // Keywords
   for I := 0 to fKeyWordList.Count - 1 do
@@ -111,14 +108,10 @@ begin
   for I := 0 to fKeyWordList.Count - 1 do
     AddIdentSpec(fKeyWordList[I], tnDataType);
 
-  fKeyWordList.Clear;
-  fKeyWordList.DelimitedText := CPPPreprocessor;
-
-  // Preprocessor
-  for I := 0 to fKeyWordList.Count - 1 do
-    AddIdentSpec(fKeyWordList[I], tnPreprocessor);
-
   fKeyWordList.Free;
+
+  // preprocessoren
+  DefTokDelim('#', '[A-Za-z]*', tnDirective);
 
   // Define string delimiters
   DefTokDelim('"', '"', tnString);
