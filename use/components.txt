@@ -3,3 +3,4 @@ BGRABitmap
 BGRAControls
 CmdLine
 HtmlViewer
+RichMemo
