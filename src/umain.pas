@@ -1286,7 +1286,6 @@ begin
 
   splLeftBar.Visible := True;
   Font := Screen.SystemFont;
-  FilesTree.Font := Screen.SystemFont;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

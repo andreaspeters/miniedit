@@ -2238,12 +2238,9 @@ object fMain: TfMain
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 2
         DragMode = dmAutomatic
-        Font.Height = -11
-        Font.Name = 'Sans'
         HideSelection = False
         Images = imgListFileIcons
         MultiSelect = True
-        ParentFont = False
         PopupMenu = pumFileTree
         ReadOnly = True
         RightClickSelect = True
@@ -3527,6 +3524,8 @@ object fMain: TfMain
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
+    InitialDir = '.'
+    Options = [ofEnableSizing]
     Left = 248
     Top = 251
   end
