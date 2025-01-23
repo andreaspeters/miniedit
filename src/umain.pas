@@ -2001,6 +2001,9 @@ begin
       '.nix': myNode.ImageIndex := 11;
       '.cmake': myNode.ImageIndex := 13;
       '.md': myNode.ImageIndex := 14;
+      '.xml': myNode.ImageIndex := 15;
+      '.tf': myNode.ImageIndex := 16;
+      '.ca': myNode.ImageIndex := 17;
     else
       myNode.ImageIndex := 2;
     end;
