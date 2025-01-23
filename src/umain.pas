@@ -1451,8 +1451,6 @@ begin
       EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Width := Sheet.Scale96ToForm(Message.Width);
-      Message.Height := Sheet.Scale96ToForm(Message.Height);
       Message.Top := MousePos.Y - 5;
       Message.Left := MousePos.X - 5;
       Message.Show;
@@ -1465,8 +1463,6 @@ begin
       EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Width := Sheet.Scale96ToForm(Message.Width);
-      Message.Height := Sheet.Scale96ToForm(Message.Height);
       Message.Top := EditorFactory.CurrentEditor.CaretYPix + 132 +  Top;
       Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 15 + Left;
       Message.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
