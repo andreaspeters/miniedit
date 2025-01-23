@@ -15,6 +15,7 @@
 - Run 'Make' with realtime output into CMD Box.
 - Open File in a Hexeditor
 - Shortcut Support
+- LSP Support for code complition (currently only for golang).
 
 ## How to compile
 
@@ -57,3 +58,4 @@ It's a great way to create own Syntax highligthing files for SynEdit. So, also m
 ## Screenshot
 
 ![MiniEdit](assets/screenshot.png)
+![LSP](assets/lsp.png)
