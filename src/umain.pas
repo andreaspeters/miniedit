@@ -11,7 +11,8 @@ uses
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
-  ushowlspmessage, usettings;
+  ushowlspmessage, usettings,{$IFDEF LCLGTK2}Gtk2{$ENDIF}
+  ;
 
 type
 
@@ -329,6 +330,7 @@ type
     procedure FormKeyPressDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure HelpAboutExecute(Sender: TObject);
     procedure actLowerCaseExecute(Sender: TObject);
@@ -1388,6 +1390,18 @@ end;
 procedure TfMain.FormResize(Sender: TObject);
 begin
   ConfigObj.Dirty := true;
+end;
+
+procedure TfMain.FormShow(Sender: TObject);
+{$IFDEF LCLGTK2}
+var GtkWidget: PGtkWidget;
+{$ENDIF}
+begin
+  // workaround to set the correct window size und linux and gtk
+  {$IFDEF LCLGTK2}
+  GtkWidget := PGtkWidget(Handle);
+  gtk_widget_size_request(GtkWidget, nil);
+  {$ENDIF}
 end;
 
 procedure TfMain.FormWindowStateChange(Sender: TObject);

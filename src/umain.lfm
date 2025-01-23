@@ -1,15 +1,15 @@
 object fMain: TfMain
   Left = 973
-  Height = 835
+  Height = 744
   Top = 141
-  Width = 1102
+  Width = 1000
   AllowDropFiles = True
   Anchors = []
   Caption = 'MiniEdit'
-  ClientHeight = 835
-  ClientWidth = 1102
+  ChildSizing.Layout = cclLeftToRightThenTopToBottom
+  ClientHeight = 744
+  ClientWidth = 1000
   DefaultMonitor = dmDesktop
-  Font.Height = -16
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
     0000F8000000010020000000000040F000006400000064000000000000000000
@@ -2008,17 +2008,16 @@ object fMain: TfMain
   OnDropFiles = FormDropFiles
   OnKeyDown = FormKeyPressDown
   OnResize = FormResize
+  OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
+  ParentFont = True
   Position = poDesktopCenter
   Visible = True
   object StatusBar: TStatusBar
-    AnchorSideLeft.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideBottom.Control = Owner
     Left = 0
     Height = 27
-    Top = 808
-    Width = 1102
+    Top = 717
+    Width = 1000
     Panels = <    
       item
         Width = 200
@@ -2048,7 +2047,7 @@ object fMain: TfMain
     Left = 0
     Height = 26
     Top = 5
-    Width = 1102
+    Width = 1000
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -2184,7 +2183,7 @@ object fMain: TfMain
     Left = 0
     Height = 24
     Top = 36
-    Width = 1102
+    Width = 1000
     Align = alTop
     Alignment = taCenter
     Caption = 'lbMessage'
@@ -2198,7 +2197,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 0
-    Height = 748
+    Height = 657
     Top = 60
     Width = 5
   end
@@ -2211,19 +2210,19 @@ object fMain: TfMain
     AnchorSideBottom.Control = StatusBar
     Cursor = crDefault
     Left = 0
-    Height = 748
+    Height = 657
     Top = 60
-    Width = 1102
+    Width = 1000
     Anchors = [akTop, akLeft, akRight, akBottom]
     Position = 300
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 748
+      Height = 657
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 748
+      ClientHeight = 657
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2232,7 +2231,7 @@ object fMain: TfMain
         AnchorSideBottom.Control = PairSplitterSide1
         AnchorSideBottom.Side = asrBottom
         Left = 2
-        Height = 748
+        Height = 657
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2259,16 +2258,16 @@ object fMain: TfMain
     object PSSEditor: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 748
+      Height = 657
       Top = 0
-      Width = 797
+      Width = 695
     end
   end
   object ToolButton19: TToolButton
-    Left = 53
-    Height = 5
+    Left = 0
+    Height = 22
     Top = 0
-    Width = 5
+    Width = 23
     Style = tbsDivider
   end
   object mnuMain: TMainMenu

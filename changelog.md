@@ -13,3 +13,5 @@
 - ADD: Popup Menu to the FileTree.
 - ADD: LSP (currently only golang) Support to show Hover message.
 - ADD: Choose editor tab by shortcut (ALT+1..0).
+- ADD: FileType Icons to the FileTree.
+- FIX: Wrong window size under GTK2.
