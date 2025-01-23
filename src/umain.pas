@@ -2005,6 +2005,16 @@ begin
       '.xml':   myNode.ImageIndex := 15;
       '.tf':    myNode.ImageIndex := 16;
       '.ca':    myNode.ImageIndex := 17;
+      '.cs':    myNode.ImageIndex := 18;
+      '.css':   myNode.ImageIndex := 19;
+      '.java':  myNode.ImageIndex := 20;
+      '.pl':    myNode.ImageIndex := 22;
+      '.php':   myNode.ImageIndex := 23;
+      '.pdf':   myNode.ImageIndex := 24;
+      '.py':    myNode.ImageIndex := 25;
+      '.rb':    myNode.ImageIndex := 26;
+      '.sh':    myNode.ImageIndex := 27;
+      '.ps1':   myNode.ImageIndex := 27;
     else
       myNode.ImageIndex := 2;
     end;
@@ -2013,6 +2023,8 @@ begin
       'makefile':          myNode.ImageIndex := 12;
       'cmake_install.txt': myNode.ImageIndex := 13;
       'cmakelists.txt':    myNode.ImageIndex := 13;
+      '.gitignore':    myNode.ImageIndex := 21;
+      '.gitmodules':    myNode.ImageIndex := 21;
     end;
   end;
 
@@ -2048,3 +2060,4 @@ begin
 end;
 
 end.
+
