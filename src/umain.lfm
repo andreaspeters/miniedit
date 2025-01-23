@@ -2253,7 +2253,6 @@ object fMain: TfMain
         OnGetImageIndex = FilesTreeGetImageIndex
         OnGetSelectedIndex = FilesTreeGetSelectedIndex
         OnKeyDown = FilesTreeKeyDown
-        OnKeyPress = FilesTreeKeyPRess
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
@@ -3524,7 +3523,8 @@ object fMain: TfMain
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
-    InitialDir = '.'
+    FileName = '/home/andreas/fpcupdeluxe/lazarus'
+    InitialDir = '/home/andreas/fpcupdeluxe/'
     Options = [ofEnableSizing]
     Left = 248
     Top = 251

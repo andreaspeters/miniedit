@@ -319,7 +319,6 @@ type
     procedure FilesTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FilesTreeKeyPRess(Sender: TObject; var Key: char);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -1977,41 +1976,43 @@ begin
 end;
 
 procedure TfMain.FilesTreeGetImageIndex(Sender: TObject; Node: TTreeNode);
-var
-  myNode: TFileTreeNode;
+var myNode: TFileTreeNode;
 begin
   myNode := TFileTreeNode(Node);
   if myNode = nil then
      exit;
 
   if (myNode.isDir) then
-    myNode.ImageIndex := 1
+    if myNode.Expanded then
+      myNode.ImageIndex := 0
+    else
+      myNode.ImageIndex := 1
   else
   begin
     case LowerCase(ExtractFileExt(myNode.FullPath)) of
-      '.go': myNode.ImageIndex := 3;
-      '.cpp': myNode.ImageIndex := 4;
-      '.c': myNode.ImageIndex := 5;
-      '.cc': myNode.ImageIndex := 5;
-      '.h': myNode.ImageIndex := 6;
-      '.hpp': myNode.ImageIndex := 7;
-      '.hcl': myNode.ImageIndex := 8;
-      '.yaml': myNode.ImageIndex := 9;
-      '.json': myNode.ImageIndex := 10;
-      '.nix': myNode.ImageIndex := 11;
+      '.go':    myNode.ImageIndex := 3;
+      '.cpp':   myNode.ImageIndex := 4;
+      '.c':     myNode.ImageIndex := 5;
+      '.cc':    myNode.ImageIndex := 5;
+      '.h':     myNode.ImageIndex := 6;
+      '.hpp':   myNode.ImageIndex := 7;
+      '.hcl':   myNode.ImageIndex := 8;
+      '.yaml':  myNode.ImageIndex := 9;
+      '.json':  myNode.ImageIndex := 10;
+      '.nix':   myNode.ImageIndex := 11;
       '.cmake': myNode.ImageIndex := 13;
-      '.md': myNode.ImageIndex := 14;
-      '.xml': myNode.ImageIndex := 15;
-      '.tf': myNode.ImageIndex := 16;
-      '.ca': myNode.ImageIndex := 17;
+      '.md':    myNode.ImageIndex := 14;
+      '.xml':   myNode.ImageIndex := 15;
+      '.tf':    myNode.ImageIndex := 16;
+      '.ca':    myNode.ImageIndex := 17;
     else
       myNode.ImageIndex := 2;
     end;
 
     case LowerCase(ExtractFileName(myNode.FullPath)) of
-      'makefile': myNode.ImageIndex := 12;
+      'makefile':          myNode.ImageIndex := 12;
       'cmake_install.txt': myNode.ImageIndex := 13;
-      'cmakelists.txt': myNode.ImageIndex := 13;
+      'cmakelists.txt':    myNode.ImageIndex := 13;
     end;
   end;
 
@@ -2044,11 +2045,6 @@ begin
          EditorFactory.AddEditor(Node.FullPath);
       end;
   end;
-end;
-
-procedure TfMain.FilesTreeKeyPRess(Sender: TObject; var Key: char);
-begin
-
 end;
 
 end.
