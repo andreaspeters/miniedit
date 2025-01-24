@@ -12,20 +12,19 @@ type
   private
     Language: String;
     Init: Boolean;
-    Connected: Boolean;
-    FSocket: TSocket;
     FileName: String;
     FilePath: String;
     FEvent: PRTLEvent;
     Pause: Boolean;
-    procedure Connect;
+    InputStream: TMemoryStream;
+    OutputStream: TMemoryStream;
+    LSPServer: TProcess;
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
-    function ReceiveDataUntilZero:String;
+    function ReceiveData:String;
   protected
     procedure Execute; override;
   public
-    ServerPort: Integer;
     ServerExec: String;
     ServerParameter: TStringList;
     Message: String;
@@ -41,6 +40,7 @@ type
     procedure SetLanguage(const ALanguage: String);
     procedure Suspend;
     procedure Resume;
+    procedure Stop;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -52,20 +52,24 @@ begin
   inherited Create(True);
   Init := False;
   FreeOnTerminate := True;
+  Message := '';
   MessageList := TStringList.Create;
   ServerParameter := TStringList.Create;
+  InputStream := TMemoryStream.Create;
+  OutputStream := TMemoryStream.Create;
   FEvent := RTLEventCreate;
   Pause := False;
 end;
 
 destructor TLSP.Destroy;
 begin
-  Connected := False;
-  if FSocket < 0 then
-    fpShutdown(FSocket, SHUT_RDWR);
-
-  MessageList.Free;
   inherited Destroy;
+end;
+
+procedure TLSP.Stop;
+begin
+  if Assigned(LSPServer) then
+    LSPServer.Free;
 end;
 
 procedure TLSP.Execute;
@@ -76,13 +80,17 @@ begin
   try
     while (not Terminated) do
     begin
-      if not Connected then
-        Connect;
-
       if Pause then
         RTLEventWaitFor(FEvent);
+      if not LSPServer.Running then
+        RTLEventWaitFor(FEvent);
+      if not Assigned(LSPServer) then
+        RTLEventWaitFor(FEvent);
 
-      Response := ReceiveDataUntilZero;
+      Response := ReceiveData;
+      //writeln('>>>>>>>>>>>>>>>>>');
+      //writeln(Response);
+      //writeln('<<<<<<<<<<<<<<<<<');
       if Length(Response) > 0 then
       begin
         try
@@ -125,7 +133,7 @@ begin
           end;
         end;
       end;
-      sleep(100);
+      sleep(10);
     end;
   except
     on E: Exception do
@@ -149,42 +157,39 @@ begin
   RTLEventSetEvent(FEvent);
 end;
 
-function TLSP.ReceiveDataUntilZero:String;
+function TLSP.ReceiveData:String;
 var Buffer: Byte;
-    ContentLength, BytesRead, i: Integer;
-    Line: String;
+    ContentLength, i: Integer;
     Found: Boolean;
     Regex: TRegExpr;
+    Line, TempLine: String;
 begin
-  if FSocket <= 0 then
+  if not LSPServer.Running then
     Exit;
 
   Result := '';
   Line := '';
   Found := False;
   ContentLength := 0;
-  BytesRead := 0;
+
   repeat
-    BytesRead := fpRead(FSocket, Buffer, 1);
-    if BytesRead > 0 then
+    Buffer := LSPServer.Output.ReadByte;
+    if Buffer = 10 then
     begin
-      if Buffer = 10 then
+      Regex := TRegExpr.Create;
+      Regex.Expression := '^Content-Length: (\d+).*';
+      Regex.ModifierI := False;
+      if Regex.Exec(Line) then
       begin
-        Regex := TRegExpr.Create;
-        Regex.Expression := '^Content-Length: (\d+).*';
-        Regex.ModifierI := False;
-        if Regex.Exec(Line) then
-        begin
-          ContentLength := StrToInt(RegEx.Match[1]);
-          Found := True;
-        end;
-      end
-      else
-      begin
-        Line := Line + Chr(Buffer);
+        ContentLength := StrToInt(RegEx.Match[1]);
+        Found := True;
       end;
+    end
+    else
+    begin
+      Line := Line + Chr(Buffer);
     end;
-  until (BytesRead = 0) or (Found);
+  until (LSPServer.Output.NumBytesAvailable <= 0) or (Found);
 
   if ContentLength = 0 then
     Exit;
@@ -192,13 +197,17 @@ begin
   i := 0;
   Line := '';
   repeat
-    BytesRead := fpRead(FSocket, Buffer, 1);
-    if BytesRead > 0 then
+    Buffer := LSPServer.Output.ReadByte;
+    Line := Line + Chr(Buffer);
+
+    if Pos('Content-Type: application/vscode-jsonrpc; charset=utf8', Line) > 0 then
     begin
-      Line := Line + Chr(Buffer);
+      Line := StringReplace(Line, 'Content-Type: application/vscode-jsonrpc; charset=utf8', '', [rfReplaceAll]);
+      i := i - 2 - Length('Content-Type: application/vscode-jsonrpc; charset=utf8');
     end;
     inc(i);
   until i-2 = ContentLength;
+
 
   if Length(Line) > 0 then
   begin
@@ -207,73 +216,41 @@ begin
 end;
 
 procedure TLSP.RunLSPServer;
-var run: TProcess;
 begin
-  run := TProcess.Create(nil);
+  LSPServer := TProcess.Create(nil);
   try
-    run.Executable := ServerExec;
-    run.Parameters := ServerParameter;
+    LSPServer.Executable := ServerExec;
+    LSPServer.Parameters := ServerParameter;
 
-    run.Options := [poNoConsole];
-    run.Execute;
+    LSPServer.Options := [poUsePipes];
+    LSPServer.Execute;
   except
   end;
   Sleep(200);
 end;
 
-procedure TLSP.Connect;
-var Addr: TInetSockAddr;
-    Flags: Integer;
-begin
-  if ServerPort <= 0 then
-    Exit;
-
-  FSocket := fpSocket(AF_INET, SOCK_STREAM, 0);
-  if FSocket = -1 then
-  begin
-    write('Failed to create socket.');
-    Exit;
-  end;
-
-  Addr.sin_family := AF_INET;
-
-  Addr.sin_port := htons(ServerPort);
-  Addr.sin_addr := StrToNetAddr('127.0.0.1');
-
-  if fpConnect(FSocket, @Addr, SizeOf(Addr)) < 0 then
-  begin
-    //Disconnect;
-    {$IFDEF UNIX}
-    write('Failed to connect to LSP server: ' + IntToStr(ServerPort));
-    {$ENDIF}
-    Exit;
-  end;
-  Flags := FpFcntl(FSocket, F_GETFL, 0);
-  FpFcntl(FSocket, F_SETFL, Flags or O_NONBLOCK);
-
-  Connected := True;
-end;
-
 procedure TLSP.SetLanguage(const ALanguage: String);
 begin
+  Language := '';
+
   case LowerCase(ALanguage) of
     'go':
     begin
      Language := 'go';
-     ServerPort := 37374;
      ServerExec := 'gopls';
-     ServerParameter.Add('-listen=127.0.0.1:' + IntToStr(ServerPort));
     end;
     'python':
     begin
      Language := 'python';
-     ServerPort := 37375;
      ServerExec := 'pylsp';
-     ServerParameter.Add('--tcp');
-     ServerParameter.Add('--host=127.0.0.1');
-     ServerParameter.Add('--port=' + IntToStr(ServerPort));
+    end;
+    'C/C++':
+    begin
+     Language := 'cpp';
+     ServerExec := 'ccls';
     end
   else
+    Suspend;
   end;
 
   if Length(Language) > 0 then
@@ -454,9 +431,11 @@ var RequestText, SendString: string;
     RequestJSON: TJSONObject;
     Data: TBytes;
 begin
-  // try to connect
-  if not Connected then
-    Connect;
+  if LSPServer = nil then
+    Exit;
+
+  if not LSPServer.Running then
+    Exit;
 
   RequestJSON := TJSONObject.Create;
   try
@@ -468,7 +447,11 @@ begin
     RequestText := RequestJSON.AsJSON;
     SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+1) + #10#10 + RequestText + #10;
     Data := TEncoding.UTF8.GetBytes(SendString);
-    fpSend(FSocket, @Data[0], Length(Data), 0);
+
+    InputStream.Clear;
+    InputStream.Write(PChar(SendString)^, Length(SendString));
+    InputStream.SaveToStream(LSPServer.Input);
+
   except
     on E: Exception do
     begin

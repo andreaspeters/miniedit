@@ -274,7 +274,7 @@ msgid "Directory Name"
 msgstr ""
 
 #: tflspmessage.caption
-msgid "FLSPMessage"
+msgid "MiniEdit LSP Window"
 msgstr ""
 
 #: tfmain.aclfoldernew.caption

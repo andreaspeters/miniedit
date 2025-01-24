@@ -1185,7 +1185,10 @@ begin
       begin
         Editor := EditorFactory.AddEditor(str);
         Editor.FilePath := ExtractFilePath(str);
-        LoadDir(dir);
+        if Length(Editor.FilePath) <= 0 then
+          Editor.FilePath := GetCurrentDir;
+
+        LoadDir(Editor.FilePath);
         if Assigned(Editor) and not Editor.Untitled then
           MRU.AddToRecent(str);
       end;
@@ -1471,13 +1474,13 @@ begin
       EditorFactory.CurrentLSP.Message := '';
     end;
 
-    if EditorFactory.CurrentLSP.MessageList.Count > 0 then
+    if EditorFactory.CurrentLSP.MessageList.Count > 1 then
     begin
       EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
       Message := TFLSPMessage.Create(Self);
-      Message.Top := EditorFactory.CurrentEditor.CaretYPix + 132 +  Top;
-      Message.Left := EditorFactory.CurrentEditor.CaretXPix + FilesTree.Width + 15 + Left;
+      Message.Top := Message.Top + EditorFactory.CurrentEditor.CaretYPix;
+      Message.Left := Message.Left + EditorFactory.CurrentEditor.CaretXPix;
       Message.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
       if Message.ShowModal = mrOk then
       begin

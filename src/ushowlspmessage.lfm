@@ -3,18 +3,16 @@ object FLSPMessage: TFLSPMessage
   Height = 329
   Top = 250
   Width = 814
+  BorderIcons = []
   BorderStyle = bsDialog
-  Caption = 'FLSPMessage'
+  Caption = 'MiniEdit LSP Window'
   ClientHeight = 329
   ClientWidth = 814
   Color = clForm
-  DefaultMonitor = dmDesktop
-  DoubleBuffered = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnMouseMove = FormMouseMove
-  ParentDoubleBuffered = False
-  LCLVersion = '3.6.0.0'
+  Position = poMainFormCenter
   object HtmlViewer: THtmlViewer
     Left = 0
     Height = 329

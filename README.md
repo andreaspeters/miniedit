@@ -15,7 +15,7 @@
 - Run 'Make' with realtime output into CMD Box.
 - Open File in a Hexeditor
 - Shortcut Support
-- LSP Support for code complition (currently only for golang).
+- LSP Support for code complition (currently only for golang and python) .
 
 ## LSP
 
