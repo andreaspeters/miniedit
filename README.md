@@ -30,6 +30,12 @@ LSP Server could find any information.
 LSP window with a description to these package. But again, only if the LSP
 Server could find any information about that.
 
+## Features in planing
+
+- Show git branch at the status bar
+- Keystroke to show/hide CMDBox
+- Connection with Ollama AI 🤷♂️
+
 ## How to compile
 
 - Install Lazarus 3.6
@@ -44,6 +50,7 @@ Server could find any information about that.
 - ALT+0 .. ALT+1 - Select Editor Tab 1 to 10
 - ALT+Right/Left - Move selected Editor Tab
 - ALT+L - Go to line
+- ALT+. - Show LSP window
 - CTRL+F - Search
 - CTRL+R - Replease
 - CTRL+Z - Undo

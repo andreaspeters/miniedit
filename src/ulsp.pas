@@ -262,7 +262,7 @@ begin
      Language := 'go';
      ServerPort := 37374;
      ServerExec := 'gopls';
-     ServerParameter.Add('-listen=:' + IntToStr(ServerPort));
+     ServerParameter.Add('-listen=127.0.0.1:' + IntToStr(ServerPort));
     end;
     'python':
     begin
@@ -270,6 +270,7 @@ begin
      ServerPort := 37375;
      ServerExec := 'pylsp';
      ServerParameter.Add('--tcp');
+     ServerParameter.Add('--host=127.0.0.1');
      ServerParameter.Add('--port=' + IntToStr(ServerPort));
     end
   else
@@ -350,18 +351,6 @@ begin
 
   Send(Params, 'textDocument/didChange');
 end;
-
-{
-  "textDocument": {
-    "uri": "file:///Users/octref/Code/css-test/test.less",
-    "version": 2
-  },
-  "contentChanges": [
-    {
-      "text": "."
-    }
-  ]
-}
 
 procedure TLSP.AddView(const AFileName: String);
 var Params: TJSONObject;
