@@ -24,6 +24,12 @@ language, you have to install it's own LSP Server. 😔 Currently, MiniEdit
 does support only LSP for Golang via `gopls`. Be sure that it is installed
 and in one of your PATH directories therefore MiniEdit can find it.
 
+- ALT+. will open the LSP window for code completion. But only if the
+LSP Server could find any information.
+- Doubleclick on a package name (as example `import "fmt"`) will open the
+LSP window with a description to these package. But again, only if the LSP
+Server could find any information about that.
+
 ## How to compile
 
 - Install Lazarus 3.6
