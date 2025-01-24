@@ -17,6 +17,13 @@
 - Shortcut Support
 - LSP Support for code complition (currently only for golang).
 
+## LSP
+
+There is no "one fix all" LSP Server. That means, for every programming
+language, you have to install it's own LSP Server. 😔 Currently, MiniEdit
+does support only LSP for Golang via `gopls`. Be sure that it is installed
+and in one of your PATH directories therefore MiniEdit can find it.
+
 ## How to compile
 
 - Install Lazarus 3.6
