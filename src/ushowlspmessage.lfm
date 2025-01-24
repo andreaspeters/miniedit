@@ -11,7 +11,6 @@ object FLSPMessage: TFLSPMessage
   Color = clForm
   KeyPreview = True
   OnKeyDown = FormKeyDown
-  OnMouseMove = FormMouseMove
   Position = poMainFormCenter
   object HtmlViewer: THtmlViewer
     Left = 0
@@ -32,7 +31,6 @@ object FLSPMessage: TFLSPMessage
     Align = alClient
     TabOrder = 0
     Visible = False
-    OnMouseMove = FormMouseMove
   end
   object VLECompletion: TValueListEditor
     AnchorSideLeft.Control = Owner

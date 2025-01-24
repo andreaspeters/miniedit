@@ -82,13 +82,20 @@ begin
     begin
       if Pause then
         RTLEventWaitFor(FEvent);
-      if not LSPServer.Running then
-        RTLEventWaitFor(FEvent);
       if not Assigned(LSPServer) then
+      begin
         RTLEventWaitFor(FEvent);
+        RunLSPServer;
+        Continue
+      end;
+      if not LSPServer.Running then
+      begin
+        RTLEventWaitFor(FEvent);
+        Continue;
+      end;
 
       Response := ReceiveData;
-      //writeln('>>>>>>>>>>>>>>>>>');
+      //writeln('>>>>>'+ ServerExec +'>>>>>>>>>>>>');
       //writeln(Response);
       //writeln('<<<<<<<<<<<<<<<<<');
       if Length(Response) > 0 then
@@ -104,9 +111,10 @@ begin
               AddView(FileName);
               Suspend;
             end;
-            if ResponseJSON.FindPath('error') <> nil then
-              if ResponseJSON.FindPath('error.code').AsInteger = 0 then
-                OpenFile(FileName);
+            if ResponseJSON.FindPath('method') <> nil then
+              if ResponseJSON.FindPath('method').AsString = 'window/logMessage' then
+                if ResponseJSON.FindPath('params.type').AsInteger = 3 then
+                  OpenFile(FileName);
             if ResponseJSON.FindPath('result.contents.value') <> nil then
             begin
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
@@ -225,6 +233,12 @@ begin
     LSPServer.Options := [poUsePipes];
     LSPServer.Execute;
   except
+    on E: Exception do
+    begin
+      {$IFDEF UNIX}
+      writeln('Exec LSP Server Error: ', E.Message);
+      {$ENDIF}
+    end;
   end;
   Sleep(200);
 end;
@@ -244,9 +258,9 @@ begin
      Language := 'python';
      ServerExec := 'pylsp';
     end;
-    'C/C++':
+    'c/c++':
     begin
-     Language := 'cpp';
+     Language := 'c';
      ServerExec := 'ccls';
     end
   else
@@ -431,11 +445,13 @@ var RequestText, SendString: string;
     RequestJSON: TJSONObject;
     Data: TBytes;
 begin
-  if LSPServer = nil then
+  if not Assigned(LSPServer) then
     Exit;
 
   if not LSPServer.Running then
     Exit;
+
+  Data := TBytes.Create;
 
   RequestJSON := TJSONObject.Create;
   try
@@ -447,6 +463,8 @@ begin
     RequestText := RequestJSON.AsJSON;
     SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+1) + #10#10 + RequestText + #10;
     Data := TEncoding.UTF8.GetBytes(SendString);
+
+    //writeln(SendString);
 
     InputStream.Clear;
     InputStream.Write(PChar(SendString)^, Length(SendString));

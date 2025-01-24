@@ -938,7 +938,7 @@ begin
        Result.LSP.Initialize(GetCurrentDir)
       else
         Result.LSP.Initialize(ExtractFilePath(FileName));
-      //Result.LSP.OpenFile(FileName);
+      Result.LSP.OpenFile(FileName);
     end;
     FWatcher.AddFile(FileName, Result);
   end;

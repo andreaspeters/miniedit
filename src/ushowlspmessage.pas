@@ -18,7 +18,6 @@ type
     LSearchText: TLabel;
     VLECompletion: TValueListEditor;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HtmlViewerHotSpotClick(Sender: TObject; const SRC: ThtString;
       var Handled: Boolean);
     procedure ShowMessageList(const MessageList: TStringList);
@@ -79,19 +78,6 @@ begin
             Exit;
           end;
       end;
-  end;
-end;
-
-procedure TFLSPMessage.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
-var MouseX, MouseY: Integer;
-begin
-  MouseX := Mouse.CursorPos.X;
-  MouseY := Mouse.CursorPos.Y;
-
-  if not (MouseX > Left) or not (MouseX < Left + Width) or not (MouseY > Top) or not (MouseY < Top + Height) then
-  begin
-    Close;
   end;
 end;
 
