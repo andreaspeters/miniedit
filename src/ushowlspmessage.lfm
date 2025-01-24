@@ -9,9 +9,12 @@ object FLSPMessage: TFLSPMessage
   ClientWidth = 814
   Color = clForm
   DefaultMonitor = dmDesktop
+  DoubleBuffered = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnMouseMove = FormMouseMove
+  ParentDoubleBuffered = False
+  LCLVersion = '3.6.0.0'
   object HtmlViewer: THtmlViewer
     Left = 0
     Height = 329
@@ -59,7 +62,7 @@ object FLSPMessage: TFLSPMessage
     Options = [goVertLine, goHorzLine, goColSizing, goAlwaysShowEditor, goThumbTracking, goSmoothScroll, goCellHints]
     ColWidths = (
       200
-      612
+      614
     )
   end
   object LSearchText: TLabel

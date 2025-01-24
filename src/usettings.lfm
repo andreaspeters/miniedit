@@ -8,6 +8,7 @@ object FSettings: TFSettings
   Caption = 'MiniEdit - Settings'
   ClientHeight = 167
   ClientWidth = 504
+  DoubleBuffered = True
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
     0000F8000000010020000000000040F000006400000064000000000000000000
@@ -1998,22 +1999,23 @@ object FSettings: TFSettings
     0000
   }
   OnShow = FormShow
+  ParentDoubleBuffered = False
   Position = poDesktopCenter
   object LEHexEditor: TLabeledEdit
     Left = 104
-    Height = 42
+    Height = 37
     Top = 32
     Width = 320
-    EditLabel.Height = 25
-    EditLabel.Width = 84
+    EditLabel.Height = 24
+    EditLabel.Width = 83
     EditLabel.Caption = 'Hex Editor'
     LabelPosition = lpLeft
     TabOrder = 0
   end
   object BPDefault: TButtonPanel
     Left = 6
-    Height = 49
-    Top = 112
+    Height = 43
+    Top = 118
     Width = 492
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2029,11 +2031,12 @@ object FSettings: TFSettings
     ShowButtons = [pbOK, pbCancel]
   end
   object SPChooseDirectory: TSpeedButton
-    Left = 432
-    Height = 29
-    Top = 40
-    Width = 37
+    Left = 424
+    Height = 37
+    Top = 32
+    Width = 45
     Flat = True
+    HotImageIndex = 5
     Images = fMain.imgListBig
     ImageIndex = 5
     OnClick = SPChooseDirectoryClick

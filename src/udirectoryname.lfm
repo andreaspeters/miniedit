@@ -8,7 +8,10 @@ object FCreateDirectory: TFCreateDirectory
   Caption = 'CreateDirectory'
   ClientHeight = 142
   ClientWidth = 312
+  DoubleBuffered = True
   OnShow = FormShow
+  ParentDoubleBuffered = False
+  LCLVersion = '3.6.0.0'
   object LEDirectoryName: TLabeledEdit
     Left = 24
     Height = 36

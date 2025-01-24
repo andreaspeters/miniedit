@@ -11,7 +11,7 @@ uses
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
-  ushowlspmessage, usettings,{$IFDEF LCLGTK2}Gtk2{$ENDIF}
+  ushowlspmessage, usettings{$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
 type
@@ -1286,7 +1286,7 @@ begin
     FileNew.Execute;
 
   splLeftBar.Visible := True;
-  Font := Screen.SystemFont;
+  //Font := Screen.SystemFont;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

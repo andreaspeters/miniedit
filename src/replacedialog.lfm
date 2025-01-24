@@ -10,18 +10,19 @@ object CustomReplaceDialog: TCustomReplaceDialog
   ClientWidth = 550
   Constraints.MinHeight = 184
   Constraints.MinWidth = 480
+  DoubleBuffered = True
   Font.Height = -16
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
+  ParentDoubleBuffered = False
   PopupMode = pmAuto
   Position = poMainFormCenter
-  LCLVersion = '3.6.0.0'
   object TextLabel: TLabel
     Left = 40
-    Height = 23
+    Height = 22
     Top = 16
-    Width = 85
+    Width = 84
     BorderSpacing.Left = 8
     BorderSpacing.Top = 14
     BorderSpacing.Right = 8
@@ -39,10 +40,10 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ParentColor = False
   end
   object PanelButtons: TPanel
-    Left = 549
-    Height = 397
+    Left = 550
+    Height = 403
     Top = 0
-    Width = 1
+    Width = 0
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
@@ -71,8 +72,8 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 88
-    ClientWidth = 230
+    ClientHeight = 81
+    ClientWidth = 228
     Items.Strings = (
       'Normal'
       'Extended'
@@ -100,22 +101,22 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 54
-    ClientWidth = 296
+    ClientHeight = 47
+    ClientWidth = 294
     TabOrder = 5
     object SelectedRadioButton: TRadioButton
       Left = 6
-      Height = 27
-      Top = 1
-      Width = 284
+      Height = 26
+      Top = 0
+      Width = 282
       Caption = 'Selected text'
       TabOrder = 0
     end
     object GlobalRadioButton: TRadioButton
       Left = 6
-      Height = 27
-      Top = 29
-      Width = 284
+      Height = 26
+      Top = 26
+      Width = 282
       Caption = 'Global'
       Checked = True
       TabOrder = 1
@@ -124,8 +125,8 @@ object CustomReplaceDialog: TCustomReplaceDialog
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 47
-    Top = 403
+    Height = 41
+    Top = 409
     Width = 538
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'Replace'
@@ -152,47 +153,47 @@ object CustomReplaceDialog: TCustomReplaceDialog
     Width = 234
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 137
-    ClientWidth = 232
+    ClientHeight = 130
+    ClientWidth = 230
     TabOrder = 4
     object WholeWordsOnlyCheckBox: TCheckBox
       Left = 0
-      Height = 27
+      Height = 26
       Top = 1
-      Width = 161
+      Width = 159
       Caption = 'Whole words only'
       TabOrder = 0
     end
     object CaseSensitiveCheckBox: TCheckBox
       Left = 0
-      Height = 27
+      Height = 26
       Top = 29
-      Width = 132
+      Width = 130
       Caption = 'Case sensitive'
       TabOrder = 1
     end
     object EntireScopeCheckBox: TCheckBox
       Left = 0
-      Height = 27
+      Height = 26
       Top = 56
-      Width = 152
+      Width = 150
       Caption = 'Search entire file'
       TabOrder = 2
     end
     object PromptOnReplaceCheckBox: TCheckBox
       Left = 0
-      Height = 27
+      Height = 26
       Top = 80
-      Width = 166
+      Width = 163
       Caption = 'Prompt on replace'
       TabOrder = 3
     end
   end
   object cbReplace: TCheckBox
     Left = 16
-    Height = 27
+    Height = 26
     Top = 56
-    Width = 124
+    Width = 122
     Caption = 'Replace With'
     TabOrder = 2
     OnChange = cbReplaceChange
@@ -200,13 +201,13 @@ object CustomReplaceDialog: TCustomReplaceDialog
   object EditFind: TComboBox
     AnchorSideTop.Side = asrCenter
     Left = 152
-    Height = 40
+    Height = 36
     Top = 5
     Width = 389
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
+    ItemHeight = 34
     TabOrder = 1
     OnKeyDown = EditFindKeyDown
   end
@@ -214,14 +215,14 @@ object CustomReplaceDialog: TCustomReplaceDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Side = asrCenter
     Left = 152
-    Height = 40
+    Height = 36
     Top = 48
     Width = 389
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
     BorderSpacing.Left = 8
-    ItemHeight = 0
+    ItemHeight = 34
     TabOrder = 3
   end
   object DirectionGroupBox: TGroupBox
@@ -244,22 +245,22 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 51
-    ClientWidth = 296
+    ClientHeight = 44
+    ClientWidth = 294
     TabOrder = 7
     object BackwardRadioButton: TRadioButton
       Left = 6
-      Height = 27
+      Height = 26
       Top = 0
-      Width = 284
+      Width = 282
       Caption = 'Backward'
       TabOrder = 0
     end
     object ForwardRadioButton: TRadioButton
       Left = 6
-      Height = 27
-      Top = 27
-      Width = 284
+      Height = 26
+      Top = 26
+      Width = 282
       Caption = 'Forward'
       Checked = True
       TabOrder = 1
@@ -271,7 +272,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     AnchorSideBottom.Side = asrBottom
     Left = 370
     Height = 30
-    Top = 367
+    Top = 373
     Width = 145
     Align = alNone
     Anchors = [akBottom]
@@ -282,7 +283,6 @@ object CustomReplaceDialog: TCustomReplaceDialog
     EdgeInner = esNone
     EdgeOuter = esNone
     Flat = False
-    Images = fMain.imgList
     TabOrder = 9
     object ToolButton1: TToolButton
       Left = 73

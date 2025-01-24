@@ -7,6 +7,7 @@ object TFInfo: TTFInfo
   Caption = 'FlexPacket - Info'
   ClientHeight = 425
   ClientWidth = 525
+  DoubleBuffered = True
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
     0000F8000000010020000000000040F000006400000064000000000000000000
@@ -1997,7 +1998,9 @@ object TFInfo: TTFInfo
     0000
   }
   OnShow = FormShow
+  ParentDoubleBuffered = False
   Position = poDesktopCenter
+  LCLVersion = '3.6.0.0'
   object Image1: TImage
     Left = 64
     Height = 128
