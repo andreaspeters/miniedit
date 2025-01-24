@@ -43,10 +43,10 @@ const
                    'downto,else,except,exit,finally,for,forward,function,goto,if,in,'+
                    'implementation,inline,is,label,module,nil,not,object,of,operator,'+
                    'or,packed,procedure,program,property,raise,record,repeat,set,shl,'+
-                   'shr,then,to,try,type,unit,uses,var,while,with';
+                   'shr,then,to,try,type,unit,uses,var,while,with,public,private,protected,end,class';
 
-  PascalDataTypes = 'boolean,byte,char,extended,integer,real,shortint,smallint,single,string,'+
-                    'cardinal,int64,bytearray,word,ptr';
+  PascalDataTypes = 'array,tbytes,tstrings,tstringlist,Boolean,byte,char,extended,'+
+                    'integer,real,shortint,smallint,single,string,cardinal,int64,bytearray,word,ptr';
 
   PascalPreprocessor = 'include';
 

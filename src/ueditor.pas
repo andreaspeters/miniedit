@@ -1214,28 +1214,11 @@ begin
 
 end;
 
-//{$IF LCL_FULLVERSION>=2000400}
-//
-//function TEditorFactory.TabRect(AIndex: Integer): TRect;
-//var
-//  ORect: TRect;
-//begin
-//  Result := inherited TabRect(AIndex);
-//  ORect:= self.BoundsRect;
-//  Result.Top := Result.Top - Orect.Top;
-//  Result.Bottom := Result.Bottom - Orect.Top;
-//  Result.Left := Result.Left - Orect.Left;
-//  Result.Right := Result.Right - Orect.Left;
-//end;
-//{$ENDIF}
-
-
 
 constructor TEditorFactory.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DoubleBuffered := true;
-  //Style :=  tsFlatButtons;
   FWatcher := TFileWatcher.Create;
   FWatcher.OnFileStateChange := @OnFileChange;
   fUntitledCounter := 0;

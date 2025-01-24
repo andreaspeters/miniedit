@@ -1984,6 +1984,8 @@ begin
   if myNode = nil then
      exit;
 
+  MyNode.DeleteChildren;
+
   if (myNode.isDir) then
     ExpandNode(MyNode, myNode.FullPath);
 
@@ -2037,8 +2039,8 @@ begin
       'makefile':          myNode.ImageIndex := 12;
       'cmake_install.txt': myNode.ImageIndex := 13;
       'cmakelists.txt':    myNode.ImageIndex := 13;
-      '.gitignore':    myNode.ImageIndex := 21;
-      '.gitmodules':    myNode.ImageIndex := 21;
+      '.gitignore':        myNode.ImageIndex := 21;
+      '.gitmodules':       myNode.ImageIndex := 21;
     end;
   end;
 

@@ -19,6 +19,8 @@ ushowlspmessage, usettings;
 
 {$R *.res}
 begin
+//  QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_PassThrough);
+
   RequireDerivedFormResource:=True;
   Application.Initialize;
   Application.Scaled:=True;
