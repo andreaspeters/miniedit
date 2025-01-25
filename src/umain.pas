@@ -319,7 +319,6 @@ type
     procedure FileReloadExecute(Sender: TObject);
     procedure FileSaveAsAccept(Sender: TObject);
     procedure FileSaveExecute(Sender: TObject);
-    procedure FilesTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeCreateNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
     procedure FilesTreeDblClick(Sender: TObject);
     procedure FilesTreeExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
@@ -1196,19 +1195,6 @@ begin
     end;
   Editor.Save;
 
-end;
-
-procedure TfMain.FilesTreeCollapsed(Sender: TObject; Node: TTreeNode);
-var myNode: TFileTreeNode;
-begin
-  myNode := TFileTreeNode(TTreeNode);
-  if not Assigned(myNode) then
-     exit;
-
-  if myNode.isDir then
-  begin
-    myNode.ImageIndex := 1;
-  end
 end;
 
 procedure TfMain.FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
