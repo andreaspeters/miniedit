@@ -2255,6 +2255,7 @@ object fMain: TfMain
         OnGetImageIndex = FilesTreeGetImageIndex
         OnGetSelectedIndex = FilesTreeGetSelectedIndex
         OnKeyDown = FilesTreeKeyDown
+        OnSelectionChanged = FilesTreeSelectionChanged
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end

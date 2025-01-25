@@ -327,6 +327,7 @@ type
     procedure FilesTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FilesTreeSelectionChanged(Sender: TObject);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -2157,6 +2158,19 @@ begin
          EditorFactory.AddEditor(Node.FullPath);
       end;
   end;
+end;
+
+procedure TfMain.FilesTreeSelectionChanged(Sender: TObject);
+var Node: TFileTreeNode;
+begin
+  Node := TFileTreeNode(FilesTree.Selected);
+
+  if not Assigned(Node) then
+    Exit;
+
+  actCopyFile.Enabled := True;
+  if Node.isDir then
+    actCopyFile.Enabled := False;
 end;
 
 end.
