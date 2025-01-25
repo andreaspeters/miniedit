@@ -36,9 +36,15 @@ Server could find any information about that.
 - Keystroke to show/hide CMDBox
 - Connection with Ollama AI 🤷♂️
 
+## Requirements
+
+- [libqt6pas.so/dll](https://github.com/davidbannon/libqt6pas/releases)
+
+
 ## How to compile
 
 - Install Lazarus 3.6
+- TRichMemo, TSynEdit, CmdBox, fpc-markdown
 
 ## Shortcuts
 

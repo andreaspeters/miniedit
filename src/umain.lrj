@@ -127,5 +127,7 @@
 {"hash":480837,"name":"tfmain.actcompilerun.caption","sourcebytes":[110,111,110,101],"value":"none"},
 {"hash":265889698,"name":"tfmain.actopeninhexeditor.caption","sourcebytes":[79,112,101,110,32,105,110,32,72,101,120,32,69,100,105,116,111,114],"value":"Open in Hex Editor"},
 {"hash":80832082,"name":"tfmain.aclfoldernew.caption","sourcebytes":[78,101,119,32,70,111,108,100,101,114],"value":"New Folder"},
-{"hash":114087587,"name":"tfmain.actopenproperties.caption","sourcebytes":[80,114,111,112,101,114,116,105,101,115],"value":"Properties"}
+{"hash":114087587,"name":"tfmain.actopenproperties.caption","sourcebytes":[80,114,111,112,101,114,116,105,101,115],"value":"Properties"},
+{"hash":129271365,"name":"tfmain.actcopyfile.caption","sourcebytes":[67,111,112,121,32,70,105,108,101],"value":"Copy File"},
+{"hash":175220869,"name":"tfmain.actpastefile.caption","sourcebytes":[80,97,115,116,101,32,70,105,108,101],"value":"Paste File"}
 ]}

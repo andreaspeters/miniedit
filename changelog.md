@@ -15,3 +15,4 @@
 - ADD: Choose editor tab by shortcut (ALT+1..0).
 - ADD: FileType Icons to the FileTree.
 - FIX: FilesTree folder expanding add itesm again after collapse and expand.
+- ADD: FilesTree support to copy 'n paste a file.

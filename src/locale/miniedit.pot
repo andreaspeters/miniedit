@@ -308,6 +308,10 @@ msgctxt "tfmain.actcompressspaces.hint"
 msgid "Reduce multiple spaces"
 msgstr ""
 
+#: tfmain.actcopyfile.caption
+msgid "Copy File"
+msgstr ""
+
 #: tfmain.actfilenametoclipboard.caption
 msgid "File Name only"
 msgstr ""
@@ -370,6 +374,10 @@ msgstr ""
 
 #: tfmain.actopenproperties.caption
 msgid "Properties"
+msgstr ""
+
+#: tfmain.actpastefile.caption
+msgid "Paste File"
 msgstr ""
 
 #: tfmain.actpathtoclipboard.caption

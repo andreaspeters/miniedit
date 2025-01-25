@@ -38,6 +38,8 @@ type
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
     aclFolderNew: TAction;
+    actCopyFile: TAction;
+    actPasteFile: TAction;
     actOpenProperties: TAction;
     actOpenInHexEditor: TAction;
     actUnQuote: TAction;
@@ -76,6 +78,8 @@ type
     MenuItem85: TMenuItem;
     MenuItem86: TMenuItem;
     MenuItem87: TMenuItem;
+    MenuItem88: TMenuItem;
+    MenuItem89: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
@@ -256,6 +260,7 @@ type
     procedure actCloseAllExceptThisExecute(Sender: TObject);
     procedure actCloseBeforeExecute(Sender: TObject);
     procedure ActCompressSpacesExecute(Sender: TObject);
+    procedure actCopyFileExecute(Sender: TObject);
     procedure actFileNameToClipboardExecute(Sender: TObject);
     procedure actFindLongestLineExecute(Sender: TObject);
     procedure actFontExecute(Sender: TObject);
@@ -270,6 +275,7 @@ type
     procedure actLanguageNoneExecute(Sender: TObject);
     procedure actOpenInHexEditorExecute(Sender: TObject);
     procedure actOpenPropertiesExecute(Sender: TObject);
+    procedure actPasteFileExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
@@ -313,6 +319,7 @@ type
     procedure FileReloadExecute(Sender: TObject);
     procedure FileSaveAsAccept(Sender: TObject);
     procedure FileSaveExecute(Sender: TObject);
+    procedure FilesTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeCreateNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
     procedure FilesTreeDblClick(Sender: TObject);
     procedure FilesTreeExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
@@ -360,6 +367,7 @@ type
     MRU: TMRUMenuManager;
 
     FindText, ReplaceText: string;
+    FileToCopy: String;
     SynOption: TMySynSearchOptions;
     prn: TSynEditPrint;
     ReplaceDialog: TCustomReplaceDialog;
@@ -602,6 +610,7 @@ begin
 end;
 
 
+
 procedure TfMain.actPathToClipboardExecute(Sender: TObject);
 var
   Ed: TEditor;
@@ -654,18 +663,32 @@ end;
 
 procedure TfMain.EditDeleteExecute(Sender: TObject);
 var Path: String;
+    Node: TFileTreeNode;
 begin
   if FilesTree.Selected = nil then
     Exit;
 
+  Node := TFileTreeNode(FilesTree.Selected);
+
   Path := GetSelectedFileTreePath;
 
+  // Delete Directory
+  if Node.IsDir then
+  begin
+    ShowMessage('Delete a directory is not supported');
+    Exit;
+  end;
+
+  // Delete File
   if MessageDlg('Sure you want delete this file?', mtConfirmation, [mbOK, mbCancel], 0) = mrOK then
   begin
     if FileExists(Path) then
     begin
       if DeleteFile(Path) then
-        LoadDir(BrowsingPath)
+      begin
+        ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(Path));
+        Node.Parent.Expand(false);
+      end
       else
         ShowMessage('Could not delete file.');
     end
@@ -996,6 +1019,45 @@ begin
 
 end;
 
+procedure TfMain.actPasteFileExecute(Sender: TObject);
+var Node: TFileTreeNode;
+begin
+  if not Assigned(FilesTree.Selected) then
+    Exit;
+
+  Node := TFileTreeNode(FilesTree.Selected);
+  if not Assigned(Node) then
+     Exit;
+
+  if Node.isDir then
+  begin
+    CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy));
+    actPasteFile.Enabled := False;
+    FileToCopy := '';
+
+    Node.DeleteChildren;
+    ExpandNode(Node, GetSelectedFileTreePath);
+    Node.Expand(false);
+  end;
+end;
+
+procedure TfMain.actCopyFileExecute(Sender: TObject);
+var Node: TFileTreeNode;
+begin
+  if not Assigned(FilesTree.Selected) then
+    Exit;
+
+  Node := TFileTreeNode(FilesTree.Selected);
+  if not Assigned(Node) then
+     Exit;
+
+  if Node.isDir then
+    Exit;
+
+  FileToCopy := Node.FullPath;
+  actPasteFile.Enabled := True;
+end;
+
 procedure TfMain.actFindLongestLineExecute(Sender: TObject);
 var
   Ed: TEditor;
@@ -1021,7 +1083,7 @@ procedure TfMain.aclFolderNewExecute(Sender: TObject);
 var Path: String;
     CreateDirectory: TFCreateDirectory;
 begin
-  if FilesTree.Selected = nil then
+  if not Assigned(FilesTree.Selected) then
     Exit;
 
   CreateDirectory := TFCreateDirectory.Create(Self);
@@ -1133,6 +1195,19 @@ begin
     end;
   Editor.Save;
 
+end;
+
+procedure TfMain.FilesTreeCollapsed(Sender: TObject; Node: TTreeNode);
+var myNode: TFileTreeNode;
+begin
+  myNode := TFileTreeNode(TTreeNode);
+  if not Assigned(myNode) then
+     exit;
+
+  if myNode.isDir then
+  begin
+    myNode.ImageIndex := 1;
+  end
 end;
 
 procedure TfMain.FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
@@ -1972,18 +2047,24 @@ begin
      exit;
 
   if Node.isDir then
-    exit
+  begin
+    if Node.Expanded then
+      Node.ImageIndex := 0
+    else
+      Node.ImageIndex := 1;
+  end
   else
      begin
         EditorFactory.AddEditor(Node.FullPath);
      end;
 end;
 
-procedure TfMain.FilesTreeExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
+procedure TfMain.FilesTreeExpanding(Sender: TObject; Node: TTreeNode;
+  var AllowExpansion: Boolean);
 var
   myNode: TFileTreeNode;
 begin
-  myNode := TFileTreeNode(Node);
+myNode := TFileTreeNode(Node);
   if myNode = nil then
      exit;
 
