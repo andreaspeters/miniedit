@@ -372,7 +372,7 @@ type
     MRU: TMRUMenuManager;
 
     FindText, ReplaceText: string;
-    FileToCopy: String;
+    FileToCopy: TFileTreeNode;
     MoveFile: Boolean;
     SynOption: TMySynSearchOptions;
     prn: TSynEditPrint;
@@ -691,15 +691,7 @@ begin
     if FileExists(Path) then
     begin
       if DeleteFile(Path) then
-      begin
-        if Assigned(Node.Parent) then
-        begin
-          ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(Path));
-          Node.Parent.Expand(false);
-        end
-        else
-          FileReloadFolderExecute(Sender);
-      end
+          Node.Delete
       else
         ShowMessage('Could not delete file.');
     end
@@ -1033,17 +1025,23 @@ end;
 procedure TfMain.actPasteFileExecute(Sender: TObject);
 var Node: TFileTreeNode;
 begin
+  if not Assigned(FileToCopy) then
+    Exit;
+
   if not Assigned(FilesTree.Selected) then
   begin
     // copy to filetrees root directory
-    if not CopyFile(FileToCopy, BrowsingPath+PathDelim+ExtractFileName(FileToCopy)) then
+    if not CopyFile(FileToCopy.FullPath, BrowsingPath+PathDelim+ExtractFileName(FileToCopy.FullPath)) then
       ShowMessage('Could not copy file.');
     if MoveFile then
     begin
-      if not DeleteFile(FileToCopy) then
+      if not DeleteFile(FileToCopy.FullPath) then
         ShowMessage('Could not delete file.');
     end;
-    LoadDir(BrowsingPath);
+    Node := TFileTreeNode(FilesTree.Items.AddChild(nil,ExtractFileName(FileToCopy.FullPath)));
+    Node.FullPath := BrowsingPath+PathDelim+ExtractFileName(FileToCopy.FullPath);
+    Node.isDir := False;
+    Node.HasChildren := False;
   end
   else
   begin
@@ -1054,18 +1052,18 @@ begin
 
     if Node.isDir then
     begin
-      if FileExists(FileToCopy) then
+      if FileExists(FileToCopy.FullPath) then
       begin
-        if not CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy)) then
+        if not CopyFile(FileToCopy.FullPath, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy.FullPath)) then
           ShowMessage('Could not copy file.');
         if MoveFile then
         begin
-          if not DeleteFile(FileToCopy) then
+          if not DeleteFile(FileToCopy.FullPath) then
             ShowMessage('Could not delete file.');
 
           if Assigned(Node.Parent) then
           begin
-            ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(FileToCopy));
+            ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(FileToCopy.FullPath));
             Node.Parent.Expand(false);
           end
           else
@@ -1081,7 +1079,7 @@ begin
   actPasteFile.Enabled := False;
   actCutFile.Enabled := False;
   MoveFile := False;
-  FileToCopy := '';
+  FileToCopy := nil;
 end;
 
 procedure TfMain.actCopyFileExecute(Sender: TObject);
@@ -1097,7 +1095,7 @@ begin
   if Node.isDir then
     Exit;
 
-  FileToCopy := Node.FullPath;
+  FileToCopy := Node;
   actPasteFile.Enabled := True;
 end;
 
