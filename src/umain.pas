@@ -329,6 +329,8 @@ type
     procedure FilesTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure FilesTreeKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FilesTreeMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FilesTreeSelectionChanged(Sender: TObject);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
@@ -1032,34 +1034,54 @@ procedure TfMain.actPasteFileExecute(Sender: TObject);
 var Node: TFileTreeNode;
 begin
   if not Assigned(FilesTree.Selected) then
-    Exit;
-
-  Node := TFileTreeNode(FilesTree.Selected);
-  if not Assigned(Node) then
-     Exit;
-
-  if Node.isDir then
   begin
-    if FileExists(FileToCopy) then
+    // copy to filetrees root directory
+    if not CopyFile(FileToCopy, BrowsingPath+PathDelim+ExtractFileName(FileToCopy)) then
+      ShowMessage('Could not copy file.');
+    if MoveFile then
     begin
-      CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy));
-      if MoveFile then
+      if not DeleteFile(FileToCopy) then
+        ShowMessage('Could not delete file.');
+    end;
+    LoadDir(BrowsingPath);
+  end
+  else
+  begin
+    // copy into a subdirectory
+    Node := TFileTreeNode(FilesTree.Selected);
+    if not Assigned(Node) then
+       Exit;
+
+    if Node.isDir then
+    begin
+      if FileExists(FileToCopy) then
       begin
-        if not DeleteFile(FileToCopy) then
-          ShowMessage('Could not delete file.');
+        if not CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy)) then
+          ShowMessage('Could not copy file.');
+        if MoveFile then
+        begin
+          if not DeleteFile(FileToCopy) then
+            ShowMessage('Could not delete file.');
+
+          if Assigned(Node.Parent) then
+          begin
+            ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(FileToCopy));
+            Node.Parent.Expand(false);
+          end
+          else
+            FileReloadFolderExecute(Sender);
+        end;
       end;
 
+      Node.DeleteChildren;
+      ExpandNode(Node, GetSelectedFileTreePath);
+      Node.Expand(false);
     end;
-
-    actPasteFile.Enabled := False;
-    actCutFile.Enabled := False;
-    MoveFile := False;
-    FileToCopy := '';
-
-    Node.DeleteChildren;
-    ExpandNode(Node, GetSelectedFileTreePath);
-    Node.Expand(false);
   end;
+  actPasteFile.Enabled := False;
+  actCutFile.Enabled := False;
+  MoveFile := False;
+  FileToCopy := '';
 end;
 
 procedure TfMain.actCopyFileExecute(Sender: TObject);
@@ -2176,6 +2198,21 @@ begin
   end;
 end;
 
+procedure TfMain.FilesTreeMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var ClickedNode: TTreeNode;
+begin
+  ClickedNode := FilesTree.GetNodeAt(X, Y);
+
+  if not Assigned(ClickedNode) then
+  begin
+    FilesTree.ClearSelection(false);
+    actCopyFile.Enabled := False;
+    actCutFile.Enabled := False;
+    EditDelete.Enabled := False;
+  end;
+end;
+
 procedure TfMain.FilesTreeSelectionChanged(Sender: TObject);
 var Node: TFileTreeNode;
 begin
@@ -2187,10 +2224,12 @@ begin
   actCopyFile.Enabled := True;
   actCutFile.Enabled := True;
   actFolderNew.Enabled := True;
+  EditDelete.Enabled := True;
   if Node.isDir then
   begin
     actCopyFile.Enabled := False;
     actCutFile.Enabled := False;
+    EditDelete.Enabled := False;
   end;
 end;
 
