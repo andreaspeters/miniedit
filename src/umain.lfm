@@ -2169,7 +2169,6 @@ object fMain: TfMain
     end
     object ToolButton17: TToolButton
       Left = 58
-      Hint = 'Reload Folder'
       Top = 0
       Action = FileReloadFolder
     end
@@ -3516,10 +3515,12 @@ object fMain: TfMain
       OnExecute = actOpenInHexEditorExecute
       ShortCut = 115
     end
-    object aclFolderNew: TAction
+    object actFolderNew: TAction
+      Category = 'FileTree'
       Caption = 'New Folder'
+      Enabled = False
       ImageIndex = 23
-      OnExecute = aclFolderNewExecute
+      OnExecute = actFolderNewExecute
     end
     object actOpenProperties: TAction
       Caption = 'Properties'
@@ -3527,15 +3528,25 @@ object fMain: TfMain
       OnExecute = actOpenPropertiesExecute
     end
     object actCopyFile: TAction
+      Category = 'FileTree'
       Caption = 'Copy File'
+      Enabled = False
       ImageIndex = 1
       OnExecute = actCopyFileExecute
     end
     object actPasteFile: TAction
+      Category = 'FileTree'
       Caption = 'Paste File'
       Enabled = False
       ImageIndex = 6
       OnExecute = actPasteFileExecute
+    end
+    object actCutFile: TAction
+      Category = 'FileTree'
+      Caption = 'Cut File'
+      Enabled = False
+      ImageIndex = 2
+      OnExecute = actCutFileExecute
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
@@ -4152,10 +4163,13 @@ object fMain: TfMain
       Action = FileNew
     end
     object MenuItem85: TMenuItem
-      Action = aclFolderNew
+      Action = actFolderNew
     end
     object MenuItem88: TMenuItem
       Action = actCopyFile
+    end
+    object MenuItem90: TMenuItem
+      Action = actCutFile
     end
     object MenuItem89: TMenuItem
       Action = actPasteFile

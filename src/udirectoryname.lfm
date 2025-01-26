@@ -5,19 +5,19 @@ object FCreateDirectory: TFCreateDirectory
   Width = 312
   BorderIcons = []
   BorderStyle = bsDialog
-  Caption = 'CreateDirectory'
+  Caption = 'MiniEdit - New Folder'
   ClientHeight = 142
   ClientWidth = 312
   DoubleBuffered = True
   OnShow = FormShow
   ParentDoubleBuffered = False
-  LCLVersion = '3.6.0.0'
+  Position = poMainFormCenter
   object LEDirectoryName: TLabeledEdit
     Left = 24
-    Height = 36
+    Height = 37
     Top = 32
     Width = 264
-    EditLabel.Height = 19
+    EditLabel.Height = 24
     EditLabel.Width = 264
     EditLabel.Caption = 'Directory Name'
     TabOrder = 0
@@ -25,8 +25,8 @@ object FCreateDirectory: TFCreateDirectory
   end
   object BPDefaultButtons: TButtonPanel
     Left = 6
-    Height = 44
-    Top = 92
+    Height = 43
+    Top = 93
     Width = 300
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

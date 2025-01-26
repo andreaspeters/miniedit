@@ -37,8 +37,9 @@ type
     actFullScreen: TAction;
     actFileNameToClipboard: TAction;
     actCompileRun: TAction;
-    aclFolderNew: TAction;
+    actFolderNew: TAction;
     actCopyFile: TAction;
+    actCutFile: TAction;
     actPasteFile: TAction;
     actOpenProperties: TAction;
     actOpenInHexEditor: TAction;
@@ -80,6 +81,7 @@ type
     MenuItem87: TMenuItem;
     MenuItem88: TMenuItem;
     MenuItem89: TMenuItem;
+    MenuItem90: TMenuItem;
     MIShotSpecialChar: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
@@ -255,12 +257,13 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
-    procedure aclFolderNewExecute(Sender: TObject);
+    procedure actFolderNewExecute(Sender: TObject);
     procedure actCloseAfterExecute(Sender: TObject);
     procedure actCloseAllExceptThisExecute(Sender: TObject);
     procedure actCloseBeforeExecute(Sender: TObject);
     procedure ActCompressSpacesExecute(Sender: TObject);
     procedure actCopyFileExecute(Sender: TObject);
+    procedure actCutFileExecute(Sender: TObject);
     procedure actFileNameToClipboardExecute(Sender: TObject);
     procedure actFindLongestLineExecute(Sender: TObject);
     procedure actFontExecute(Sender: TObject);
@@ -368,6 +371,7 @@ type
 
     FindText, ReplaceText: string;
     FileToCopy: String;
+    MoveFile: Boolean;
     SynOption: TMySynSearchOptions;
     prn: TSynEditPrint;
     ReplaceDialog: TCustomReplaceDialog;
@@ -686,8 +690,13 @@ begin
     begin
       if DeleteFile(Path) then
       begin
-        ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(Path));
-        Node.Parent.Expand(false);
+        if Assigned(Node.Parent) then
+        begin
+          ExpandNode(TFileTreeNode(Node.Parent), ExtractFilePath(Path));
+          Node.Parent.Expand(false);
+        end
+        else
+          FileReloadFolderExecute(Sender);
       end
       else
         ShowMessage('Could not delete file.');
@@ -1031,8 +1040,20 @@ begin
 
   if Node.isDir then
   begin
-    CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy));
+    if FileExists(FileToCopy) then
+    begin
+      CopyFile(FileToCopy, GetSelectedFileTreePath+PathDelim+ExtractFileName(FileToCopy));
+      if MoveFile then
+      begin
+        if not DeleteFile(FileToCopy) then
+          ShowMessage('Could not delete file.');
+      end;
+
+    end;
+
     actPasteFile.Enabled := False;
+    actCutFile.Enabled := False;
+    MoveFile := False;
     FileToCopy := '';
 
     Node.DeleteChildren;
@@ -1058,6 +1079,12 @@ begin
   actPasteFile.Enabled := True;
 end;
 
+procedure TfMain.actCutFileExecute(Sender: TObject);
+begin
+  MoveFile := True;
+  actCopyFileExecute(Sender);
+end;
+
 procedure TfMain.actFindLongestLineExecute(Sender: TObject);
 var
   Ed: TEditor;
@@ -1079,7 +1106,7 @@ begin
   EditorFactory.CloseAfter
 end;
 
-procedure TfMain.aclFolderNewExecute(Sender: TObject);
+procedure TfMain.actFolderNewExecute(Sender: TObject);
 var Path: String;
     CreateDirectory: TFCreateDirectory;
 begin
@@ -1180,7 +1207,7 @@ begin
 
   Editor.SaveAs(FileSaveAs.Dialog.FileName);
   MRU.AddToRecent(FileSaveAs.Dialog.FileName);
-
+  FileReloadFolderExecute(Sender);
 end;
 
 procedure TfMain.FileSaveExecute(Sender: TObject);
@@ -1189,10 +1216,13 @@ var
 begin
   Editor := EditorFactory.CurrentEditor;
   if Editor.Untitled then
+  begin
     if not AskFileName(Editor) then
     begin
       Exit;
     end;
+    FileReloadFolderExecute(Sender);
+  end;
   Editor.Save;
 
 end;
@@ -2155,8 +2185,13 @@ begin
     Exit;
 
   actCopyFile.Enabled := True;
+  actCutFile.Enabled := True;
+  actFolderNew.Enabled := True;
   if Node.isDir then
+  begin
     actCopyFile.Enabled := False;
+    actCutFile.Enabled := False;
+  end;
 end;
 
 end.

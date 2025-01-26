@@ -266,7 +266,7 @@ msgid "Column number"
 msgstr ""
 
 #: tfcreatedirectory.caption
-msgid "CreateDirectory"
+msgid "MiniEdit - New Folder"
 msgstr ""
 
 #: tfcreatedirectory.ledirectoryname.editlabel.caption
@@ -275,11 +275,6 @@ msgstr ""
 
 #: tflspmessage.caption
 msgid "MiniEdit LSP Window"
-msgstr ""
-
-#: tfmain.aclfoldernew.caption
-msgctxt "tfmain.aclfoldernew.caption"
-msgid "New Folder"
 msgstr ""
 
 #: tfmain.actcloseafter.caption
@@ -312,12 +307,21 @@ msgstr ""
 msgid "Copy File"
 msgstr ""
 
+#: tfmain.actcutfile.caption
+msgid "Cut File"
+msgstr ""
+
 #: tfmain.actfilenametoclipboard.caption
 msgid "File Name only"
 msgstr ""
 
 #: tfmain.actfindlongestline.caption
 msgid "Find Longest Line"
+msgstr ""
+
+#: tfmain.actfoldernew.caption
+msgctxt "tfmain.actfoldernew.caption"
+msgid "New Folder"
 msgstr ""
 
 #: tfmain.actfont.caption
@@ -822,11 +826,6 @@ msgstr ""
 
 #: tfmain.toolbutton16.hint
 msgid "Run Make"
-msgstr ""
-
-#: tfmain.toolbutton17.hint
-msgctxt "tfmain.toolbutton17.hint"
-msgid "Reload Folder"
 msgstr ""
 
 #: tfsettings.caption
