@@ -33,7 +33,6 @@ Server could find any information about that.
 ## Features in planing
 
 - Show git branch at the status bar
-- Keystroke to show/hide CMDBox
 - Connection with Ollama AI 🤷♂️
 
 ## Requirements

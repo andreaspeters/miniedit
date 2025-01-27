@@ -387,6 +387,7 @@ type
       var Handled: Boolean);
 
     function EditorAvalaible: boolean; inline;
+    function GetCurrentGitBranchFromHead: string;
     procedure BeforeCloseEditor(Editor: TEditor; var Cancel: boolean);
     procedure ExpandNode(NodeDir: TFileTreeNode; const Path: string);
     procedure LoadDir(Path: string);
@@ -1788,6 +1789,31 @@ begin
 
 end;
 
+function TfMain.GetCurrentGitBranchFromHead: string;
+var HeadFile: string;
+    HeadContent: TStringList;
+begin
+  Result := '';
+  HeadFile := IncludeTrailingPathDelimiter(BrowsingPath) + '.git/HEAD';
+  if not FileExists(HeadFile) then
+    Exit;
+
+  HeadContent := TStringList.Create;
+  try
+    HeadContent.LoadFromFile(HeadFile);
+    if HeadContent.Count > 0 then
+    begin
+      if Pos('ref: ', HeadContent[0]) = 1 then
+        Result := Copy(HeadContent[0], Length('ref: refs/heads/') + 1, MaxInt)
+      else
+        Result := '(detached HEAD)';
+    end;
+  finally
+    HeadContent.Free;
+  end;
+end;
+
+
 procedure TfMain.EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
 var
   Editor: TEditor;
@@ -1802,12 +1828,16 @@ begin
   else
     StatusBar.panels[0].Text := RSNormalText;
 
+  StatusBar.panels[1].Text := 'Branch: ' + GetCurrentGitBranchFromHead;
+
   if (scCaretX in Changes) or (scCaretY in Changes) then
-    StatusBar.Panels[1].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
+    StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
 
   if (scSelection in Changes) then
-    StatusBar.Panels[2].Text :=
+    StatusBar.Panels[3].Text :=
       Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart]);
+
+  StatusBar.Panels[4].Text := BrowsingPath;
 
   if (scModified in Changes) then
     if Editor.Modified then
@@ -1816,22 +1846,21 @@ begin
       Editor.Sheet.ImageIndex := IDX_IMG_STANDARD;
 
   case Editor.LineEndingType of
-    sfleCrLf: StatusBar.Panels[4].Text := mnuCRLF.Caption;
-    sfleLf:   StatusBar.Panels[4].Text := mnuLF.Caption;
-      sfleCr:   StatusBar.Panels[4].Text := mnuCR.Caption;
+    sfleCrLf: StatusBar.Panels[5].Text := mnuCRLF.Caption;
+    sfleLf:   StatusBar.Panels[5].Text := mnuLF.Caption;
+      sfleCr:   StatusBar.Panels[5].Text := mnuCR.Caption;
     else
-      StatusBar.Panels[4].Text:= '';
+      StatusBar.Panels[5].Text:= '';
     end;
 
- StatusBar.Panels[5].Text := Editor.DiskEncoding;
+ StatusBar.Panels[4].Text := Editor.DiskEncoding;
 
  if (scInsertMode in Changes) then
     if Editor.InsertMode then
-      StatusBar.Panels[6].Text := RSStatusBarInsMode
+      StatusBar.Panels[7].Text := RSStatusBarInsMode
     else
-      StatusBar.Panels[6].Text := RSStatusBarOvrMode;
+      StatusBar.Panels[7].Text := RSStatusBarOvrMode;
 
- StatusBar.Panels[3].Text := BrowsingPath;
 end;
 
 procedure TfMain.RecentFileEvent(Sender: TObject; const AFileName: string; const AData: TObject);
