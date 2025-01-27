@@ -11,7 +11,8 @@ uses
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
-  ushowlspmessage, usettings{$IFDEF LCLGTK2},Gtk2{$ENDIF}
+  ushowlspmessage, usettings
+  {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
 type
@@ -1467,8 +1468,7 @@ end;
 
 procedure TfMain.FormKeyPressDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-var ActiveCtrl: TControl;
-    Ed: TEditor;
+var Ed: TEditor;
     intKey: Integer;
 begin
   if (Shift = [ssAlt]) and (Key in [VK_0..VK_9]) then
@@ -1481,25 +1481,23 @@ begin
       EditorFactory.PageIndex := intKey - 1;
     end;
   end;
-  if Key = VK_TAB then
+  if (Shift = [ssShift]) and (Key = VK_TAB) then
   begin
-    if ssShift in Shift then
+    if not EditorAvalaible then
     begin
-      if not EditorAvalaible then
-      begin
-        FilesTree.SetFocus;
-        Exit;
-      end;
+      FilesTree.SetFocus;
+      Exit;
+    end;
 
-      Ed := EditorFactory.CurrentEditor;
-      ActiveCtrl := Screen.ActiveControl;
-      if Assigned(ActiveCtrl) then
+    Ed := EditorFactory.CurrentEditor;
+    if Assigned(Ed) then
+    begin
+      if FilesTree.Focused then
       begin
-        if (ActiveCtrl.Name = 'FilesTree') then
-          Ed.Sheet.SetFocus
-        else
-          FilesTree.SetFocus;
-      end;
+        Ed.SetFocus;
+      end
+      else
+        FilesTree.SetFocus;
     end;
   end;
 end;
@@ -1549,13 +1547,12 @@ var
   pnlSize : integer;
 begin
   pnlSize := 0;
-  for i := 1 to StatusBar.Panels.Count -1 do
+  for i := 0 to StatusBar.Panels.Count - 1 do
     begin
       inc(pnlSize, StatusBar.Panels[i].Width);
     end;
 
-  StatusBar.Panels[0].Width := max(0, StatusBar.Width - pnlSize - (StatusBar.BorderWidth * 2));
-
+  StatusBar.Panels[4].Width := max(4, StatusBar.Width - pnlSize - (StatusBar.BorderWidth * 2));
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
@@ -1804,9 +1801,9 @@ begin
     if HeadContent.Count > 0 then
     begin
       if Pos('ref: ', HeadContent[0]) = 1 then
-        Result := Copy(HeadContent[0], Length('ref: refs/heads/') + 1, MaxInt)
+        Result := 'Git: ' + Copy(HeadContent[0], Length('ref: refs/heads/') + 1, MaxInt)
       else
-        Result := '(detached HEAD)';
+        Result := 'Git: (detached HEAD)';
     end;
   finally
     HeadContent.Free;
@@ -1828,7 +1825,7 @@ begin
   else
     StatusBar.panels[0].Text := RSNormalText;
 
-  StatusBar.panels[1].Text := 'Branch: ' + GetCurrentGitBranchFromHead;
+  StatusBar.panels[1].Text := GetCurrentGitBranchFromHead;
 
   if (scCaretX in Changes) or (scCaretY in Changes) then
     StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
@@ -1853,7 +1850,7 @@ begin
       StatusBar.Panels[5].Text:= '';
     end;
 
- StatusBar.Panels[4].Text := Editor.DiskEncoding;
+ StatusBar.Panels[6].Text := Editor.DiskEncoding;
 
  if (scInsertMode in Changes) then
     if Editor.InsertMode then

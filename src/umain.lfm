@@ -2040,7 +2040,7 @@ object fMain: TfMain
         Width = 100
       end    
       item
-        Width = 100
+        Width = 50
       end    
       item
         Width = 50

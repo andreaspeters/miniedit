@@ -19,4 +19,5 @@
 - ADD: FilesTree support to cut 'n paste a file.
 - ADD: popup Menu with a close button to the CMD box."a
 - ADD: show current git branch in status line.
+- FIX: Switch between FilesTree and Editor.
 
