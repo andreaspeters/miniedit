@@ -2043,6 +2043,7 @@ object fMain: TfMain
         Width = 50
       end    
       item
+        Alignment = taRightJustify
         Width = 50
       end>
     SimplePanel = False
