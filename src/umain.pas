@@ -142,6 +142,7 @@ type
     PrintDialog1: TPrintDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     Separator1: TMenuItem;
+    Separator2: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;

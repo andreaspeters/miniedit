@@ -66,6 +66,7 @@ Server could find any information about that.
 - CTRL+F4 - Close File
 - CTRL+Q - Exit without to ask
 - SHIFT+CTRL+Z - Redo
+- SHIFT+ALT-UP/DOWN/RIGHT/LEFT - Block Selection
 
 ## Thanks
 
