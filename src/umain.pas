@@ -1500,6 +1500,8 @@ begin
         FilesTree.SetFocus;
     end;
   end;
+  if (Key = VK_ESCAPE) and (FLSPMessage.Visible) then
+    FLSPMessage.Close;
 end;
 
 procedure TfMain.FormResize(Sender: TObject);
@@ -1557,7 +1559,6 @@ end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
 var MousePos: TPoint;
-    Message: TFLSPMessage;
 begin
   if not EditorAvalaible then
     exit;
@@ -1573,15 +1574,22 @@ begin
 
   if Assigned(EditorFactory.CurrentLSP) then
   begin
+    if not Assigned(FLSPMessage) then
+      Exit;
+
     if Length(EditorFactory.CurrentLSP.Message) > 0 then
     begin
       EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
-      Message := TFLSPMessage.Create(Self);
-      Message.Top := MousePos.Y - 5;
-      Message.Left := MousePos.X - 5;
-      Message.Show;
-      Message.ShowMessage(EditorFactory.CurrentLSP.Message);
+
+      if FLSPMessage.Visible then
+        FLSPMessage.Close;
+
+      FLSPMessage.ShowOnTop;
+
+      FLSPMessage.Top := MousePos.Y - 5;
+      FLSPMessage.Left := MousePos.X - 5;
+      FLSPMessage.ShowMessage(EditorFactory.CurrentLSP.Message);
       EditorFactory.CurrentLSP.Message := '';
     end;
 
@@ -1589,14 +1597,18 @@ begin
     begin
       EditorFactory.CurrentLSP.Suspend;
       MousePos := Mouse.CursorPos;
-      Message := TFLSPMessage.Create(Self);
-      Message.Top := Message.Top + EditorFactory.CurrentEditor.CaretYPix;
-      Message.Left := Message.Left + EditorFactory.CurrentEditor.CaretXPix;
-      Message.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
-      if Message.ShowModal = mrOk then
+
+      FLSPMessage.Top := FLSPMessage.Top + EditorFactory.CurrentEditor.CaretYPix;
+      FLSPMessage.Left := FLSPMessage.Left + EditorFactory.CurrentEditor.CaretXPix;
+      FLSPMessage.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
+
+      if FLSPMessage.Visible then
+        FLSPMessage.Close;
+
+      if FLSPMessage.ShowModal = mrOk then
       begin
-        EditorFactory.CurrentEditor.InsertTextAtCaret(Message.LSPKey);
-        Message.LSPKey := '';
+        EditorFactory.CurrentEditor.InsertTextAtCaret(FLSPMessage.LSPKey);
+        FLSPMessage.LSPKey := '';
       end;
       EditorFactory.CurrentLSP.MessageList.Clear;
     end;

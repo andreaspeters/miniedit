@@ -23,9 +23,9 @@ language, you have to install it's own LSP Server. 😔 Currently, MiniEdit
 does support only LSP for Golang via `gopls`. Be sure that it is installed
 and in one of your PATH directories therefore MiniEdit can find it.
 
-- ALT+. will open the LSP window for code completion. But only if the
+- ALT+. (PERIOD) will open the LSP window for code completion. But only if the
 LSP Server could find any information.
-- Doubleclick on a package name (as example `import "fmt"`) will open the
+- ALT+- (MINUS) - on a package name (as example `import "fmt"`) will open the
 LSP window with a description to these package. But again, only if the LSP
 Server could find any information about that.
 
@@ -54,7 +54,8 @@ Server could find any information about that.
 - ALT+0 .. ALT+1 - Select Editor Tab 1 to 10
 - ALT+Right/Left - Move selected Editor Tab
 - ALT+L - Go to line
-- ALT+. - Show LSP window
+- ALT+. (PERIOD) - Show LSP window for code completion
+- ALT+- (MINUS) - Show LSP window for package information
 - CTRL+F - Search
 - CTRL+R - Replease
 - CTRL+Z - Undo

@@ -10,7 +10,7 @@ interface
 uses
   Classes, SysUtils, Controls, Dialogs, ComCtrls, LCLProc, LCLType,
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
-  SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
+  SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
   ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmd, ucmdbox, ucmdboxthread, ulsp;
@@ -132,7 +132,6 @@ type
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     function CreateEmptyFile(AFileName: TFileName): boolean;
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
-    procedure EditorOnDblClick(Sender: TObject);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure DoChange; override;
@@ -840,7 +839,6 @@ begin
           Sheet.Editor.LSP.SetLanguage(FileType.LanguageName);
           Sheet.Editor.LSP.Initialize(ExtractFilePath(FileName));
           Sheet.Editor.LSP.OpenFile(FileName);
-          Sheet.Editor.OnDblClick := @EditorOnDblClick;
           Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
@@ -873,7 +871,6 @@ begin
   Result.Font.Quality := fqCleartypeNatural;
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
-  Result.OnDblClick := @EditorOnDblClick;
   Result.OnKeyDown := @EditorOnKeyDown;
 
   Cmd := TCmd.Create(Sheet);
@@ -950,29 +947,22 @@ begin
 
 end;
 
-
-procedure TEditorFactory.EditorOnDblClick(Sender: TObject);
+procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 var Ed: TEditor;
 begin
   Ed := GetCurrentEditor;
   if not Assigned(Ed) then
     Exit;
 
-  Ed.LSP.Resume;
-  Ed.LSP.Hover(Ed.CaretY, Ed.CaretX);
-end;
+  if (Key = VK_OEM_MINUS) and (Shift = [ssAlt]) then
+  begin
+    Ed.LSP.Resume;
+    Ed.LSP.Hover(Ed.CaretY, Ed.CaretX);
+  end;
 
-
-procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var Ed: TEditor;
-begin
   if (Key = VK_OEM_PERIOD) and (Shift = [ssAlt]) then
   begin
-    Ed := GetCurrentEditor;
-    if not Assigned(Ed) then
-      Exit;
-
     Ed.LSP.Resume;
     Ed.LSP.Change(Ed.Text);
     Ed.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)

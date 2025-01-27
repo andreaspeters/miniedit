@@ -15,5 +15,7 @@
 {"hash":217690840,"name":"tcustomreplacedialog.cbreplace.caption","sourcebytes":[82,101,112,108,97,99,101,32,87,105,116,104],"value":"Replace With"},
 {"hash":146466142,"name":"tcustomreplacedialog.directiongroupbox.caption","sourcebytes":[68,105,114,101,99,116,105,111,110],"value":"Direction"},
 {"hash":128113668,"name":"tcustomreplacedialog.backwardradiobutton.caption","sourcebytes":[66,97,99,107,119,97,114,100],"value":"Backward"},
-{"hash":225040580,"name":"tcustomreplacedialog.forwardradiobutton.caption","sourcebytes":[70,111,114,119,97,114,100],"value":"Forward"}
+{"hash":225040580,"name":"tcustomreplacedialog.forwardradiobutton.caption","sourcebytes":[70,111,114,119,97,114,100],"value":"Forward"},
+{"hash":45696169,"name":"tcustomreplacedialog.toolbutton1.hint","sourcebytes":[70,105,110,100,32,80,114,101,118,105,111,117,115,32,40,83,72,73,70,84,45,70,51,41],"value":"Find Previous (SHIFT-F3)"},
+{"hash":55,"name":"tcustomreplacedialog.toolbutton2.hint","sourcebytes":[55],"value":"7"}
 ]}

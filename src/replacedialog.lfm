@@ -287,13 +287,19 @@ object CustomReplaceDialog: TCustomReplaceDialog
     TabOrder = 9
     object ToolButton1: TToolButton
       Left = 73
+      Hint = 'Find Previous (SHIFT-F3)'
       Top = 0
       Action = fMain.SearchFindPrevious
+      ParentShowHint = False
+      ShowHint = True
     end
     object ToolButton2: TToolButton
       Left = 1
+      Hint = '7'
       Top = 0
       Action = fMain.SearchFindNext
+      ParentShowHint = False
+      ShowHint = True
     end
   end
 end

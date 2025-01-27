@@ -18,6 +18,7 @@ type
     LSearchText: TLabel;
     VLECompletion: TValueListEditor;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormMouseLeave(Sender: TObject);
     procedure HtmlViewerHotSpotClick(Sender: TObject; const SRC: ThtString;
       var Handled: Boolean);
     procedure ShowMessageList(const MessageList: TStringList);
@@ -79,6 +80,11 @@ begin
           end;
       end;
   end;
+end;
+
+procedure TFLSPMessage.FormMouseLeave(Sender: TObject);
+begin
+  writeln('weg');
 end;
 
 procedure TFLSPMessage.HtmlViewerHotSpotClick(Sender: TObject;
