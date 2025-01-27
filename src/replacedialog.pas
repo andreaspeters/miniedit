@@ -5,7 +5,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Forms, Controls, Graphics, Dialogs, lcltype,
-  Buttons, StdCtrls, ExtCtrls, ButtonPanel, Arrow, ComCtrls, Config, SynEditTypes;
+  Buttons, StdCtrls, ExtCtrls, ButtonPanel, ComCtrls, Config;
 
 type
 

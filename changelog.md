@@ -17,4 +17,5 @@
 - FIX: FilesTree folder expanding add itesm again after collapse and expand.
 - ADD: FilesTree support to copy 'n paste a file.
 - ADD: FilesTree support to cut 'n paste a file.
+- ADD: popup Menu with a close button to the CMD box."
 

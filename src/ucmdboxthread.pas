@@ -48,10 +48,12 @@ begin
     if BytesRead > 0 then
     begin
       SetString(Line, PAnsiChar(@FBuffer[0]), BytesRead);
+      Line := StringReplace(Line, #13#10, #13, [rfReplaceAll]);
       OutputString := OutputString + Line;
     end;
     sleep(1000);
   end;
+  WaitFor;
 end;
 
 

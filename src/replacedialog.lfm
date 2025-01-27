@@ -1,12 +1,12 @@
 object CustomReplaceDialog: TCustomReplaceDialog
   Left = -1
-  Height = 456
+  Height = 441
   Top = -1
   Width = 550
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Replace Text'
-  ClientHeight = 456
+  ClientHeight = 441
   ClientWidth = 550
   Constraints.MinHeight = 184
   Constraints.MinWidth = 480
@@ -41,7 +41,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
   end
   object PanelButtons: TPanel
     Left = 550
-    Height = 403
+    Height = 388
     Top = 0
     Width = 0
     Align = alRight
@@ -88,7 +88,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 246
-    Height = 80
+    Height = 104
     Top = 104
     Width = 298
     Anchors = [akTop, akLeft, akRight]
@@ -101,13 +101,13 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 47
+    ClientHeight = 71
     ClientWidth = 294
     TabOrder = 5
     object SelectedRadioButton: TRadioButton
       Left = 6
       Height = 26
-      Top = 0
+      Top = 7
       Width = 282
       Caption = 'Selected text'
       TabOrder = 0
@@ -115,7 +115,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     object GlobalRadioButton: TRadioButton
       Left = 6
       Height = 26
-      Top = 26
+      Top = 40
       Width = 282
       Caption = 'Global'
       Checked = True
@@ -126,7 +126,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
   object BtnPanel: TButtonPanel
     Left = 6
     Height = 41
-    Top = 409
+    Top = 394
     Width = 538
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'Replace'
@@ -231,10 +231,10 @@ object CustomReplaceDialog: TCustomReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 246
-    Height = 77
-    Top = 190
-    Width = 298
+    Left = 248
+    Height = 92
+    Top = 214
+    Width = 296
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Direction'
@@ -245,22 +245,22 @@ object CustomReplaceDialog: TCustomReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 44
-    ClientWidth = 294
+    ClientHeight = 59
+    ClientWidth = 292
     TabOrder = 7
     object BackwardRadioButton: TRadioButton
       Left = 6
       Height = 26
-      Top = 0
-      Width = 282
+      Top = 3
+      Width = 280
       Caption = 'Backward'
       TabOrder = 0
     end
     object ForwardRadioButton: TRadioButton
       Left = 6
       Height = 26
-      Top = 26
-      Width = 282
+      Top = 32
+      Width = 280
       Caption = 'Forward'
       Checked = True
       TabOrder = 1
@@ -270,10 +270,10 @@ object CustomReplaceDialog: TCustomReplaceDialog
   object ToolBar1: TToolBar
     AnchorSideBottom.Control = PanelButtons
     AnchorSideBottom.Side = asrBottom
-    Left = 370
-    Height = 30
-    Top = 373
-    Width = 145
+    Left = 400
+    Height = 31
+    Top = 357
+    Width = 147
     Align = alNone
     Anchors = [akBottom]
     BorderWidth = 1
@@ -283,6 +283,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
     EdgeInner = esNone
     EdgeOuter = esNone
     Flat = False
+    Images = fMain.imgListBig
     TabOrder = 9
     object ToolButton1: TToolButton
       Left = 73

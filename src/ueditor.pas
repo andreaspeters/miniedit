@@ -13,7 +13,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread, ulsp;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmd, ucmdbox, ucmdboxthread, ulsp;
 
 type
 
@@ -102,14 +102,14 @@ type
   TEditorTabSheet = class(TTabSheet)
   private
     FEditor: TEditor;
-    FCmdBox: TCmdBox;
+    FCmdBox: TCmd;
     FCmdBoxThread: TCmdBoxThread;
   protected
     procedure DoShow; override;
 
   public
     property Editor: TEditor read FEditor;
-    property CmdBox: TCmdBox read FCmdBox;
+    property CmdBox: TCmd read FCmdBox;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
     //--//
   end;
@@ -124,7 +124,7 @@ type
     fUntitledCounter: integer;
     FWatcher: TFileWatcher;
     function GetCurrentEditor: TEditor;
-    function GetCurrentCmdBox: TCmdBox;
+    function GetCurrentCmdBox: TCmd;
     function GetCurrentCmdBoxThread: TCmdBoxThread;
     function GetCurrentLSP: TLSP;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
@@ -141,7 +141,7 @@ type
 
   public
     property CurrentEditor: TEditor read GetCurrentEditor;
-    property CurrentCmdBox: TCmdBox read GetCurrentCmdBox;
+    property CurrentCmdBox: TCmd read GetCurrentCmdBox;
     property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
     property CurrentLSP: TLSP read GetCurrentLSP;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
@@ -707,7 +707,7 @@ begin
 
 end;
 
-function TEditorFactory.GetCurrentCmdBox: TCmdBox;
+function TEditorFactory.GetCurrentCmdBox: TCmd;
 begin
   Result := nil;
   if (PageCount > 0) and (ActivePageIndex >= 0) then
@@ -790,7 +790,7 @@ end;
 function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
-  Cmd: TCmdBox;
+  Cmd: TCmd;
   i: integer;
   DefaultAttr: TFontAttributes;
   Beauty: TSynBeautifier;
@@ -876,7 +876,7 @@ begin
   Result.OnDblClick := @EditorOnDblClick;
   Result.OnKeyDown := @EditorOnKeyDown;
 
-  Cmd := TCmdBox.Create(Sheet);
+  Cmd := TCmd.Create(Sheet);
   Cmd.Parent := Sheet;
   Cmd.Align := alBottom;
   Cmd.Height := 200;

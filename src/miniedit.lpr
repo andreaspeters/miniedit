@@ -15,7 +15,7 @@ uses
   umain, udmmain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
   JsonTools, iconloader, uinfo, ucmdboxthread, uLSP, udirectoryname,
-ushowlspmessage, usettings;
+  ushowlspmessage, usettings, ucmd;
 
 {$R *.res}
 begin

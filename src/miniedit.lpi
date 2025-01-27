@@ -203,7 +203,7 @@
         <PackageName Value="LCL"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="26">
+    <Units Count="27">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -342,6 +342,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit25>
+      <Unit26>
+        <Filename Value="ucmd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UCmd"/>
+      </Unit26>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
