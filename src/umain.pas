@@ -1558,7 +1558,6 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
-var MousePos: TPoint;
 begin
   if not EditorAvalaible then
     exit;
@@ -1580,15 +1579,12 @@ begin
     if Length(EditorFactory.CurrentLSP.Message) > 0 then
     begin
       EditorFactory.CurrentLSP.Suspend;
-      MousePos := Mouse.CursorPos;
 
       if FLSPMessage.Visible then
         FLSPMessage.Close;
 
       FLSPMessage.ShowOnTop;
 
-      FLSPMessage.Top := MousePos.Y - 5;
-      FLSPMessage.Left := MousePos.X - 5;
       FLSPMessage.ShowMessage(EditorFactory.CurrentLSP.Message);
       EditorFactory.CurrentLSP.Message := '';
     end;
@@ -1596,10 +1592,7 @@ begin
     if EditorFactory.CurrentLSP.MessageList.Count > 1 then
     begin
       EditorFactory.CurrentLSP.Suspend;
-      MousePos := Mouse.CursorPos;
 
-      FLSPMessage.Top := FLSPMessage.Top + EditorFactory.CurrentEditor.CaretYPix;
-      FLSPMessage.Left := FLSPMessage.Left + EditorFactory.CurrentEditor.CaretXPix;
       FLSPMessage.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
 
       if FLSPMessage.Visible then
