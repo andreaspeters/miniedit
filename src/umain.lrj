@@ -129,5 +129,6 @@
 {"hash":114087587,"name":"tfmain.actopenproperties.caption","sourcebytes":[80,114,111,112,101,114,116,105,101,115],"value":"Properties"},
 {"hash":129271365,"name":"tfmain.actcopyfile.caption","sourcebytes":[67,111,112,121,32,70,105,108,101],"value":"Copy File"},
 {"hash":175220869,"name":"tfmain.actpastefile.caption","sourcebytes":[80,97,115,116,101,32,70,105,108,101],"value":"Paste File"},
-{"hash":207932549,"name":"tfmain.actcutfile.caption","sourcebytes":[67,117,116,32,70,105,108,101],"value":"Cut File"}
+{"hash":207932549,"name":"tfmain.actcutfile.caption","sourcebytes":[67,117,116,32,70,105,108,101],"value":"Cut File"},
+{"hash":77185166,"name":"tfmain.actopenextern.caption","sourcebytes":[79,112,101,110,32,69,120,116,101,114,110],"value":"Open Extern"}
 ]}

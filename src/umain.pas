@@ -41,6 +41,7 @@ type
     actFolderNew: TAction;
     actCopyFile: TAction;
     actCutFile: TAction;
+    actOpenExtern: TAction;
     actPasteFile: TAction;
     actOpenProperties: TAction;
     actOpenInHexEditor: TAction;
@@ -74,6 +75,7 @@ type
     FilesTree: TTreeView;
     imgListFileIcons: TImageList;
     imgListSmall: TImageList;
+    MenuItem100: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
     MenuItem84: TMenuItem;
@@ -144,6 +146,7 @@ type
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     Separator1: TMenuItem;
     Separator2: TMenuItem;
+    Separator3: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -278,6 +281,7 @@ type
     procedure actJSONPrettyPrintExecute(Sender: TObject);
     procedure actJumpFileTreeExecute(Sender: TObject);
     procedure actLanguageNoneExecute(Sender: TObject);
+    procedure actOpenExternExecute(Sender: TObject);
     procedure actOpenInHexEditorExecute(Sender: TObject);
     procedure actOpenPropertiesExecute(Sender: TObject);
     procedure actPasteFileExecute(Sender: TObject);
@@ -588,6 +592,23 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.Highlighter := nil;
+end;
+
+procedure TfMain.actOpenExternExecute(Sender: TObject);
+var Node: TFileTreeNode;
+begin
+  if not Assigned(FilesTree.Selected) then
+    Exit;
+
+  Node := TFileTreeNode(FilesTree.Selected);
+  if not Assigned(Node) then
+     Exit;
+
+  if Node.isDir then
+    Exit;
+
+  if FileExists(Node.FullPath) then
+    OpenDocument(Node.FullPath);
 end;
 
 procedure TfMain.actOpenInHexEditorExecute(Sender: TObject);
@@ -2240,6 +2261,7 @@ begin
     actCopyFile.Enabled := False;
     actCutFile.Enabled := False;
     EditDelete.Enabled := False;
+    actOpenExtern.Enabled := False;
   end;
 end;
 
@@ -2255,11 +2277,13 @@ begin
   actCutFile.Enabled := True;
   actFolderNew.Enabled := True;
   EditDelete.Enabled := True;
+  actOpenExtern.Enabled := True;
   if Node.isDir then
   begin
     actCopyFile.Enabled := False;
     actCutFile.Enabled := False;
     EditDelete.Enabled := False;
+    actOpenExtern.Enabled := False;
   end;
 end;
 

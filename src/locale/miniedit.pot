@@ -380,6 +380,10 @@ msgstr ""
 msgid "lowercase"
 msgstr ""
 
+#: tfmain.actopenextern.caption
+msgid "Open Extern"
+msgstr ""
+
 #: tfmain.actopeninhexeditor.caption
 msgid "Open in Hex Editor"
 msgstr ""

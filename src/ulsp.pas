@@ -225,6 +225,9 @@ end;
 
 procedure TLSP.RunLSPServer;
 begin
+  if Length(ServerExec) <= 0 then
+    Exit;
+
   LSPServer := TProcess.Create(nil);
   try
     LSPServer.Executable := ServerExec;

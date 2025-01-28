@@ -17,8 +17,10 @@
 - FIX: FilesTree folder expanding add itesm again after collapse and expand.
 - ADD: FilesTree support to copy 'n paste a file.
 - ADD: FilesTree support to cut 'n paste a file.
-- ADD: popup Menu with a close button to the CMD box."a
+- ADD: popup Menu with a close button to the CMD box."
 - ADD: show current git branch in status line.
 - FIX: Switch between FilesTree and Editor.
 - CHANGE: Activation for LSP Code Package information to ALT+- (MINUS).
+- ADD: FilesTree open files externaly.
+- FIX: LSP Server execute error.
 

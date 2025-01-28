@@ -3553,6 +3553,11 @@ object fMain: TfMain
       ImageIndex = 2
       OnExecute = actCutFileExecute
     end
+    object actOpenExtern: TAction
+      Category = 'FileTree'
+      Caption = 'Open Extern'
+      OnExecute = actOpenExternExecute
+    end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     FileName = '/home/andreas/fpcupdeluxe/lazarus'
@@ -4169,6 +4174,12 @@ object fMain: TfMain
     end
     object MenuItem85: TMenuItem
       Action = actFolderNew
+    end
+    object Separator3: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem100: TMenuItem
+      Action = actOpenExtern
     end
     object Separator2: TMenuItem
       Caption = '-'
