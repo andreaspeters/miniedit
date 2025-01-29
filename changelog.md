@@ -24,4 +24,5 @@
 - ADD: FilesTree open files externaly.
 - FIX: LSP Server execute error.
 - DEL: Export as RTF and HTML.
+- FIX: ALT-L Shortcut conflict with QT6 Main Menu.
 

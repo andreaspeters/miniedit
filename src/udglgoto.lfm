@@ -1999,10 +1999,10 @@ object dlgGoTo: TdlgGoTo
     0000
   }
   OnShow = FormShow
-  Position = poDesktopCenter
+  Position = poOwnerFormCenter
   object seLine: TSpinEdit
     Left = 176
-    Height = 41
+    Height = 37
     Top = 16
     Width = 98
     Alignment = taRightJustify
@@ -2024,8 +2024,8 @@ object dlgGoTo: TdlgGoTo
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 48
-    Top = 123
+    Height = 43
+    Top = 128
     Width = 287
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'Go to'
@@ -2052,7 +2052,7 @@ object dlgGoTo: TdlgGoTo
   end
   object seColumn: TSpinEdit
     Left = 176
-    Height = 41
+    Height = 37
     Top = 64
     Width = 98
     Alignment = taRightJustify

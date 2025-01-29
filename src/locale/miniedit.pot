@@ -736,7 +736,7 @@ msgid "Windows (CR+LF)"
 msgstr ""
 
 #: tfmain.mnulanguage.caption
-msgid "Language"
+msgid "L&anguage"
 msgstr ""
 
 #: tfmain.mnulf.caption

@@ -1489,6 +1489,10 @@ begin
       EditorFactory.PageIndex := intKey - 1;
     end;
   end;
+  if (Shift = [ssAlt]) and (Key = VK_L) then
+  begin
+    actGoToExecute(Self);
+  end;
   if (Shift = [ssShift]) and (Key = VK_TAB) then
   begin
     if not EditorAvalaible then

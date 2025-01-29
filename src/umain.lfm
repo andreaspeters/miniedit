@@ -2512,7 +2512,7 @@ object fMain: TfMain
       end
     end
     object mnuLanguage: TMenuItem
-      Caption = 'Language'
+      Caption = 'L&anguage'
       object mnuNone: TMenuItem
         Action = actLanguageNone
       end

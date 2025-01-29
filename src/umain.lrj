@@ -22,7 +22,7 @@
 {"hash":315460,"name":"tfmain.menuitem8.caption","sourcebytes":[70,105,110,100],"value":"Find"},
 {"hash":380871,"name":"tfmain.menuitem35.caption","sourcebytes":[86,105,101,119],"value":"View"},
 {"hash":213582195,"name":"tfmain.menuitem86.caption","sourcebytes":[83,101,116,116,105,110,103,115],"value":"Settings"},
-{"hash":139375349,"name":"tfmain.mnulanguage.caption","sourcebytes":[76,97,110,103,117,97,103,101],"value":"Language"},
+{"hash":139393301,"name":"tfmain.mnulanguage.caption","sourcebytes":[76,38,97,110,103,117,97,103,101],"value":"L&anguage"},
 {"hash":266201246,"name":"tfmain.menuitem52.caption","sourcebytes":[78,97,118,105,103,97,116,105,111,110],"value":"Navigation"},
 {"hash":370579,"name":"tfmain.mnutabs.caption","sourcebytes":[84,97,98,115],"value":"Tabs"},
 {"hash":322608,"name":"tfmain.menuitem3.caption","sourcebytes":[72,101,108,112],"value":"Help"},
