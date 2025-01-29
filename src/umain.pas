@@ -7,7 +7,7 @@ uses
   Classes, SysUtils, Math, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ActnList, Menus, ComCtrls, StdActns, uEditor, LCLType, Clipbrd,
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
-  LazUtils, LazUTF8, udmmain, uDglGoTo, SynEditPrint,
+  LazUtils, LazUTF8, uDglGoTo, SynEditPrint,
   simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
   SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
   uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
@@ -305,10 +305,6 @@ type
     procedure EditPasteExecute(Sender: TObject);
     procedure EditRedoExecute(Sender: TObject);
     procedure EditSelectAllExecute(Sender: TObject);
-    procedure ExportHtmlToClipBoardExecute(Sender: TObject);
-    procedure ExportHtmlToFileExecute(Sender: TObject);
-    procedure ExportRTFToClipBoardExecute(Sender: TObject);
-    procedure ExportRTFToFileExecute(Sender: TObject);
     procedure FileCloseAllExecute(Sender: TObject);
     procedure FileCloseExecute(Sender: TObject);
     procedure FileExitExecute(Sender: TObject);
@@ -434,63 +430,6 @@ end;
 procedure TfMain.EditSelectAllExecute(Sender: TObject);
 begin
    SendMessage (GetFocus, LM_CHAR, VK_CONTROL+VK_A, 0);
-end;
-
-procedure TfMain.ExportHtmlToClipBoardExecute(Sender: TObject);
-var
-  Ed: TEditor;
-begin
-  Ed := EditorFactory.CurrentEditor;
-
-  dmMain.HTMLExporter.Highlighter := Ed.Highlighter;
-  dmMain.HTMLExporter.ExportAsText := True;
-  dmMain.HTMLExporter.Options := [heoFragmentOnly];
-  dmMain.HTMLExporter.ExportRange(ed.Lines, ed.BlockBegin, ed.BlockEnd);
-  dmMain.HTMLExporter.CopyToClipboard;
-
-end;
-
-procedure TfMain.ExportHtmlToFileExecute(Sender: TObject);
-var
-  Ed: TEditor;
-begin
-  Ed := EditorFactory.CurrentEditor;
-  SetupSaveDialog(smHTML);
-  if SaveDialog.Execute then
-    begin
-      dmMain.HTMLExporter.Highlighter := Ed.Highlighter;
-      dmMain.HTMLExporter.ExportAsText := True;
-      dmMain.HTMLExporter.Options := [heoDoctype, heoCharset];
-      dmMain.HTMLExporter.ExportAll(ed.Lines);
-      dmMain.HTMLExporter.SaveToFile(SaveDialog.FileName);
-    end;
-end;
-
-procedure TfMain.ExportRTFToClipBoardExecute(Sender: TObject);
-var
-  Ed: TEditor;
-begin
-  Ed := EditorFactory.CurrentEditor;
-  dmMain.RFTExporter.UseBackground:=true;
-  dmMain.RFTExporter.Highlighter := Ed.Highlighter;
-  dmMain.RFTExporter.ExportAsText:=false;
-  dmMain.RFTExporter.ExportRange(Ed.Lines, Ed.BlockBegin, Ed.BlockEnd);
-  dmMain.RFTExporter.CopyToClipboard;
-
-end;
-
-procedure TfMain.ExportRTFToFileExecute(Sender: TObject);
-var
-  Ed: TEditor;
-begin
-  Ed := EditorFactory.CurrentEditor;
-  SetupSaveDialog(smRTF);
-  if SaveDialog.Execute then
-    begin
-      dmMain.RFTExporter.Highlighter := Ed.Highlighter;
-      dmMain.RFTExporter.ExportAll(ed.Lines);
-      dmMain.RFTExporter.SaveToFile(SaveDialog.FileName);
-    end;
 end;
 
 procedure TfMain.AppPropertiesShowHint(var HintStr: string; var CanShow: boolean; var HintInfo: THintInfo);

@@ -17,7 +17,7 @@ object CustomReplaceDialog: TCustomReplaceDialog
   OnCreate = FormCreate
   ParentDoubleBuffered = False
   PopupMode = pmAuto
-  Position = poMainFormCenter
+  Position = poOwnerFormCenter
   object TextLabel: TLabel
     Left = 40
     Height = 22
@@ -287,7 +287,6 @@ object CustomReplaceDialog: TCustomReplaceDialog
     TabOrder = 9
     object ToolButton1: TToolButton
       Left = 73
-      Hint = 'Find Previous (SHIFT-F3)'
       Top = 0
       Action = fMain.SearchFindPrevious
       ParentShowHint = False
@@ -295,7 +294,6 @@ object CustomReplaceDialog: TCustomReplaceDialog
     end
     object ToolButton2: TToolButton
       Left = 1
-      Hint = '7'
       Top = 0
       Action = fMain.SearchFindNext
       ParentShowHint = False

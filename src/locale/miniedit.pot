@@ -243,14 +243,6 @@ msgstr ""
 msgid "Text to find"
 msgstr ""
 
-#: tcustomreplacedialog.toolbutton1.hint
-msgid "Find Previous (SHIFT-F3)"
-msgstr ""
-
-#: tcustomreplacedialog.toolbutton2.hint
-msgid "7"
-msgstr ""
-
 #: tcustomreplacedialog.wholewordsonlycheckbox.caption
 msgid "Whole words only"
 msgstr ""

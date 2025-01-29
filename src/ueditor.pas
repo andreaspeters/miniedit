@@ -11,7 +11,7 @@ uses
   Classes, SysUtils, Controls, Dialogs, ComCtrls, LCLProc, LCLType, LCLIntf,
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
-  SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
+  SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
   ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmd, ucmdbox, ucmdboxthread, ulsp;
 
