@@ -552,22 +552,6 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
-#: tfmain.exporthtmltoclipboard.caption
-msgid "Copy as HTML"
-msgstr ""
-
-#: tfmain.exporthtmltofile.caption
-msgid "Save as HTML"
-msgstr ""
-
-#: tfmain.exportrtftoclipboard.caption
-msgid "Copy as RTF"
-msgstr ""
-
-#: tfmain.exportrtftofile.caption
-msgid "Save as RTF"
-msgstr ""
-
 #: tfmain.filebrowsefolder.caption
 msgid "Browse Folder"
 msgstr ""
@@ -716,10 +700,6 @@ msgstr ""
 
 #: tfmain.menuitem6.hint
 msgid "Save as"
-msgstr ""
-
-#: tfmain.menuitem62.caption
-msgid "Export"
 msgstr ""
 
 #: tfmain.menuitem68.caption

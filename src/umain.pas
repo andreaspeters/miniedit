@@ -66,12 +66,8 @@ type
     actLanguageNone: TAction;
     actXMLPrettyPrint: TAction;
     actTabToSpace: TAction;
-    ExportHtmlToClipBoard: TAction;
-    ExportHtmlToFile: TAction;
     actUpperCase: TAction;
     actLowerCase: TAction;
-    ExportRTFToClipBoard: TAction;
-    ExportRTFToFile: TAction;
     FilesTree: TTreeView;
     imgListFileIcons: TImageList;
     imgListSmall: TImageList;
@@ -95,7 +91,6 @@ type
     MenuItem59: TMenuItem;
     MenuItem60: TMenuItem;
     MenuItem61: TMenuItem;
-    MenuItem62: TMenuItem;
     MenuItem63: TMenuItem;
     MenuItem64: TMenuItem;
     MenuItem77: TMenuItem;
@@ -120,8 +115,6 @@ type
     N1: TMenuItem;
     mnuLineEndings: TMenuItem;
     mnuCRLF: TMenuItem;
-    MenuItem65: TMenuItem;
-    MenuItem66: TMenuItem;
     MenuItem67: TMenuItem;
     MenuItem68: TMenuItem;
     MenuItem69: TMenuItem;
@@ -130,8 +123,6 @@ type
     MenuItem72: TMenuItem;
     MenuItem73: TMenuItem;
     MenuItem74: TMenuItem;
-    MenuItem75: TMenuItem;
-    MenuItem76: TMenuItem;
     mnuLF: TMenuItem;
     mnuCR: TMenuItem;
     mnuNone: TMenuItem;
@@ -552,14 +543,10 @@ begin
   FileReload.Enabled := Avail and not Ed.Untitled;
   EditCopy.Enabled := Avail and ed.SelAvail;
   EditCut.Enabled := Avail and ed.SelAvail;
-  ExportHtmlToClipBoard.Enabled := Avail and ed.SelAvail;
-  ExportRTFToClipBoard.Enabled := Avail and ed.SelAvail;
   actFullNameToClipBoard.Enabled := Avail and not ed.Untitled;
   actFileNameToClipboard.Enabled := Avail and not ed.Untitled;
   actPathToClipboard.Enabled := Avail and not ed.Untitled;
   FileBrowseFolder.Enabled := Avail and not ed.Untitled;
-  ExportHtmlToFile.Enabled:= Avail;
-  ExportRTFToFile.Enabled:= Avail;
   actGoTo.Enabled := Avail and (ed.Lines.Count > 0);
   actCloseAfter.Enabled := EditorFactory.PageCount > EditorFactory.PageIndex;
   actCloseBefore.Enabled := EditorFactory.PageIndex > 0;

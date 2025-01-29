@@ -203,7 +203,7 @@
         <PackageName Value="LCL"/>
       </Item11>
     </RequiredPackages>
-    <Units Count="27">
+    <Units Count="26">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -216,137 +216,130 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="udmmain.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="dmMain"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="DataModule"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="stringcostants.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Stringcostants"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="supportfuncs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SupportFuncs"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="ueditor.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="config.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Config"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="ucheckfilechange.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uCheckFileChange"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="udglgoto.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="dlgGoTo"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uDglGoTo"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="printing\syneditprintextprocs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SynEditPrintExtProcs"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="simplemrumanager.pas"/>
+        <IsPartOfProject Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="simplemrumanager.pas"/>
+        <Filename Value="highlighters\SynExportRTF.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="highlighters\SynExportRTF.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="supportclasses.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SupportClasses"/>
-      </Unit12>
-      <Unit13>
+      </Unit11>
+      <Unit12>
         <Filename Value="replacedialog.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CustomReplaceDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ReplaceDialog"/>
-      </Unit13>
-      <Unit14>
+      </Unit12>
+      <Unit13>
         <Filename Value="codegen.inc"/>
         <IsPartOfProject Value="True"/>
-      </Unit14>
-      <Unit15>
+      </Unit13>
+      <Unit14>
         <Filename Value="jsontools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JsonTools"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="uinfo.lfm"/>
+        <IsPartOfProject Value="True"/>
       </Unit15>
       <Unit16>
-        <Filename Value="uinfo.lfm"/>
+        <Filename Value="uinfo.lrj"/>
         <IsPartOfProject Value="True"/>
       </Unit16>
       <Unit17>
-        <Filename Value="uinfo.lrj"/>
-        <IsPartOfProject Value="True"/>
-      </Unit17>
-      <Unit18>
         <Filename Value="uinfo.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TFInfo"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit18>
-      <Unit19>
+      </Unit17>
+      <Unit18>
         <Filename Value="ucmdboxthread.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit19>
-      <Unit20>
+      </Unit18>
+      <Unit19>
         <Filename Value="ulsp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLSP"/>
-      </Unit20>
-      <Unit21>
+      </Unit19>
+      <Unit20>
         <Filename Value="ushowlspmessage.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FLSPMessage"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="udirectoryname.lfm"/>
+        <IsPartOfProject Value="True"/>
       </Unit21>
       <Unit22>
-        <Filename Value="udirectoryname.lfm"/>
+        <Filename Value="udirectoryname.lrj"/>
         <IsPartOfProject Value="True"/>
       </Unit22>
       <Unit23>
-        <Filename Value="udirectoryname.lrj"/>
-        <IsPartOfProject Value="True"/>
-      </Unit23>
-      <Unit24>
         <Filename Value="udirectoryname.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FCreateDirectory"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit24>
-      <Unit25>
+      </Unit23>
+      <Unit24>
         <Filename Value="usettings.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FSettings"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit25>
-      <Unit26>
+      </Unit24>
+      <Unit25>
         <Filename Value="ucmd.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="UCmd"/>
-      </Unit26>
+      </Unit25>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

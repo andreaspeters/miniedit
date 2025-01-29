@@ -6,7 +6,6 @@
 
 - Tabbed editor
 - Syntax highligthing for 61 languages/file formats
-- Export formatted text to RTF or HTML file/clipboard
 - Undo/Redo support
 - Tools for text editing (change line endings, native XML/JSON/SQL beautifier, sort, change case and so on)
 - Support for various encoding (UTF-8, UCS2, ISO-8859-1, ecc.)

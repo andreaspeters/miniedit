@@ -23,4 +23,5 @@
 - CHANGE: Activation for LSP Code Package information to ALT+- (MINUS).
 - ADD: FilesTree open files externaly.
 - FIX: LSP Server execute error.
+- DEL: Export as RTF and HTML.
 

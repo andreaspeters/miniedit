@@ -2333,15 +2333,6 @@ object fMain: TfMain
       object MenuItem48: TMenuItem
         Caption = '-'
       end
-      object MenuItem62: TMenuItem
-        Caption = 'Export'
-        object MenuItem66: TMenuItem
-          Action = ExportRTFToFile
-        end
-        object MenuItem65: TMenuItem
-          Action = ExportHtmlToFile
-        end
-      end
       object MenuItem31: TMenuItem
         Action = FileClose
       end
@@ -2375,12 +2366,6 @@ object fMain: TfMain
       end
       object MenuItem14: TMenuItem
         Action = EditPaste
-      end
-      object MenuItem75: TMenuItem
-        Action = ExportRTFToClipBoard
-      end
-      object MenuItem76: TMenuItem
-        Action = ExportHtmlToClipBoard
       end
       object MenuItem15: TMenuItem
         Caption = '-'
@@ -3331,32 +3316,6 @@ object fMain: TfMain
       Caption = 'UPPERCASE'
       DisableIfNoHandler = False
       OnExecute = actUpperCaseExecute
-    end
-    object ExportHtmlToFile: TAction
-      Category = 'File'
-      Caption = 'Save as HTML'
-      DisableIfNoHandler = False
-      OnExecute = ExportHtmlToFileExecute
-    end
-    object ExportRTFToFile: TAction
-      Category = 'File'
-      Caption = 'Save as RTF'
-      DisableIfNoHandler = False
-      OnExecute = ExportRTFToFileExecute
-    end
-    object ExportHtmlToClipBoard: TAction
-      Tag = 1
-      Category = 'Edit'
-      Caption = 'Copy as HTML'
-      DisableIfNoHandler = False
-      OnExecute = ExportHtmlToClipBoardExecute
-    end
-    object ExportRTFToClipBoard: TAction
-      Tag = 1
-      Category = 'Edit'
-      Caption = 'Copy as RTF'
-      DisableIfNoHandler = False
-      OnExecute = ExportRTFToClipBoardExecute
     end
     object actTabToSpace: TAction
       Tag = 1

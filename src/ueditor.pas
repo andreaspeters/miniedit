@@ -8,7 +8,7 @@ unit ueditor;
 interface
 
 uses
-  Classes, SysUtils, Controls, Dialogs, ComCtrls, LCLProc, LCLType,
+  Classes, SysUtils, Controls, Dialogs, ComCtrls, LCLProc, LCLType, LCLIntf,
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config, udmmain,
@@ -239,9 +239,6 @@ begin
 end;
 
 constructor TEditor.Create(AOwner: TComponent);
-var
-  bm: TBitmap;
-
   procedure DeleteKeyStroke(keys:TSynEditKeyStrokes;Code: word; SS: TShiftState);
   var
    id : Integer;
@@ -269,17 +266,13 @@ begin
   multicaret.DefaultMode := mcmMoveAllCarets;
   multicaret.DefaultColumnSelectMode := mcmCancelOnCaretMove;
 
-  bm := TBitmap.Create;
-  dmMain.imgBookMark.GetBitmap(10, bm);
   SyncEdit := TSynPluginSyncroEdit.Create(self);
   SyncEdit.Editor := self;
-  SyncEdit.GutterGlyph.Assign(bm);
   SyncEdit.CaseSensitive := False;
   Gutter.Visible:= ConfigObj.ShowRowNumber;
 
   OnReplaceText := @OnReplace;
 
-  bm.Free;
 end;
 
 destructor TEditor.Destroy;
@@ -824,11 +817,7 @@ begin
       Sheet := TEditorTabSheet(Pages[i]);
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
-        Sheet.Editor.SynAutoComplete := TSynAutoComplete.Create(Self);
-        Sheet.Editor.SynCompletion := TSynCompletion.Create(Self);
         Sheet.Editor.LoadFromfile(FileName);
-        Sheet.Editor.SynAutoComplete.Editor := Sheet.Editor;
-        Sheet.Editor.SynCompletion.Editor := Sheet.Editor;
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
@@ -897,9 +886,6 @@ begin
   Result.Font.Style := DefaultAttr.Styles;
 
   Result.Color := DefaultAttr.Background;
-
-  Result.Options := Result.Options + [eoHideRightMargin];
-  Result.BookMarkOptions.BookmarkImages := dmMain.imgBookMark;
 
   Result.OnStatusChange := OnStatusChange;
   if Assigned(OnStatusChange) then
