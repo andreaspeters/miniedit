@@ -229,7 +229,6 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
-    SynEdit1: TSynEdit;
     Timer1: TTimer;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
@@ -620,6 +619,7 @@ end;
 procedure TfMain.EditDeleteExecute(Sender: TObject);
 var Path: String;
     Node: TFileTreeNode;
+    i: Integer;
 begin
   if FilesTree.Selected = nil then
     Exit;
@@ -640,6 +640,15 @@ begin
   begin
     if FileExists(Path) then
     begin
+      for i := 0 to EditorFactory.PageCount - 1 do
+      begin
+        if TEditorTabSheet(EditorFactory.Pages[i]).Editor.FileName = Path then
+        begin
+          EditorFactory.CloseEditor(TEditorTabSheet(EditorFactory.Pages[i]).Editor);
+          Break;
+        end
+      end;
+
       if DeleteFile(Path) then
           Node.Delete
       else

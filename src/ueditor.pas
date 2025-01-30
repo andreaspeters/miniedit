@@ -817,6 +817,10 @@ begin
       Sheet := TEditorTabSheet(Pages[i]);
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
+        Beauty := TSynBeautifier.Create(Sheet);
+        Beauty.IndentType := sbitCopySpaceTab;
+        Sheet.Editor.Beautifier := Beauty;
+
         Sheet.Editor.LoadFromfile(FileName);
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
