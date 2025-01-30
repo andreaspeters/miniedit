@@ -1518,6 +1518,8 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
+var i: Integer;
+    Node: TFileTreeNode;
 begin
   if not EditorAvalaible then
     exit;

@@ -171,6 +171,8 @@ type
 
 implementation
 
+uses umain;
+
 { TEditorTabSheet }
 
 procedure TEditorTabSheet.DoShow;
@@ -736,11 +738,26 @@ begin
 end;
 
 procedure TEditorFactory.DoChange;
+var Node: TFileTreeNode;
+    i: Integer;
 begin
   inherited DoChange;
   //  Hint := TEditorTabSheet(ActivePage).Editor.FileName;
   if Assigned(OnStatusChange) then
     OnStatusChange(GetCurrentEditor, [scCaretX, scCaretY, scModified, scInsertMode]);
+
+  // select the current editors file in filetreeview
+  fMain.FilesTree.MultiSelect := False;
+  for i := 0 to fMain.FilesTree.Items.Count - 1 do
+  begin
+    Node := TFileTreeNode(fMain.FilesTree.Items[i]);
+    if Assigned(Node) then
+      if Node.FullPath = GetCurrentEditor.FileName then
+      begin
+        fMain.FilesTree.Items[i].Selected := True;
+        Break;
+      end;
+  end;
 
   TEditorTabSheet(ActivePage).Editor.SetFocus;
 end;
@@ -920,7 +937,6 @@ begin
 
       Result.LSP.Start;
       Result.LSP.SetLanguage(FileType.LanguageName);
-      writeln(Result.FilePath);
       if Length(ExtractFilePath(FileName)) <= 0 then
        Result.LSP.Initialize(GetCurrentDir)
       else
