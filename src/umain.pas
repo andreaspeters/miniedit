@@ -128,6 +128,7 @@ type
     mnuNone: TMenuItem;
     mnuLanguage: TMenuItem;
     mnuTabs: TMenuItem;
+    PageControl1: TPageControl;
     PairSplitter1: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
     pumFileTree: TPopupMenu;

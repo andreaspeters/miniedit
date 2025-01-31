@@ -57,7 +57,6 @@ type
     fOldDiskLineEndingType : TSynLinesFileLineEndType;
     SynCompletion: TSynCompletion;
     SynAutoComplete: TSynAutoComplete;
-    FLSP: TLSP;
     procedure CreateDefaultGutterParts;
     procedure GetDialogPosition(AWidth, AHeight: integer; out _Left, _Top: integer);
     function GetDiskEncoding: string;
@@ -87,7 +86,6 @@ type
     property Untitled: boolean read FUntitled write SetUntitled;
     property DiskEncoding:string read GetDiskEncoding write SetDiskEncoding;
     property LineEndingType: TSynLinesFileLineEndType read GetLineEndingType write SetLineEndingType;
-    property LSP: TLSP read FLSP;
     procedure LoadFromFile(AFileName: TFileName);
     procedure Sort(Ascending: boolean);
     procedure TextOperation(Operation: TTextOperation; const Level: TTextOperationLevel = DefaultOperationLevel);
@@ -103,11 +101,13 @@ type
   private
     FEditor: TEditor;
     FCmdBox: TCmd;
+    FLSP: TLSP;
     FCmdBoxThread: TCmdBoxThread;
   protected
     procedure DoShow; override;
 
   public
+    property LSP: TLSP read FLSP;
     property Editor: TEditor read FEditor;
     property CmdBox: TCmd read FCmdBox;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
@@ -370,10 +370,10 @@ function TEditor.Save: boolean;
 begin
   Result := SaveAs(FFileName);
   TEditorFactory(Sheet.Owner).FWatcher.Update(FFileName);
-  if Sheet.Editor.FLSP <> nil then
+  if Sheet.FLSP <> nil then
   begin
-    Sheet.Editor.FLSP.Resume;
-    Sheet.Editor.FLSP.Reload;
+    Sheet.FLSP.Resume;
+    Sheet.FLSP.Reload;
   end;
 end;
 
@@ -720,7 +720,7 @@ function TEditorFactory.GetCurrentLSP: TLSP;
 begin
   Result := nil;
   if (PageCount > 0) and (ActivePageIndex >= 0) then
-    Result := TEditorTabSheet(ActivePage).Editor.FLSP;
+    Result := TEditorTabSheet(ActivePage).FLSP;
 end;
 
 procedure TEditorFactory.SetOnBeforeClose(AValue: TOnBeforeClose);
@@ -842,13 +842,13 @@ begin
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
-          if Sheet.Editor.FLSP = nil then
-            Sheet.Editor.FLSP := TLSP.Create;
+          if Sheet.FLSP = nil then
+            Sheet.FLSP := TLSP.Create;
 
-          Sheet.Editor.LSP.Start;
-          Sheet.Editor.LSP.SetLanguage(FileType.LanguageName);
-          Sheet.Editor.LSP.Initialize(ExtractFilePath(FileName));
-          Sheet.Editor.LSP.OpenFile(FileName);
+          Sheet.LSP.Start;
+          Sheet.LSP.SetLanguage(FileType.LanguageName);
+          Sheet.LSP.Initialize(ExtractFilePath(FileName));
+          Sheet.LSP.OpenFile(FileName);
           Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
@@ -932,16 +932,16 @@ begin
     FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
     if Assigned(FileType) then
     begin
-      if Result.FLSP = nil then
-        Result.FLSP := TLSP.Create;
+      if Result.Sheet.FLSP = nil then
+        Result.Sheet.FLSP := TLSP.Create;
 
-      Result.LSP.Start;
-      Result.LSP.SetLanguage(FileType.LanguageName);
+      Result.Sheet.LSP.Start;
+      Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
       if Length(ExtractFilePath(FileName)) <= 0 then
-       Result.LSP.Initialize(GetCurrentDir)
+       Result.Sheet.LSP.Initialize(GetCurrentDir)
       else
-        Result.LSP.Initialize(ExtractFilePath(FileName));
-      Result.LSP.OpenFile(FileName);
+        Result.Sheet.LSP.Initialize(ExtractFilePath(FileName));
+      Result.Sheet.LSP.OpenFile(FileName);
     end;
     FWatcher.AddFile(FileName, Result);
   end;
@@ -963,15 +963,15 @@ begin
 
   if (Key = VK_OEM_MINUS) and (Shift = [ssAlt]) then
   begin
-    Ed.LSP.Resume;
-    Ed.LSP.Hover(Ed.CaretY, Ed.CaretX);
+    Ed.Sheet.LSP.Resume;
+    Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
   end;
 
   if (Key = VK_OEM_PERIOD) and (Shift = [ssAlt]) then
   begin
-    Ed.LSP.Resume;
-    Ed.LSP.Change(Ed.Text);
-    Ed.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)
+    Ed.Sheet.LSP.Resume;
+    Ed.Sheet.LSP.Change(Ed.Text);
+    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)
   end;
 end;
 
@@ -992,8 +992,8 @@ begin
   if (not Cancel) or Force then
   begin
     Sheet := Editor.FSheet;
-    if Assigned(Sheet.Editor.LSP) then
-      Sheet.Editor.LSP.Stop;
+    if Assigned(Sheet.LSP) then
+      Sheet.LSP.Stop;
     Editor.PopupMenu := nil;
     FWatcher.RemoveFile(Editor.FileName);
     Application.ReleaseComponent(Editor);
