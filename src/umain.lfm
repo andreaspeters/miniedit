@@ -2268,15 +2268,6 @@ object fMain: TfMain
       Height = 942
       Top = 0
       Width = 1605
-      ClientWidth = 1605
-      ClientHeight = 942
-      object PageControl1: TPageControl
-        Left = 197
-        Height = 200
-        Top = 400
-        Width = 200
-        TabOrder = 0
-      end
     end
   end
   object ToolButton19: TToolButton

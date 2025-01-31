@@ -128,7 +128,6 @@ type
     mnuNone: TMenuItem;
     mnuLanguage: TMenuItem;
     mnuTabs: TMenuItem;
-    PageControl1: TPageControl;
     PairSplitter1: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
     pumFileTree: TPopupMenu;
@@ -934,20 +933,24 @@ end;
 procedure TfMain.actCompileRunExecute(Sender: TObject);
 var
   run: TProcess;
-  Cmd: TCmdBox;
+  CmdBox: TCmdBox;
 begin
   if not EditorAvalaible then
     exit;
 
-  Cmd := EditorFactory.CurrentCmdBox;
-  Cmd.Visible := True;
+  if not Assigned(EditorFactory.CurrentCmdBox) then
+    Exit;
 
+  if not Assigned(EditorFactory.CurrentCmdBoxThread) then
+    Exit;
+
+  CmdBox := EditorFactory.CurrentCmdBox;
 
   run := TProcess.Create(nil);
   try
     run.Executable := 'make';
-    Cmd.font := ConfigObj.Font;
-    Cmd.Writeln(BrowsingPath+' > ' + run.Executable);
+    CmdBox.font := ConfigObj.Font;
+    CmdBox.Writeln(BrowsingPath+' > ' + run.Executable);
     run.CurrentDirectory := BrowsingPath;
 
     run.Options := [poUsePipes, poStderrToOutPut];
@@ -1520,32 +1523,42 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
-var  LSPBox: TCmdBox;
+var  LSPBox, CmdBox: TCmdBox;
 begin
   if not EditorAvalaible then
     exit;
 
-  if EditorFactory.CurrentCmdBoxThread <> nil then
-  begin
-    if Length(EditorFactory.CurrentCmdBoxThread.OutputString) > 0 then
-    begin
-      EditorFactory.CurrentCmdBox.Write(EditorFactory.CurrentCmdBoxThread.OutputString);
-      EditorFactory.CurrentCmdBoxThread.OutputString := '';
-    end;
-  end;
-
-
   if Assigned(EditorFactory.CurrentMessagBox) then
   begin
-    LSPBox := TCmdBox(EditorFactory.CurrentMessagBox.Page[1].FindSubComponent('LSP'));
+    LSPBox := EditorFactory.CurrentLSPBox;
     if Assigned(LSPBox) then
     begin
       if Assigned(EditorFactory.CurrentLSP) then
       begin
-        if Length(EditorFactory.CurrentLSP.OutputString) >= 0 then
+        if Length(EditorFactory.CurrentLSP.OutputString) > 0 then
+        begin
+          LSPBox.Visible := True;
+          EditorFactory.CurrentMessagBox.Visible := True;
           LSPBox.Write(EditorFactory.CurrentLSP.OutputString)
+        end;
       end;
     end;
+
+    CmdBox := EditorFactory.CurrentCmdBox;
+    if Assigned(CmdBox) then
+    begin
+      if Assigned(EditorFactory.CurrentCmdBoxThread) then
+      begin
+        if Length(EditorFactory.CurrentCmdBoxThread.OutputString) > 0 then
+        begin
+          CmdBox.Visible := True;
+          EditorFactory.CurrentMessagBox.Visible := True;
+          CmdBox.Write(EditorFactory.CurrentCmdBoxThread.OutputString);
+          EditorFactory.CurrentCmdBoxThread.OutputString := '';
+        end;
+      end;
+    end;
+
   end;
 
   if Assigned(EditorFactory.CurrentLSP) then

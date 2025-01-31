@@ -106,29 +106,32 @@ begin
           if GetJSON(Response).JSONType = jtObject then
           begin
             ResponseJSON := TJSONObject(GetJSON(Response));
-            if ResponseJSON.FindPath('result.capabilities') <> nil then
+            if Assigned(ResponseJSON.FindPath('result.capabilities')) then
             begin
               Init := True;
               Initialized;
               AddView(FileName);
               Suspend;
             end;
-            if ResponseJSON.FindPath('method') <> nil then
+            if Assigned(ResponseJSON.FindPath('method')) then
               if ResponseJSON.FindPath('method').AsString = 'window/logMessage' then
                 if ResponseJSON.FindPath('params.type').AsInteger = 3 then
                   OpenFile(FileName);
-            if ResponseJSON.FindPath('result.contents.value') <> nil then
+            if Assigned(ResponseJSON.FindPath('result.contents.value')) then
             begin
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
               Suspend;
             end;
-            if ResponseJSON.FindPath('result.items') <> nil then
+            if Assigned(ResponseJSON.FindPath('result.items')) then
             begin
               if ResponseJSON.FindPath('result.items').Count > 0 then
                 for i := 0 to ResponseJSON.FindPath('result.items').Count - 1 do
                 begin
-                  Key := ResponseJSON.FindPath('result.items').Items[i].FindPath('label').AsString;
-                  Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
+                  if Assigned(ResponseJSON.FindPath('result.items').Items[i].FindPath('label')) then
+                    Key := ResponseJSON.FindPath('result.items').Items[i].FindPath('label').AsString;
+
+                  if Assigned(ResponseJSON.FindPath('result.items').Items[i].FindPath('detail')) then
+                    Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
                   MessageList.Add(Key + '=' + Value);
                 end;
               Suspend;

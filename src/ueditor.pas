@@ -13,7 +13,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmd, ucmdbox, ucmdboxthread, ulsp;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread, ulsp;
 
 type
 
@@ -55,8 +55,6 @@ type
     FDiskEncoding: String;
     fDiskLineEndingType : TSynLinesFileLineEndType;
     fOldDiskLineEndingType : TSynLinesFileLineEndType;
-    SynCompletion: TSynCompletion;
-    SynAutoComplete: TSynAutoComplete;
     procedure CreateDefaultGutterParts;
     procedure GetDialogPosition(AWidth, AHeight: integer; out _Left, _Top: integer);
     function GetDiskEncoding: string;
@@ -100,18 +98,20 @@ type
   TEditorTabSheet = class(TTabSheet)
   private
     FEditor: TEditor;
-    FCmdBox: TCmd;
     FLSP: TLSP;
     FMessageBox: TPageControl;
     FCmdBoxThread: TCmdBoxThread;
+    FLSPBox: TCmdBox;
+    FCMDBox: TCmdBox;
   protected
     procedure DoShow; override;
 
   public
     property MessageBox: TPageControl read FMessageBox;
     property LSP: TLSP read FLSP;
+    property LSPBox: TCmdBox read FLSPBox;
+    property CMDBox: TCmdBox read FCMDBox;
     property Editor: TEditor read FEditor;
-    property CmdBox: TCmd read FCmdBox;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
     //--//
   end;
@@ -126,14 +126,16 @@ type
     fUntitledCounter: integer;
     FWatcher: TFileWatcher;
     function GetCurrentEditor: TEditor;
-    function GetCurrentCmdBox: TCmd;
     function GetCurrentCmdBoxThread: TCmdBoxThread;
     function GetCurrentLSP: TLSP;
+    function GetCurrentCMDBox: TCmdBox;
+    function GetCurrentLSPBox: TCmdBox;
     function GetCurrentMessageBox: TPageControl;
+    function CreateEmptyFile(AFileName: TFileName): boolean;
+    function CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBox;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
     procedure SetOnNewEditor(AValue: TOnEditorEvent);
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
-    function CreateEmptyFile(AFileName: TFileName): boolean;
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
@@ -143,9 +145,10 @@ type
 
   public
     property CurrentEditor: TEditor read GetCurrentEditor;
-    property CurrentCmdBox: TCmd read GetCurrentCmdBox;
     property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
     property CurrentLSP: TLSP read GetCurrentLSP;
+    property CurrentLSPBox: TCmdBox read GetCurrentLSPBox;
+    property CurrentCMDBox: TCmdBox read GetCurrentCMDBox;
     property CurrentMessagBox: TPageControl read GetCurrentMessageBox;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
@@ -705,14 +708,6 @@ begin
 
 end;
 
-function TEditorFactory.GetCurrentCmdBox: TCmd;
-begin
-  Result := nil;
-  if (PageCount > 0) and (ActivePageIndex >= 0) then
-    Result := TEditorTabSheet(ActivePage).CmdBox;
-
-end;
-
 function TEditorFactory.GetCurrentCmdBoxThread: TCmdBoxThread;
 begin
   Result := nil;
@@ -727,6 +722,19 @@ begin
     Result := TEditorTabSheet(ActivePage).FLSP;
 end;
 
+function TEditorFactory.GetCurrentLSPBox: TCmdBox;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).FLSPBox;
+end;
+
+function TEditorFactory.GetCurrentCMDBox: TCmdBox;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).FCMDBox;
+end;
 function TEditorFactory.GetCurrentMessageBox: TPageControl;
 begin
   Result := nil;
@@ -810,7 +818,6 @@ end;
 function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
-  CmdBox,LSPBox: TCmd;
   CmdTab, LSPTab: TTabSheet;
   Box: TPageControl;
   i: integer;
@@ -870,7 +877,6 @@ begin
           // create message box
           if not Assigned(Sheet.FMessageBox) then
             Sheet.FMessageBox := TPageControl.Create(Self);
-          Sheet.MessageBox.Visible := True;
 
           Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
         end;
@@ -911,40 +917,14 @@ begin
   Box.Parent := Sheet;
   Box.Align := alBottom;
   Box.Height := 250;
-  Box.Visible := True;
-
-  // tab for the cmd output
-  CmdTab := TTabSheet.Create(Box);
-  CmdTab.Caption := 'Run Output';
-  CmdTab.PageControl := Box;
-
-  // tab for the lsp output
-  LSPTab := TTabSheet.Create(Box);
-  LSPTab.Caption := 'LSP Messages';
-  LSPTab.PageControl := Box;
+//  Box.Options := [nboShowCloseButtons];
+  Box.Visible := False;
 
   Sheet.FMessageBox := Box;
 
-  // create cmdbox inside of the cmd tab
-  CmdBox := TCmd.Create(CmdTab);
-  CmdBox.Parent := CmdTab;
-  CmdBox.Align := alClient;
-  CmdBox.EscapeCodeType := esctAnsi;
-  CmdBox.Font.Assign(ConfigObj.Font);
-  CmdBox.Font.Size := CmdBox.Font.Size - 2;
-  CmdBox.Visible := True;
+  Sheet.FCMDBox := CreateMessageTab('CMD Output', Box);
+  Sheet.FLSPBox := CreateMessageTab('LSP Message', Box);
 
-  // create message box for lsb inside of the lsp tab
-  LSPBox := TCmd.Create(LSPTab);
-  LSPBox.Name := 'LSP';
-  LSPBox.Parent := LSPTab;
-  LSPBox.Align := alClient;
-  LSPBox.EscapeCodeType := esctAnsi;
-  LSPBox.Font.Assign(ConfigObj.Font);
-  LSPBox.Font.Size := LSPBox.Font.Size - 2;
-  LSPBox.Visible := True;
-
-  Sheet.FCmdBox := CmdBox;
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;
 
   Result.Font.Assign(ConfigObj.Font);
@@ -1005,6 +985,27 @@ begin
   if Assigned(FOnNewEditor) then
     FOnNewEditor(Result);
 
+end;
+
+
+function TEditorFactory.CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBox;
+var Tab: TTabSheet;
+    Box: TCmdBox;
+begin
+  Tab := TTabSheet.Create(ABox);
+  Tab.Caption := AName;
+  Tab.PageControl := ABox;
+  Tab.Visible := False;
+
+  Box := TCmdBox.Create(Tab);
+  Box.Parent := Tab;
+  Box.Align := alClient;
+  Box.EscapeCodeType := esctAnsi;
+  Box.Font.Assign(ConfigObj.Font);
+  Box.Font.Size := Box.Font.Size - 2;
+  Box.Visible := True;
+
+  Result := Box;
 end;
 
 procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
