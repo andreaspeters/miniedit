@@ -102,11 +102,13 @@ type
     FEditor: TEditor;
     FCmdBox: TCmd;
     FLSP: TLSP;
+    FMessageBox: TPageControl;
     FCmdBoxThread: TCmdBoxThread;
   protected
     procedure DoShow; override;
 
   public
+    property MessageBox: TPageControl read FMessageBox;
     property LSP: TLSP read FLSP;
     property Editor: TEditor read FEditor;
     property CmdBox: TCmd read FCmdBox;
@@ -127,6 +129,7 @@ type
     function GetCurrentCmdBox: TCmd;
     function GetCurrentCmdBoxThread: TCmdBoxThread;
     function GetCurrentLSP: TLSP;
+    function GetCurrentMessageBox: TPageControl;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
     procedure SetOnNewEditor(AValue: TOnEditorEvent);
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
@@ -143,6 +146,7 @@ type
     property CurrentCmdBox: TCmd read GetCurrentCmdBox;
     property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
     property CurrentLSP: TLSP read GetCurrentLSP;
+    property CurrentMessagBox: TPageControl read GetCurrentMessageBox;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
     property OnNewEditor: TOnEditorEvent read FOnNewEditor write SetOnNewEditor;
@@ -723,6 +727,13 @@ begin
     Result := TEditorTabSheet(ActivePage).FLSP;
 end;
 
+function TEditorFactory.GetCurrentMessageBox: TPageControl;
+begin
+  Result := nil;
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    Result := TEditorTabSheet(ActivePage).FMessageBox;
+end;
+
 procedure TEditorFactory.SetOnBeforeClose(AValue: TOnBeforeClose);
 begin
   if FOnBeforeClose = AValue then
@@ -799,7 +810,9 @@ end;
 function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
-  Cmd: TCmd;
+  CmdBox,LSPBox: TCmd;
+  CmdTab, LSPTab: TTabSheet;
+  Box: TPageControl;
   i: integer;
   DefaultAttr: TFontAttributes;
   Beauty: TSynBeautifier;
@@ -842,13 +855,23 @@ begin
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
-          if Sheet.FLSP = nil then
+          // create lsp thread
+          if not Assigned(Sheet.FLSP) then
             Sheet.FLSP := TLSP.Create;
-
           Sheet.LSP.Start;
           Sheet.LSP.SetLanguage(FileType.LanguageName);
-          Sheet.LSP.Initialize(ExtractFilePath(FileName));
+
+          if Length(ExtractFilePath(FileName)) <= 0 then
+            Sheet.LSP.Initialize(GetCurrentDir)
+          else
+            Sheet.LSP.Initialize(ExtractFilePath(FileName));
           Sheet.LSP.OpenFile(FileName);
+
+          // create message box
+          if not Assigned(Sheet.FMessageBox) then
+            Sheet.FMessageBox := TPageControl.Create(Self);
+          Sheet.MessageBox.Visible := True;
+
           Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
@@ -883,22 +906,51 @@ begin
   Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
 
-  Cmd := TCmd.Create(Sheet);
-  Cmd.Parent := Sheet;
-  Cmd.Align := alBottom;
-  Cmd.Height := 200;
-  Cmd.EscapeCodeType := esctAnsi;
-  Cmd.Font.Assign(ConfigObj.Font);
-  Cmd.Font.Size := Cmd.Font.Size - 2;
-  Cmd.Visible := False;
-  Sheet.FCmdBox := Cmd;
+  // create tabsheet for run, debug, lsp and so on messages
+  Box := TPageControl.Create(Sheet);
+  Box.Parent := Sheet;
+  Box.Align := alBottom;
+  Box.Height := 250;
+  Box.Visible := True;
+
+  // tab for the cmd output
+  CmdTab := TTabSheet.Create(Box);
+  CmdTab.Caption := 'Run Output';
+  CmdTab.PageControl := Box;
+
+  // tab for the lsp output
+  LSPTab := TTabSheet.Create(Box);
+  LSPTab.Caption := 'LSP Messages';
+  LSPTab.PageControl := Box;
+
+  Sheet.FMessageBox := Box;
+
+  // create cmdbox inside of the cmd tab
+  CmdBox := TCmd.Create(CmdTab);
+  CmdBox.Parent := CmdTab;
+  CmdBox.Align := alClient;
+  CmdBox.EscapeCodeType := esctAnsi;
+  CmdBox.Font.Assign(ConfigObj.Font);
+  CmdBox.Font.Size := CmdBox.Font.Size - 2;
+  CmdBox.Visible := True;
+
+  // create message box for lsb inside of the lsp tab
+  LSPBox := TCmd.Create(LSPTab);
+  LSPBox.Name := 'LSP';
+  LSPBox.Parent := LSPTab;
+  LSPBox.Align := alClient;
+  LSPBox.EscapeCodeType := esctAnsi;
+  LSPBox.Font.Assign(ConfigObj.Font);
+  LSPBox.Font.Size := LSPBox.Font.Size - 2;
+  LSPBox.Visible := True;
+
+  Sheet.FCmdBox := CmdBox;
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;
 
   Result.Font.Assign(ConfigObj.Font);
   DefaultAttr := ConfigObj.ReadFontAttributes('Schema/Default/Text/', FontAttributes());
 
   Result.FSheet := Sheet;
-
 
   Result.Align := alClient;
   Sheet.FEditor := Result;
@@ -932,11 +984,13 @@ begin
     FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
     if Assigned(FileType) then
     begin
-      if Result.Sheet.FLSP = nil then
+      // create lsp thread
+      if not Assigned(Result.Sheet.FLSP) then
         Result.Sheet.FLSP := TLSP.Create;
 
       Result.Sheet.LSP.Start;
       Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
+
       if Length(ExtractFilePath(FileName)) <= 0 then
        Result.Sheet.LSP.Initialize(GetCurrentDir)
       else

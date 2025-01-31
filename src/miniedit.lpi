@@ -28,7 +28,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
-      <BuildNr Value="18"/>
+      <BuildNr Value="33"/>
       <Language Value="0809"/>
       <CharSet Value="04B0"/>
       <StringTable Comments="A simple editor" CompanyName="AVENTER" FileDescription="Marco Caselli Editor" InternalName="ovotext" LegalCopyright="Marco Caselli" LegalTrademarks="Marco Caselli" ProductName="ovotext" ProductVersion="0.1"/>
@@ -382,7 +382,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -392,6 +392,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="EJSONParser"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

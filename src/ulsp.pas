@@ -29,6 +29,7 @@ type
     ServerParameter: TStringList;
     Message: String;
     MessageList: TStringList;
+    OutputString: String;
     procedure Initialize(const AFilePath: String);
     procedure Initialized;
     procedure AddView(const AFileName: String);
@@ -95,6 +96,7 @@ begin
       end;
 
       Response := ReceiveData;
+      OutputString := Response;
       //writeln('>>>>>'+ ServerExec +'>>>>>>>>>>>>');
       //writeln(Response);
       //writeln('<<<<<<<<<<<<<<<<<');
@@ -170,7 +172,7 @@ var Buffer: Byte;
     ContentLength, i: Integer;
     Found: Boolean;
     Regex: TRegExpr;
-    Line, TempLine: String;
+    Line: String;
 begin
   if not LSPServer.Running then
     Exit;
@@ -179,9 +181,11 @@ begin
   Line := '';
   Found := False;
   ContentLength := 0;
+  Buffer := 0;
 
   repeat
-    Buffer := LSPServer.Output.ReadByte;
+    if Assigned(LSPServer.Output) then
+      Buffer := LSPServer.Output.ReadByte;
     if Buffer = 10 then
     begin
       Regex := TRegExpr.Create;
@@ -233,7 +237,7 @@ begin
     LSPServer.Executable := ServerExec;
     LSPServer.Parameters := ServerParameter;
 
-    LSPServer.Options := [poUsePipes];
+    LSPServer.Options := [poUsePipes, poNoConsole];
     LSPServer.Execute;
   except
     on E: Exception do

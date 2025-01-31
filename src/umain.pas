@@ -942,6 +942,7 @@ begin
   Cmd := EditorFactory.CurrentCmdBox;
   Cmd.Visible := True;
 
+
   run := TProcess.Create(nil);
   try
     run.Executable := 'make';
@@ -1519,8 +1520,7 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
-var i: Integer;
-    Node: TFileTreeNode;
+var  LSPBox: TCmdBox;
 begin
   if not EditorAvalaible then
     exit;
@@ -1534,39 +1534,53 @@ begin
     end;
   end;
 
+
+  if Assigned(EditorFactory.CurrentMessagBox) then
+  begin
+    LSPBox := TCmdBox(EditorFactory.CurrentMessagBox.Page[1].FindSubComponent('LSP'));
+    if Assigned(LSPBox) then
+    begin
+      if Assigned(EditorFactory.CurrentLSP) then
+      begin
+        if Length(EditorFactory.CurrentLSP.OutputString) >= 0 then
+          LSPBox.Write(EditorFactory.CurrentLSP.OutputString)
+      end;
+    end;
+  end;
+
   if Assigned(EditorFactory.CurrentLSP) then
   begin
-    if not Assigned(FLSPMessage) then
-      Exit;
-
-    if Length(EditorFactory.CurrentLSP.Message) > 0 then
+    if Assigned(FLSPMessage) then
     begin
-      EditorFactory.CurrentLSP.Suspend;
-
-      if FLSPMessage.Visible then
-        FLSPMessage.Close;
-
-      FLSPMessage.ShowOnTop;
-
-      FLSPMessage.ShowMessage(EditorFactory.CurrentLSP.Message);
-      EditorFactory.CurrentLSP.Message := '';
-    end;
-
-    if EditorFactory.CurrentLSP.MessageList.Count > 1 then
-    begin
-      EditorFactory.CurrentLSP.Suspend;
-
-      FLSPMessage.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
-
-      if FLSPMessage.Visible then
-        FLSPMessage.Close;
-
-      if FLSPMessage.ShowModal = mrOk then
+      if Length(EditorFactory.CurrentLSP.Message) > 0 then
       begin
-        EditorFactory.CurrentEditor.InsertTextAtCaret(FLSPMessage.LSPKey);
-        FLSPMessage.LSPKey := '';
+        EditorFactory.CurrentLSP.Suspend;
+
+        if FLSPMessage.Visible then
+          FLSPMessage.Close;
+
+        FLSPMessage.ShowOnTop;
+
+        FLSPMessage.ShowMessage(EditorFactory.CurrentLSP.Message);
+        EditorFactory.CurrentLSP.Message := '';
       end;
-      EditorFactory.CurrentLSP.MessageList.Clear;
+
+      if EditorFactory.CurrentLSP.MessageList.Count > 1 then
+      begin
+        EditorFactory.CurrentLSP.Suspend;
+
+        FLSPMessage.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
+
+        if FLSPMessage.Visible then
+          FLSPMessage.Close;
+
+        if FLSPMessage.ShowModal = mrOk then
+        begin
+          EditorFactory.CurrentEditor.InsertTextAtCaret(FLSPMessage.LSPKey);
+          FLSPMessage.LSPKey := '';
+        end;
+        EditorFactory.CurrentLSP.MessageList.Clear;
+      end;
     end;
   end;
 end;
