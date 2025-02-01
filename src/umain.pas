@@ -41,6 +41,7 @@ type
     actFolderNew: TAction;
     actCopyFile: TAction;
     actCutFile: TAction;
+    actToggleMessageBox: TAction;
     actOpenExtern: TAction;
     actPasteFile: TAction;
     actOpenProperties: TAction;
@@ -74,6 +75,7 @@ type
     MenuItem100: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
+    MIMessageBox: TMenuItem;
     MenuItem84: TMenuItem;
     MenuItem85: TMenuItem;
     MenuItem86: TMenuItem;
@@ -129,9 +131,12 @@ type
     mnuLanguage: TMenuItem;
     mnuTabs: TMenuItem;
     PairSplitter1: TPairSplitter;
+    PairSplitter2: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
-    pumFileTree: TPopupMenu;
     PSSEditor: TPairSplitterSide;
+    PSSMessageBox: TPairSplitterSide;
+    pumFileTree: TPopupMenu;
+    PairSplitterSide2: TPairSplitterSide;
     pumTabs: TPopupMenu;
     PrintDialog1: TPrintDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
@@ -278,6 +283,7 @@ type
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
+    procedure actToggleMessageBoxExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
     procedure EditDeleteExecute(Sender: TObject);
     procedure FileBrowseFolderExecute(Sender: TObject);
@@ -372,6 +378,7 @@ type
     rect: TRect;
     ws : TWindowState;
     BrowsingPath: string;
+    EditorSplitterPos: Integer;
 
     function AskFileName(Editor: TEditor): boolean;
     procedure ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -595,6 +602,28 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@QuotedStr, [tomLines]);
+end;
+
+procedure TfMain.actToggleMessageBoxExecute(Sender: TObject);
+begin
+  actToggleMessageBox.Checked := not actToggleMessageBox.Checked;
+  MIMessageBox.Checked := actToggleMessageBox.Checked;
+
+  if not Assigned(EditorFactory.CurrentMessageBox) then
+    Exit;
+
+  if actToggleMessageBox.Checked then
+  begin
+    EditorFactory.CurrentMessageBox.Visible := True;
+    PairSplitter2.Position := PairSplitterSide2.Height - 250;
+    EditorSplitterPos := 250;
+  end
+  else
+  begin
+    EditorFactory.CurrentMessageBox.Visible := False;
+    PairSplitter2.Position := PairSplitterSide2.Height;
+    EditorSplitterPos := 0;
+  end
 end;
 
 function ExtractQuotedStr(const S: string): string;
@@ -945,6 +974,14 @@ begin
     Exit;
 
   CmdBox := EditorFactory.CurrentCmdBox;
+
+  MIMessageBox.Checked := True;
+  actToggleMessageBox.Checked := True;
+  if EditorSplitterPos = 0 then
+  begin
+    PairSplitter2.Position := PairSplitterSide2.Height - 250;
+    EditorSplitterPos := 250;
+  end;
 
   run := TProcess.Create(nil);
   try
@@ -1312,8 +1349,6 @@ begin
   EditorFactory.OnContextPopup := @ContextPopup;
   EditorFactory.Images := imgListBig;
   EditorFactory.Parent := PSSEditor;
-  EditorFactory.Height := PSSEditor.Height;
-  EditorFactory.Width  := PSSEditor.Width;
 
   // Parameters
   FileOpen.Dialog.Filter := configobj.GetFiters;
@@ -1366,6 +1401,8 @@ begin
 
   splLeftBar.Visible := True;
   //Font := Screen.SystemFont;
+
+  PairSplitter2.Position := 0;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
@@ -1472,6 +1509,14 @@ end;
 procedure TfMain.FormResize(Sender: TObject);
 begin
   ConfigObj.Dirty := true;
+
+  if not EditorAvalaible then
+    exit;
+
+  if EditorSplitterPos = 0 then
+    PairSplitter2.Position := PairSplitterSide2.Height
+  else
+    PairSplitter2.Position := PairSplitterSide2.Height - EditorSplitterPos;
 end;
 
 procedure TfMain.FormShow(Sender: TObject);
@@ -1528,7 +1573,7 @@ begin
   if not EditorAvalaible then
     exit;
 
-  if Assigned(EditorFactory.CurrentMessagBox) then
+  if Assigned(EditorFactory.CurrentMessageBox) then
   begin
     LSPBox := EditorFactory.CurrentLSPBox;
     if Assigned(LSPBox) then
@@ -1538,8 +1583,9 @@ begin
         if Length(EditorFactory.CurrentLSP.OutputString) > 0 then
         begin
           LSPBox.Visible := True;
-          EditorFactory.CurrentMessagBox.Visible := True;
-          LSPBox.Write(EditorFactory.CurrentLSP.OutputString)
+          EditorFactory.CurrentMessageBox.Visible := True;
+          LSPBox.Write(EditorFactory.CurrentLSP.OutputString);
+          EditorFactory.CurrentLSP.OutputString := '';
         end;
       end;
     end;
@@ -1552,13 +1598,12 @@ begin
         if Length(EditorFactory.CurrentCmdBoxThread.OutputString) > 0 then
         begin
           CmdBox.Visible := True;
-          EditorFactory.CurrentMessagBox.Visible := True;
+          EditorFactory.CurrentMessageBox.Visible := True;
           CmdBox.Write(EditorFactory.CurrentCmdBoxThread.OutputString);
           EditorFactory.CurrentCmdBoxThread.OutputString := '';
         end;
       end;
     end;
-
   end;
 
   if Assigned(EditorFactory.CurrentLSP) then

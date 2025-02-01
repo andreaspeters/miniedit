@@ -149,7 +149,7 @@ type
     property CurrentLSP: TLSP read GetCurrentLSP;
     property CurrentLSPBox: TCmdBox read GetCurrentLSPBox;
     property CurrentCMDBox: TCmdBox read GetCurrentCMDBox;
-    property CurrentMessagBox: TPageControl read GetCurrentMessageBox;
+    property CurrentMessageBox: TPageControl read GetCurrentMessageBox;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
     property OnNewEditor: TOnEditorEvent read FOnNewEditor write SetOnNewEditor;
@@ -913,10 +913,9 @@ begin
   Result.OnKeyDown := @EditorOnKeyDown;
 
   // create tabsheet for run, debug, lsp and so on messages
-  Box := TPageControl.Create(Sheet);
-  Box.Parent := Sheet;
-  Box.Align := alBottom;
-  Box.Height := 250;
+  Box := TPageControl.Create(fMain.PSSMessageBox);
+  Box.Parent := fMain.PSSMessageBox;
+  Box.Align := alClient;
 //  Box.Options := [nboShowCloseButtons];
   Box.Visible := False;
 
@@ -995,7 +994,7 @@ begin
   Tab := TTabSheet.Create(ABox);
   Tab.Caption := AName;
   Tab.PageControl := ABox;
-  Tab.Visible := False;
+  Tab.Visible := True;
 
   Box := TCmdBox.Create(Tab);
   Box.Parent := Tab;

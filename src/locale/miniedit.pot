@@ -422,6 +422,10 @@ msgstr ""
 msgid "Tab to Spaces"
 msgstr ""
 
+#: tfmain.acttogglemessagebox.caption
+msgid "Toggle Message Box"
+msgstr ""
+
 #: tfmain.acttogglespecialchar.caption
 msgid "Toggle Special Char"
 msgstr ""
@@ -806,10 +810,6 @@ msgstr ""
 #: tfmain.toolbutton14.hint
 msgctxt "tfmain.toolbutton14.hint"
 msgid "Reload Folder"
-msgstr ""
-
-#: tfmain.toolbutton16.hint
-msgid "Run Make"
 msgstr ""
 
 #: tfsettings.caption

@@ -2167,7 +2167,6 @@ object fMain: TfMain
     end
     object ToolButton16: TToolButton
       Left = 396
-      Hint = 'Run Make'
       Top = 0
       Action = actCompileRun
     end
@@ -2185,6 +2184,11 @@ object fMain: TfMain
     end
   end
   object lbMessage: TStaticText
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MainToolbar
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 24
     Top = 36
@@ -2262,12 +2266,38 @@ object fMain: TfMain
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
-    object PSSEditor: TPairSplitterSide
+    object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 305
       Height = 942
       Top = 0
       Width = 1605
+      ClientWidth = 1605
+      ClientHeight = 942
+      object PairSplitter2: TPairSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 942
+        Top = 0
+        Width = 1605
+        Align = alClient
+        Position = 0
+        SplitterType = pstVertical
+        object PSSEditor: TPairSplitterSide
+          Cursor = crArrow
+          Left = 0
+          Height = 0
+          Top = 0
+          Width = 1605
+        end
+        object PSSMessageBox: TPairSplitterSide
+          Cursor = crArrow
+          Left = 0
+          Height = 937
+          Top = 5
+          Width = 1605
+        end
+      end
     end
   end
   object ToolButton19: TToolButton
@@ -2503,6 +2533,9 @@ object fMain: TfMain
       end
       object MIShotSpecialChar: TMenuItem
         Action = actToggleSpecialChar
+      end
+      object MIMessageBox: TMenuItem
+        Action = actToggleMessageBox
       end
     end
     object MenuItem86: TMenuItem
@@ -3389,7 +3422,7 @@ object fMain: TfMain
       OnExecute = actFindLongestLineExecute
     end
     object actToggleSpecialChar: TAction
-      Category = 'Settings'
+      Category = 'View'
       Caption = 'Toggle Special Char'
       ImageIndex = 30
       OnExecute = actToggleSpecialCharExecute
@@ -3418,12 +3451,12 @@ object fMain: TfMain
       OnExecute = FileReloadFolderExecute
     end
     object actShowRowNumber: TAction
-      Category = 'Settings'
+      Category = 'View'
       Caption = 'Show row numbers'
       OnExecute = actShowRowNumberExecute
     end
     object actShowToolbar: TAction
-      Category = 'Settings'
+      Category = 'View'
       Caption = 'Show toolbar'
       OnExecute = actShowToolbarExecute
     end
@@ -3516,6 +3549,11 @@ object fMain: TfMain
       Category = 'FileTree'
       Caption = 'Open Extern'
       OnExecute = actOpenExternExecute
+    end
+    object actToggleMessageBox: TAction
+      Category = 'View'
+      Caption = 'Toggle Message Box'
+      OnExecute = actToggleMessageBoxExecute
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog

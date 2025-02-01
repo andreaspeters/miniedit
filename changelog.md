@@ -2,6 +2,11 @@
 
 ## master
 
+- CHANGE: Combine CMD Box (Run Output) and LSP Output into a MessageBox
+          bottom of the Editor.
+
+## v0.1.0
+
 - ADD: Autoreload of last directory.
 - ADD: Support to load directory by cli parameter.
 - DEL: Remove toolbar for filetree.
