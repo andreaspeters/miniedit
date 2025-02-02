@@ -2000,7 +2000,6 @@ object TFInfo: TTFInfo
   OnShow = FormShow
   ParentDoubleBuffered = False
   Position = poDesktopCenter
-  LCLVersion = '3.6.0.0'
   object Image1: TImage
     Left = 64
     Height = 128
@@ -2351,7 +2350,7 @@ object TFInfo: TTFInfo
     Left = 224
     Height = 55
     Top = 40
-    Width = 152
+    Width = 154
     Caption = 'MiniEdit'
     Font.Height = -40
     ParentFont = False
@@ -2382,22 +2381,22 @@ object TFInfo: TTFInfo
   end
   object Label2: TLabel
     Left = 224
-    Height = 25
+    Height = 24
     Top = 104
-    Width = 218
-    Caption = 'by Andreas Peters (DC6AP)'
+    Width = 145
+    Caption = 'by Andreas Peters'
   end
   object Label3: TLabel
     Left = 408
-    Height = 25
+    Height = 24
     Top = 64
     Width = 60
     Caption = 'Version'
   end
   object BPDefaultButtons: TButtonPanel
     Left = 6
-    Height = 49
-    Top = 370
+    Height = 43
+    Top = 376
     Width = 513
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2475,9 +2474,9 @@ object TFInfo: TTFInfo
   end
   object LGithubDonation: TLabel
     Left = 224
-    Height = 25
+    Height = 24
     Top = 160
-    Width = 248
+    Width = 243
     Caption = 'Please Donate a small amount'
     Font.Color = clBlue
     ParentFont = False
@@ -2485,9 +2484,9 @@ object TFInfo: TTFInfo
   end
   object LFPSourceCode: TLabel
     Left = 224
-    Height = 25
+    Height = 24
     Top = 208
-    Width = 174
+    Width = 170
     Caption = 'MiniEdit Source Code'
     Font.Color = clBlue
     ParentFont = False

@@ -830,7 +830,7 @@ msgid "MiniEdit"
 msgstr ""
 
 #: ttfinfo.label2.caption
-msgid "by Andreas Peters (DC6AP)"
+msgid "by Andreas Peters"
 msgstr ""
 
 #: ttfinfo.label3.caption
