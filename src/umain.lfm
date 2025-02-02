@@ -2152,12 +2152,6 @@ object fMain: TfMain
       Top = 0
       Style = tbsSeparator
     end
-    object ToolButton11: TToolButton
-      Left = 422
-      Height = 26
-      Top = 0
-      Style = tbsSeparator
-    end
     object ToolButton14: TToolButton
       Left = 144
       Hint = 'Reload Folder'
