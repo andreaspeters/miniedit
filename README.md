@@ -48,11 +48,11 @@ Server could find any information about that.
 - F3 - Search the selected text and/or find next
 - SHIFT+F3 - Find previous
 - F4 - View File in Hex Editor
+- F5 - Go to line
 - F9 - Run Make
 - (SHIFT)+TAB - Jump between FileTree and Editor
 - ALT+0 .. ALT+1 - Select Editor Tab 1 to 10
 - ALT+Right/Left - Move selected Editor Tab
-- ALT+L - Go to line
 - ALT+. (PERIOD) - Show LSP window for code completion
 - ALT+- (MINUS) - Show LSP window for package information
 - CTRL+F - Search

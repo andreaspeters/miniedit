@@ -3299,7 +3299,7 @@ object fMain: TfMain
       Hint = 'Go to line'
       ImageIndex = 19
       OnExecute = actGoToExecute
-      ShortCut = 32844
+      ShortCut = 116
     end
     object actPrint: TAction
       Category = 'File'
