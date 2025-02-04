@@ -30,8 +30,7 @@ Server could find any information about that.
 
 ## Features in planing
 
-- Show git branch at the status bar
-- Connection with Ollama AI 🤷♂️
+- Connection with Ollama AI 🤷
 
 ## Requirements
 
