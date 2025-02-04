@@ -8,7 +8,7 @@ unit ueditor;
 interface
 
 uses
-  Classes, SysUtils, Controls, Dialogs, ComCtrls, LCLProc, LCLType, LCLIntf,
+  Classes, SysUtils, Controls, Dialogs, Buttons, ComCtrls, LCLProc, LCLType, LCLIntf,
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
@@ -818,12 +818,12 @@ end;
 function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
-  CmdTab, LSPTab: TTabSheet;
   Box: TPageControl;
   i: integer;
   DefaultAttr: TFontAttributes;
   Beauty: TSynBeautifier;
   FileType: TSynCustomHighlighter;
+  btnMBClose: TSpeedButton;
 begin
   result := nil;
   if FileName <> EmptyStr then
@@ -916,7 +916,6 @@ begin
   Box := TPageControl.Create(fMain.PSSMessageBox);
   Box.Parent := fMain.PSSMessageBox;
   Box.Align := alClient;
-//  Box.Options := [nboShowCloseButtons];
   Box.Visible := False;
 
   Sheet.FMessageBox := Box;

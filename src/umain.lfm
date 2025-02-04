@@ -2076,84 +2076,84 @@ object fMain: TfMain
       Action = FileOpenFolder
     end
     object ToolButton3: TToolButton
-      Left = 178
+      Left = 173
       Top = 0
       Action = FileSave
     end
     object tbbClose: TToolButton
-      Left = 92
+      Left = 87
       Top = 0
       Action = FileClose
       ImageIndex = 4
     end
     object ToolButton5: TToolButton
-      Left = 53
+      Left = 399
       Height = 26
       Top = 0
       Style = tbsDivider
     end
     object ToolButton6: TToolButton
-      Left = 209
+      Left = 204
       Top = 0
       Action = EditCut
     end
     object ToolButton7: TToolButton
-      Left = 235
+      Left = 230
       Top = 0
       Action = EditCopy
     end
     object ToolButton8: TToolButton
-      Left = 261
+      Left = 256
       Top = 0
       Action = EditPaste
     end
     object ToolButton9: TToolButton
-      Left = 292
+      Left = 287
       Top = 0
       Action = EditUndo
     end
     object ToolButton10: TToolButton
-      Left = 318
+      Left = 313
       Top = 0
       Action = EditRedo
     end
     object ToolButton12: TToolButton
-      Left = 287
+      Left = 282
       Height = 26
       Top = 0
       Style = tbsDivider
     end
     object ToolButton13: TToolButton
-      Left = 352
+      Left = 347
       Top = 0
       Action = SearchFind
     end
     object ToolButton15: TToolButton
-      Left = 378
+      Left = 373
       Top = 0
       Action = SearchReplace
       ImageIndex = 9
     end
     object tbbCloseAll: TToolButton
-      Left = 118
+      Left = 113
       Top = 0
       Action = FileCloseAll
       ImageIndex = 11
     end
     object tbbSepClose: TToolButton
-      Left = 204
+      Left = 199
       Height = 26
       Top = 0
       Style = tbsDivider
     end
     object ToolButton4: TToolButton
-      Left = 344
+      Left = 339
       Height = 26
       Top = 0
       Style = tbsSeparator
     end
     object ToolButton14: TToolButton
-      Left = 152
+      Left = 147
       Hint = 'Reload Folder'
       Top = 0
       Action = FileReloadFolder
@@ -2165,19 +2165,19 @@ object fMain: TfMain
       Action = actCompileRun
     end
     object ToolButton17: TToolButton
-      Left = 58
+      Left = 53
       Top = 0
       Action = FileReloadFolder
     end
     object ToolButton18: TToolButton
-      Left = 84
+      Left = 79
       Height = 26
       Top = 0
       AutoSize = True
       Style = tbsSeparator
     end
     object ToolButton20: TToolButton
-      Left = 144
+      Left = 139
       Height = 26
       Top = 0
       Caption = 'ToolButton20'
@@ -2282,7 +2282,7 @@ object fMain: TfMain
       ClientWidth = 1605
       ClientHeight = 942
       object PairSplitter2: TPairSplitter
-        Cursor = crVSplit
+        Cursor = crDefault
         Left = 0
         Height = 942
         Top = 0
@@ -3006,7 +3006,6 @@ object fMain: TfMain
     ShowMenuGlyphs = sbgSystem
     OnActivate = AppPropertiesActivate
     OnDropFiles = AppPropertiesDropFiles
-    OnShowHint = AppPropertiesShowHint
     Left = 504
     Top = 72
   end

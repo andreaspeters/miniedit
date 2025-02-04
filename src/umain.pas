@@ -7,11 +7,10 @@ uses
   Classes, SysUtils, Math, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ActnList, Menus, ComCtrls, StdActns, uEditor, LCLType, Clipbrd,
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
-  LazUtils, LazUTF8, uDglGoTo, SynEditPrint,
-  simplemrumanager, SynEditLines, SynEdit, SynEditKeyCmds, SynCompletion,
-  SynHighlighterCpp, replacedialog, lclintf, jsontools, LMessages, PairSplitter,
-  uCmdBox, Process, uinfo, ucmdboxthread, SynHighlighterPas, udirectoryname,
-  ushowlspmessage, usettings
+  LazUtils, LazUTF8, uDglGoTo, SynEditPrint, simplemrumanager, SynEditLines,
+  SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
+  lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
+  ucmdboxthread, SynHighlighterPas, udirectoryname, ushowlspmessage, usettings
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -311,7 +310,6 @@ type
     procedure actZoomResetExecute(Sender: TObject);
     procedure AppPropertiesActivate(Sender: TObject);
     procedure AppPropertiesDropFiles(Sender: TObject; const FileNames: array of String);
-    procedure AppPropertiesShowHint(var HintStr: string; var CanShow: boolean; var HintInfo: THintInfo);
     procedure EditCopyExecute(Sender: TObject);
     procedure EditCutExecute(Sender: TObject);
     procedure EditPasteExecute(Sender: TObject);
@@ -444,11 +442,6 @@ end;
 procedure TfMain.EditSelectAllExecute(Sender: TObject);
 begin
    SendMessage (GetFocus, LM_CHAR, VK_CONTROL+VK_A, 0);
-end;
-
-procedure TfMain.AppPropertiesShowHint(var HintStr: string; var CanShow: boolean; var HintInfo: THintInfo);
-begin
-  StatusBar.Panels[3].Text := HintInfo.HintStr;
 end;
 
 procedure TfMain.EditCopyExecute(Sender: TObject);
@@ -1923,8 +1916,10 @@ begin
     StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
 
   if (scSelection in Changes) then
-    StatusBar.Panels[3].Text :=
-      Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart]);
+    if (Editor.SelEnd - Editor.SelStart) > 0 then
+      StatusBar.Panels[3].Text := Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart])
+    else
+      StatusBar.Panels[3].Text := '';
 
   StatusBar.Panels[4].Text := BrowsingPath;
 
