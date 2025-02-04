@@ -1915,11 +1915,10 @@ begin
   if (scCaretX in Changes) or (scCaretY in Changes) then
     StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
 
-  if (scSelection in Changes) then
-    if (Editor.SelEnd - Editor.SelStart) > 0 then
-      StatusBar.Panels[3].Text := Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart])
-    else
-      StatusBar.Panels[3].Text := '';
+  if Editor.SelAvail then
+    StatusBar.Panels[3].Text := Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart])
+  else
+    StatusBar.Panels[3].Text := '';
 
   StatusBar.Panels[4].Text := BrowsingPath;
 
