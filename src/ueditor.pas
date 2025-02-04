@@ -823,7 +823,6 @@ var
   DefaultAttr: TFontAttributes;
   Beauty: TSynBeautifier;
   FileType: TSynCustomHighlighter;
-  btnMBClose: TSpeedButton;
 begin
   result := nil;
   if FileName <> EmptyStr then
@@ -920,7 +919,7 @@ begin
 
   Sheet.FMessageBox := Box;
 
-  Sheet.FCMDBox := CreateMessageTab('CMD Output', Box);
+  Sheet.FCMDBox := CreateMessageTab('Compile Output', Box);
   Sheet.FLSPBox := CreateMessageTab('LSP Message', Box);
 
   Sheet.FCmdBoxThread := TCmdBoxThread.Create;

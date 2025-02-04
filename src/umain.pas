@@ -1002,7 +1002,7 @@ begin
     CompileRun.Executable := ConfigObj.CompileCommand;
     CmdBox.font := ConfigObj.Font;
 
-    CmdBox.Writeln(#13#10#27'[32m>' + CompileRun.Executable+#27'[0m'#13#10);
+    CmdBox.Writeln(#13#10#27'[32m'+'>>>' + CompileRun.Executable+'<<<'+#27'[0m'#13#10);
     CompileRun.CurrentDirectory := BrowsingPath;
 
     CompileRun.Options := [poUsePipes, poStderrToOutPut];
@@ -2242,12 +2242,14 @@ begin
     case LowerCase(ExtractFileExt(myNode.FullPath)) of
       '.go':    myNode.ImageIndex := 3;
       '.cpp':   myNode.ImageIndex := 4;
+      '.c++':   myNode.ImageIndex := 4;
       '.c':     myNode.ImageIndex := 5;
       '.cc':    myNode.ImageIndex := 5;
       '.h':     myNode.ImageIndex := 6;
       '.hpp':   myNode.ImageIndex := 7;
       '.hcl':   myNode.ImageIndex := 8;
       '.yaml':  myNode.ImageIndex := 9;
+      '.yml':   myNode.ImageIndex := 9;
       '.json':  myNode.ImageIndex := 10;
       '.nix':   myNode.ImageIndex := 11;
       '.cmake': myNode.ImageIndex := 13;
@@ -2265,6 +2267,8 @@ begin
       '.rb':    myNode.ImageIndex := 26;
       '.sh':    myNode.ImageIndex := 27;
       '.ps1':   myNode.ImageIndex := 27;
+      '.html':  myNode.ImageIndex := 28;
+      '.htm':   myNode.ImageIndex := 28;
     else
       myNode.ImageIndex := 2;
     end;
