@@ -293,6 +293,20 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+#: tfmain.actcompilerun.hint
+msgid "Compile"
+msgstr ""
+
+#: tfmain.actcompilestop.caption
+msgctxt "tfmain.actcompilestop.caption"
+msgid "Stop Compile"
+msgstr ""
+
+#: tfmain.actcompilestop.hint
+msgctxt "tfmain.actcompilestop.hint"
+msgid "Stop Compile"
+msgstr ""
+
 #: tfmain.actcompressspaces.caption
 msgctxt "tfmain.actcompressspaces.caption"
 msgid "Reduce multiple spaces"
@@ -814,6 +828,10 @@ msgstr ""
 #: tfmain.toolbutton14.hint
 msgctxt "tfmain.toolbutton14.hint"
 msgid "Reload Folder"
+msgstr ""
+
+#: tfmain.toolbutton20.caption
+msgid "ToolButton20"
 msgstr ""
 
 #: tfsettings.caption

@@ -1,6 +1,7 @@
 {"version":1,"strings":[
 {"hash":5095492,"name":"tfmain.caption","sourcebytes":[77,105,110,105,69,100,105,116],"value":"MiniEdit"},
 {"hash":202866162,"name":"tfmain.toolbutton14.hint","sourcebytes":[82,101,108,111,97,100,32,70,111,108,100,101,114],"value":"Reload Folder"},
+{"hash":151863744,"name":"tfmain.toolbutton20.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,50,48],"value":"ToolButton20"},
 {"hash":63628709,"name":"tfmain.lbmessage.caption","sourcebytes":[108,98,77,101,115,115,97,103,101],"value":"lbMessage"},
 {"hash":2805797,"name":"tfmain.menuitem1.caption","sourcebytes":[38,70,105,108,101],"value":"&File"},
 {"hash":139726590,"name":"tfmain.mnuopenrecent.caption","sourcebytes":[79,112,101,110,32,82,101,99,101,110,116,32,46,46,46],"value":"Open Recent ..."},
@@ -118,6 +119,7 @@
 {"hash":224707570,"name":"tfmain.filebrowsefolder.caption","sourcebytes":[66,114,111,119,115,101,32,70,111,108,100,101,114],"value":"Browse Folder"},
 {"hash":189415987,"name":"tfmain.actunquote.caption","sourcebytes":[85,110,113,117,111,116,101,32,108,105,110,101,115],"value":"Unquote lines"},
 {"hash":480837,"name":"tfmain.actcompilerun.caption","sourcebytes":[110,111,110,101],"value":"none"},
+{"hash":174354533,"name":"tfmain.actcompilerun.hint","sourcebytes":[67,111,109,112,105,108,101],"value":"Compile"},
 {"hash":265889698,"name":"tfmain.actopeninhexeditor.caption","sourcebytes":[79,112,101,110,32,105,110,32,72,101,120,32,69,100,105,116,111,114],"value":"Open in Hex Editor"},
 {"hash":80832082,"name":"tfmain.actfoldernew.caption","sourcebytes":[78,101,119,32,70,111,108,100,101,114],"value":"New Folder"},
 {"hash":114087587,"name":"tfmain.actopenproperties.caption","sourcebytes":[80,114,111,112,101,114,116,105,101,115],"value":"Properties"},
@@ -126,5 +128,7 @@
 {"hash":207932549,"name":"tfmain.actcutfile.caption","sourcebytes":[67,117,116,32,70,105,108,101],"value":"Cut File"},
 {"hash":77185166,"name":"tfmain.actopenextern.caption","sourcebytes":[79,112,101,110,32,69,120,116,101,114,110],"value":"Open Extern"},
 {"hash":80829912,"name":"tfmain.acttogglemessagebox.caption","sourcebytes":[84,111,103,103,108,101,32,77,101,115,115,97,103,101,32,66,111,120],"value":"Toggle Message Box"},
-{"hash":147499204,"name":"tfmain.actrestart.caption","sourcebytes":[82,101,115,116,97,114,116],"value":"Restart"}
+{"hash":147499204,"name":"tfmain.actrestart.caption","sourcebytes":[82,101,115,116,97,114,116],"value":"Restart"},
+{"hash":235867749,"name":"tfmain.actcompilestop.caption","sourcebytes":[83,116,111,112,32,67,111,109,112,105,108,101],"value":"Stop Compile"},
+{"hash":235867749,"name":"tfmain.actcompilestop.hint","sourcebytes":[83,116,111,112,32,67,111,109,112,105,108,101],"value":"Stop Compile"}
 ]}

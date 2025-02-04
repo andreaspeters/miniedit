@@ -41,6 +41,7 @@ type
     actFolderNew: TAction;
     actCopyFile: TAction;
     actCutFile: TAction;
+    actCompileStop: TAction;
     actRestart: TAction;
     actToggleMessageBox: TAction;
     actOpenExtern: TAction;
@@ -240,15 +241,17 @@ type
     Timer1: TTimer;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
+    TBCompileStop: TToolButton;
     ToolButton12: TToolButton;
     ToolButton13: TToolButton;
     ToolButton14: TToolButton;
     ToolButton15: TToolButton;
-    ToolButton16: TToolButton;
+    TBCompileRun: TToolButton;
     ToolButton17: TToolButton;
     ToolButton18: TToolButton;
     ToolButton19: TToolButton;
     ToolButton2: TToolButton;
+    ToolButton20: TToolButton;
     ToolButton3: TToolButton;
     tbbClose: TToolButton;
     tbbCloseAll: TToolButton;
@@ -259,6 +262,7 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
+    procedure actCompileStopExecute(Sender: TObject);
     procedure actFolderNewExecute(Sender: TObject);
     procedure actCloseAfterExecute(Sender: TObject);
     procedure actCloseAllExceptThisExecute(Sender: TObject);
@@ -382,6 +386,7 @@ type
     ws : TWindowState;
     BrowsingPath: string;
     EditorSplitterPos: Integer;
+    CompileRun: TProcess;
 
     function AskFileName(Editor: TEditor): boolean;
     procedure ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -978,7 +983,6 @@ end;
 
 procedure TfMain.actCompileRunExecute(Sender: TObject);
 var
-  run: TProcess;
   CmdBox: TCmdBox;
 begin
   if not EditorAvalaible then
@@ -1000,20 +1004,23 @@ begin
     EditorSplitterPos := 250;
   end;
 
-  run := TProcess.Create(nil);
+  CompileRun := TProcess.Create(nil);
   try
-    run.Executable := ConfigObj.CompileCommand;
+    CompileRun.Executable := ConfigObj.CompileCommand;
     CmdBox.font := ConfigObj.Font;
-    CmdBox.Writeln(BrowsingPath+' > ' + run.Executable);
-    run.CurrentDirectory := BrowsingPath;
 
-    run.Options := [poUsePipes, poStderrToOutPut];
-    run.Execute;
+    CmdBox.Writeln(#13#10#27'[32m>' + CompileRun.Executable+#27'[0m'#13#10);
+    CompileRun.CurrentDirectory := BrowsingPath;
 
-    EditorFactory.CurrentCmdBoxThread.Command := Run;
+    CompileRun.Options := [poUsePipes, poStderrToOutPut];
+    CompileRun.Execute;
+
+    EditorFactory.CurrentCmdBoxThread.Command := CompileRun;
     EditorFactory.CurrentCmdBoxThread.Start;
+    TBCompileStop.Enabled := True;
+    TBCompileRun.Enabled := False;
   except
-    run.Free;
+    CompileRun.Free;
   end;
 end;
 
@@ -1169,6 +1176,17 @@ begin
   end;
 
 
+end;
+
+procedure TfMain.actCompileStopExecute(Sender: TObject);
+begin
+  if CompileRun.Running then
+  begin
+    CompileRun.Terminate(1);
+    if Assigned(EditorFactory.CurrentCmdBox) then
+      EditorFactory.CurrentCmdBox.Write(#13#10#27'[31m'+'>>Stop<<'+#27'[0m'#13#10);
+    CompileRun.Free;
+  end;
 end;
 
 procedure TfMain.actCloseBeforeExecute(Sender: TObject);
@@ -1585,10 +1603,18 @@ begin
 end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
-var  LSPBox, CmdBox: TCmdBox;
+var LSPBox, CmdBox: TCmdBox;
+    Line: String;
 begin
   if not EditorAvalaible then
     exit;
+
+  if Assigned(CompileRun) then
+    if not CompileRun.Running then
+    begin
+      TBCompileStop.Enabled := False;
+      TBCompileRun.Enabled := True;
+    end;
 
   if Length(EditorFactory.CurrentEditor.SelText) > 0 then
     FindText := EditorFactory.CurrentEditor.SelText;
@@ -1604,7 +1630,10 @@ begin
         begin
           LSPBox.Visible := True;
           EditorFactory.CurrentMessageBox.Visible := True;
-          LSPBox.Write(EditorFactory.CurrentLSP.OutputString);
+          // Looks strange but we have to besure that all #CR's
+          // are #CRLF
+          Line := StringReplace(EditorFactory.CurrentLSP.OutputString, #10, #13#10, [rfReplaceAll]);
+          LSPBox.Write(Line);
           EditorFactory.CurrentLSP.OutputString := '';
         end;
       end;
@@ -1619,7 +1648,10 @@ begin
         begin
           CmdBox.Visible := True;
           EditorFactory.CurrentMessageBox.Visible := True;
-          CmdBox.Write(EditorFactory.CurrentCmdBoxThread.OutputString);
+          // Looks strange but we have to besure that all #CR's
+          // are #CRLF
+          Line := StringReplace(EditorFactory.CurrentCmdBoxThread.OutputString, #10, #13#10, [rfReplaceAll]);
+          CmdBox.Write(Line);
           EditorFactory.CurrentCmdBoxThread.OutputString := '';
         end;
       end;

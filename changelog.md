@@ -8,6 +8,7 @@
 - FIX: Quick Search
 - ADD: Configure Compile Command under <SETTINGS>
 - ADD: Restart button under <FILE> Menu
+- ADD: Button to stop the current compile.
 
 ## v0.1.0
 
