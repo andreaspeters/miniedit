@@ -5,6 +5,8 @@
 - CHANGE: Combine CMD Box (Run Output) and LSP Output into a MessageBox
           bottom of the Editor.
 - CHANGE: Changed "go to line" shortcut from ALT+L to F5.
+- FIX: Quick Search
+- ADD: Configure Compile Command
 
 ## v0.1.0
 

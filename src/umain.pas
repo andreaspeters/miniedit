@@ -984,7 +984,7 @@ begin
 
   run := TProcess.Create(nil);
   try
-    run.Executable := 'make';
+    run.Executable := ConfigObj.CompileCommand;
     CmdBox.font := ConfigObj.Font;
     CmdBox.Writeln(BrowsingPath+' > ' + run.Executable);
     run.CurrentDirectory := BrowsingPath;
@@ -1571,6 +1571,9 @@ var  LSPBox, CmdBox: TCmdBox;
 begin
   if not EditorAvalaible then
     exit;
+
+  if Length(EditorFactory.CurrentEditor.SelText) > 0 then
+    FindText := EditorFactory.CurrentEditor.SelText;
 
   if Assigned(EditorFactory.CurrentMessageBox) then
   begin

@@ -1999,7 +1999,8 @@ object TFInfo: TTFInfo
   }
   OnShow = FormShow
   ParentDoubleBuffered = False
-  Position = poDesktopCenter
+  Position = poOwnerFormCenter
+  LCLVersion = '3.6.0.0'
   object Image1: TImage
     Left = 64
     Height = 128

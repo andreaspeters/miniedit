@@ -816,6 +816,10 @@ msgstr ""
 msgid "MiniEdit - Settings"
 msgstr ""
 
+#: tfsettings.lecompilecommand.editlabel.caption
+msgid "Compile Command"
+msgstr ""
+
 #: tfsettings.lehexeditor.editlabel.caption
 msgid "Hex Editor"
 msgstr ""

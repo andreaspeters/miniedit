@@ -148,6 +148,7 @@ type
     fConfigHolder: TJsonNode;
     fColorSchema: TJsonNode;
     FHexEditor: String;
+    FCompileCommand: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
 
@@ -155,6 +156,7 @@ type
     function GetBackGroundColor: TColor;
     procedure LoadAliases;
     procedure SetHexEditor(AValue: String);
+    procedure SetCompileCommand(AValue: String);
     procedure SetDirty(AValue: boolean);
     procedure SetFont(AValue: TFont);
     procedure SetShowRowNumber(AValue: boolean);
@@ -192,6 +194,7 @@ type
     property ConfigDir: string read fConfigDir;
     property ConfigFile: string read FConfigFile;
     property HexEditor: string read FHexEditor write SetHexEditor;
+    property CompileCommand: string read FCompileCommand write SetCompileCommand;
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
     property ShowToolbar: boolean read FShowToolbar write SetShowToolbar;
@@ -567,6 +570,7 @@ begin
   fConfigHolder.Find('Editor/ShowSpecialChars', true).AsBoolean := FShowSpecialChars;
   fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
   fConfigHolder.Find('External/HexEditor', true).AsString := FHexEditor;
+  fConfigHolder.Find('External/CompileCommand', true).AsString := FCompileCommand;
 
 
   FDirty := false;
@@ -598,6 +602,7 @@ begin
   FShowSpecialChars := fConfigHolder.GetValueDef('Editor/ShowSpecialChars', False);
   FLastDirectory := fConfigHolder.GetValueDef('Editor/LastDirectory', '.');
   FHexEditor := fConfigHolder.GetValueDef('External/HexEditor', 'Hex');
+  FCompileCommand := fConfigHolder.GetValueDef('External/CompileCommand', 'make');
 
   FDirty := False;
 end;
@@ -649,6 +654,12 @@ end;
 procedure TConfig.SetHexEditor(AValue: String);
 begin
   FHexEditor := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetCompileCommand(AValue: String);
+begin
+  FCompileCommand := AValue;
   FDirty := True;
 end;
 

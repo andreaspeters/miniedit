@@ -1,13 +1,13 @@
 object FSettings: TFSettings
   Left = 432
-  Height = 167
+  Height = 198
   Top = 37
-  Width = 504
+  Width = 573
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'MiniEdit - Settings'
-  ClientHeight = 167
-  ClientWidth = 504
+  ClientHeight = 198
+  ClientWidth = 573
   DoubleBuffered = True
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
@@ -2000,9 +2000,9 @@ object FSettings: TFSettings
   }
   OnShow = FormShow
   ParentDoubleBuffered = False
-  Position = poDesktopCenter
+  Position = poOwnerFormCenter
   object LEHexEditor: TLabeledEdit
-    Left = 104
+    Left = 176
     Height = 37
     Top = 32
     Width = 320
@@ -2015,8 +2015,8 @@ object FSettings: TFSettings
   object BPDefault: TButtonPanel
     Left = 6
     Height = 43
-    Top = 118
-    Width = 492
+    Top = 149
+    Width = 561
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -2031,7 +2031,7 @@ object FSettings: TFSettings
     ShowButtons = [pbOK, pbCancel]
   end
   object SPChooseDirectory: TSpeedButton
-    Left = 424
+    Left = 496
     Height = 37
     Top = 32
     Width = 45
@@ -2039,10 +2039,31 @@ object FSettings: TFSettings
     HotImageIndex = 5
     Images = fMain.imgListBig
     ImageIndex = 5
-    OnClick = SPChooseDirectoryClick
+    OnClick = ChooseHexEditor
+  end
+  object LECompileCommand: TLabeledEdit
+    Left = 176
+    Height = 37
+    Top = 80
+    Width = 320
+    EditLabel.Height = 24
+    EditLabel.Width = 154
+    EditLabel.Caption = 'Compile Command'
+    LabelPosition = lpLeft
+    TabOrder = 2
+  end
+  object SPChooseDirectory1: TSpeedButton
+    Left = 496
+    Height = 37
+    Top = 80
+    Width = 45
+    Flat = True
+    HotImageIndex = 5
+    Images = fMain.imgListBig
+    ImageIndex = 5
+    OnClick = ChooseCompileCommand
   end
   object OPSelectFile: TOpenDialog
-    Left = 48
-    Top = 8
+    Left = 464
   end
 end
