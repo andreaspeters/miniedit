@@ -6,7 +6,8 @@
           bottom of the Editor.
 - CHANGE: Changed "go to line" shortcut from ALT+L to F5.
 - FIX: Quick Search
-- ADD: Configure Compile Command
+- ADD: Configure Compile Command under <SETTINGS>
+- ADD: Restart button under <FILE> Menu
 
 ## v0.1.0
 

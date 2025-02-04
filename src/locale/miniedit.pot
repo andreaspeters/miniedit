@@ -406,6 +406,10 @@ msgstr ""
 msgid "Quote lines"
 msgstr ""
 
+#: tfmain.actrestart.caption
+msgid "Restart"
+msgstr ""
+
 #: tfmain.actshowrownumber.caption
 msgid "Show row numbers"
 msgstr ""

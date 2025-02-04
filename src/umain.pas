@@ -41,6 +41,7 @@ type
     actFolderNew: TAction;
     actCopyFile: TAction;
     actCutFile: TAction;
+    actRestart: TAction;
     actToggleMessageBox: TAction;
     actOpenExtern: TAction;
     actPasteFile: TAction;
@@ -75,6 +76,7 @@ type
     MenuItem100: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
+    MenuItem62: TMenuItem;
     MIMessageBox: TMenuItem;
     MenuItem84: TMenuItem;
     MenuItem85: TMenuItem;
@@ -143,6 +145,7 @@ type
     Separator1: TMenuItem;
     Separator2: TMenuItem;
     Separator3: TMenuItem;
+    Separator4: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -282,6 +285,7 @@ type
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
+    procedure actRestartExecute(Sender: TObject);
     procedure actToggleMessageBoxExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
     procedure EditDeleteExecute(Sender: TObject);
@@ -601,6 +605,20 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@QuotedStr, [tomLines]);
+end;
+
+procedure TfMain.actRestartExecute(Sender: TObject);
+var
+  Process: TProcess;
+begin
+  Process := TProcess.Create(nil);
+  try
+    Process.Executable := ParamStr(0);
+    Process.Execute;
+    Halt(0);
+  finally
+    Process.Free;
+  end;
 end;
 
 procedure TfMain.actToggleMessageBoxExecute(Sender: TObject);
