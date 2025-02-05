@@ -2360,8 +2360,10 @@ begin
       '.html':  myNode.ImageIndex := 28;
       '.htm':   myNode.ImageIndex := 28;
       '.zip':   myNode.ImageIndex := 30;
+      '.tar':   myNode.ImageIndex := 30;
+      '.gz':    myNode.ImageIndex := 30;
       '.log':   myNode.ImageIndex := 31;
-
+      '.tex':   myNode.ImageIndex := 35;
     else
       myNode.ImageIndex := 2;
     end;
