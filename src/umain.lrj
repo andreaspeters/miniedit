@@ -28,6 +28,8 @@
 {"hash":103006787,"name":"tfmain.mibookmarks.caption","sourcebytes":[66,111,111,107,109,97,114,107,115],"value":"Bookmarks"},
 {"hash":322608,"name":"tfmain.menuitem3.caption","sourcebytes":[72,101,108,112],"value":"Help"},
 {"hash":328911,"name":"tfmain.menuitem4.caption","sourcebytes":[73,110,102,111],"value":"Info"},
+{"hash":258261589,"name":"tfmain.menuitem65.caption","sourcebytes":[84,101,120,116,32,67,97,115,101],"value":"Text Case"},
+{"hash":193768281,"name":"tfmain.menuitem76.caption","sourcebytes":[66,101,97,117,116,105,102,121],"value":"Beautify"},
 {"hash":267817060,"name":"tfmain.fontdialog.title","sourcebytes":[83,101,108,101,99,116,32,97,32,70,111,110,116],"value":"Select a Font"},
 {"hash":315140,"name":"tfmain.fileexit.caption","sourcebytes":[69,120,105,116],"value":"Exit"},
 {"hash":146468846,"name":"tfmain.fileexit.hint","sourcebytes":[67,108,111,115,101,32,97,112,112,108,105,99,97,116,105,111,110],"value":"Close application"},

@@ -76,9 +76,18 @@ type
     imgListFileIcons: TImageList;
     imgListSmall: TImageList;
     MenuItem100: TMenuItem;
+    MenuItem101: TMenuItem;
+    MenuItem102: TMenuItem;
+    MenuItem103: TMenuItem;
+    MenuItem104: TMenuItem;
+    MenuItem105: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
     MenuItem62: TMenuItem;
+    MenuItem65: TMenuItem;
+    MenuItem66: TMenuItem;
+    MenuItem75: TMenuItem;
+    MenuItem76: TMenuItem;
     miBookmarkAdd: TMenuItem;
     miBookmarkDel: TMenuItem;
     miBookmarks: TMenuItem;
@@ -152,6 +161,7 @@ type
     Separator3: TMenuItem;
     Separator4: TMenuItem;
     Separator5: TMenuItem;
+    Separator6: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -518,6 +528,7 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@FormatJSON, [tomFullText]);
+  Ed.Highlighter := ConfigObj.getHighLighter('.json');
 end;
 
 procedure TfMain.actJumpFileTreeExecute(Sender: TObject);
@@ -791,6 +802,7 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@FormatSQL, [tomFullText]);
+  Ed.Highlighter := ConfigObj.getHighLighter('.sql');
 end;
 
 procedure TfMain.actTabToSpaceExecute(Sender: TObject);
@@ -868,6 +880,7 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
   Ed.TextOperation(@FormatXML, [tomFullText]);
+  Ed.Highlighter := ConfigObj.getHighLighter('.xml');
 end;
 
 procedure TfMain.actZoomInExecute(Sender: TObject);

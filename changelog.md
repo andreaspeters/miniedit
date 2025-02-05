@@ -12,6 +12,7 @@
 - DEL: Does not show Button hint in Statusbar.
 - ADD: Bookmark Folders
 - FIX: out of bounds error middle mouse button at editor tab.
+- ADD: Beautify JSON, XML and SQL Data
 
 ## v0.1.0
 

@@ -3077,6 +3077,36 @@ object fMain: TfMain
     object MenuItem24: TMenuItem
       Action = EditSelectAll
     end
+    object Separator6: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem65: TMenuItem
+      Caption = 'Text Case'
+      object MenuItem66: TMenuItem
+        Action = actLowerCase
+      end
+      object MenuItem75: TMenuItem
+        Action = actUpperCase
+      end
+    end
+    object MenuItem76: TMenuItem
+      Caption = 'Beautify'
+      object MenuItem101: TMenuItem
+        Action = actJSONPrettyPrint
+      end
+      object MenuItem102: TMenuItem
+        Action = actJSONCompact
+      end
+      object MenuItem103: TMenuItem
+        Action = actXMLPrettyPrint
+      end
+      object MenuItem104: TMenuItem
+        Action = actXMLCompact
+      end
+      object MenuItem105: TMenuItem
+        Action = actSQLPrettyPrint
+      end
+    end
     object MenuItem25: TMenuItem
       Caption = '-'
     end

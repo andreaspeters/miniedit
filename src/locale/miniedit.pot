@@ -717,6 +717,7 @@ msgid "Sort"
 msgstr ""
 
 #: tfmain.menuitem59.caption
+msgctxt "tfmain.menuitem59.caption"
 msgid "Text Case"
 msgstr ""
 
@@ -724,7 +725,13 @@ msgstr ""
 msgid "Save as"
 msgstr ""
 
+#: tfmain.menuitem65.caption
+msgctxt "tfmain.menuitem65.caption"
+msgid "Text Case"
+msgstr ""
+
 #: tfmain.menuitem68.caption
+msgctxt "tfmain.menuitem68.caption"
 msgid "Beautify"
 msgstr ""
 
@@ -734,6 +741,11 @@ msgstr ""
 
 #: tfmain.menuitem70.caption
 msgid "Others"
+msgstr ""
+
+#: tfmain.menuitem76.caption
+msgctxt "tfmain.menuitem76.caption"
+msgid "Beautify"
 msgstr ""
 
 #: tfmain.menuitem8.caption
