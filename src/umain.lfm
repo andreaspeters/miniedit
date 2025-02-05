@@ -3533,7 +3533,7 @@ object fMain: TfMain
     object actJSONCompact: TAction
       Category = 'PrettyPrint'
       Caption = 'Compact JSON'
-      OnExecute = FileReloadFolderExecute
+      OnExecute = actJSONCompactExecute
     end
     object actShowRowNumber: TAction
       Category = 'View'
