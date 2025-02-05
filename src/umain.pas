@@ -2369,6 +2369,7 @@ begin
       'cmakelists.txt':    myNode.ImageIndex := 13;
       '.gitignore':        myNode.ImageIndex := 21;
       '.gitmodules':       myNode.ImageIndex := 21;
+      'dockerfile':        myNode.ImageIndex := 29;
     end;
   end;
 
