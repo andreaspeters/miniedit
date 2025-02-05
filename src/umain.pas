@@ -79,8 +79,8 @@ type
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
     MenuItem62: TMenuItem;
-    MenuItem65: TMenuItem;
-    MenuItem66: TMenuItem;
+    miBookmarkAdd: TMenuItem;
+    miBookmarkDel: TMenuItem;
     miBookmarks: TMenuItem;
     MIMessageBox: TMenuItem;
     MenuItem84: TMenuItem;
@@ -1220,7 +1220,7 @@ begin
 end;
 
 procedure TfMain.actBookmarkDelExecute(Sender: TObject);
-var i, y: Integer;
+var i: Integer;
 begin
   if not Assigned(Bookmarks) then
     Exit;
@@ -2206,12 +2206,26 @@ begin
 end;
 
 procedure TfMain.LoadDir(Path:string);
+var i: Integer;
 begin
   ConfigObj.LastDirectory := ExpandFileName(Path);
   splLeftBar.Visible := true;
   BrowsingPath := Path;
   FilesTree.Items.Clear;
   ExpandNode(nil,Path);
+
+  miBookmarkAdd.Enabled := True;
+  miBookmarkDel.Enabled := False;
+  if Assigned(Bookmarks) then
+    for i := 0 to Bookmarks.Count - 1 do
+    begin
+      if Bookmarks[i] = Path then
+      begin
+        miBookmarkAdd.Enabled := False;
+        miBookmarkDel.Enabled := True;
+        Exit;
+      end;
+    end;
 end;
 
 procedure TfMain.ExpandNode(NodeDir: TFileTreeNode; const Path:string);

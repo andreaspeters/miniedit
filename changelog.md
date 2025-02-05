@@ -10,6 +10,7 @@
 - ADD: Restart button under <FILE> Menu
 - ADD: Button to stop the current compile.
 - DEL: Does not show Button hint in Statusbar.
+- ADD: Bookmark Folders
 
 ## v0.1.0
 

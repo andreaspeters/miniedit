@@ -4372,10 +4372,10 @@ object fMain: TfMain
     object Separator5: TMenuItem
       Caption = '-'
     end
-    object MenuItem65: TMenuItem
+    object miBookmarkAdd: TMenuItem
       Action = actBookmarkAdd
     end
-    object MenuItem66: TMenuItem
+    object miBookmarkDel: TMenuItem
       Action = actBookmarkDel
     end
     object Separator1: TMenuItem

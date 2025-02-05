@@ -14,6 +14,7 @@
 - Open File in a Hexeditor
 - Shortcut Support
 - LSP Support for code complition (currently only for golang and python).
+- Bookmark Project Folders
 
 ## LSP
 
