@@ -277,6 +277,14 @@ msgstr ""
 msgid "MiniEdit LSP Window"
 msgstr ""
 
+#: tfmain.actbookmarkadd.caption
+msgid "Add Bookmark"
+msgstr ""
+
+#: tfmain.actbookmarkdel.caption
+msgid "Delete Bookmark"
+msgstr ""
+
 #: tfmain.actcloseafter.caption
 msgid "Close all on the right"
 msgstr ""
@@ -735,6 +743,10 @@ msgstr ""
 
 #: tfmain.menuitem86.caption
 msgid "Settings"
+msgstr ""
+
+#: tfmain.mibookmarks.caption
+msgid "Bookmarks"
 msgstr ""
 
 #: tfmain.mnucleanrecent.caption

@@ -25,6 +25,7 @@
 {"hash":139393301,"name":"tfmain.mnulanguage.caption","sourcebytes":[76,38,97,110,103,117,97,103,101],"value":"L&anguage"},
 {"hash":266201246,"name":"tfmain.menuitem52.caption","sourcebytes":[78,97,118,105,103,97,116,105,111,110],"value":"Navigation"},
 {"hash":370579,"name":"tfmain.mnutabs.caption","sourcebytes":[84,97,98,115],"value":"Tabs"},
+{"hash":103006787,"name":"tfmain.mibookmarks.caption","sourcebytes":[66,111,111,107,109,97,114,107,115],"value":"Bookmarks"},
 {"hash":322608,"name":"tfmain.menuitem3.caption","sourcebytes":[72,101,108,112],"value":"Help"},
 {"hash":328911,"name":"tfmain.menuitem4.caption","sourcebytes":[73,110,102,111],"value":"Info"},
 {"hash":267817060,"name":"tfmain.fontdialog.title","sourcebytes":[83,101,108,101,99,116,32,97,32,70,111,110,116],"value":"Select a Font"},
@@ -130,5 +131,7 @@
 {"hash":80829912,"name":"tfmain.acttogglemessagebox.caption","sourcebytes":[84,111,103,103,108,101,32,77,101,115,115,97,103,101,32,66,111,120],"value":"Toggle Message Box"},
 {"hash":147499204,"name":"tfmain.actrestart.caption","sourcebytes":[82,101,115,116,97,114,116],"value":"Restart"},
 {"hash":235867749,"name":"tfmain.actcompilestop.caption","sourcebytes":[83,116,111,112,32,67,111,109,112,105,108,101],"value":"Stop Compile"},
-{"hash":235867749,"name":"tfmain.actcompilestop.hint","sourcebytes":[83,116,111,112,32,67,111,109,112,105,108,101],"value":"Stop Compile"}
+{"hash":235867749,"name":"tfmain.actcompilestop.hint","sourcebytes":[83,116,111,112,32,67,111,109,112,105,108,101],"value":"Stop Compile"},
+{"hash":37510171,"name":"tfmain.actbookmarkadd.caption","sourcebytes":[65,100,100,32,66,111,111,107,109,97,114,107],"value":"Add Bookmark"},
+{"hash":145491675,"name":"tfmain.actbookmarkdel.caption","sourcebytes":[68,101,108,101,116,101,32,66,111,111,107,109,97,114,107],"value":"Delete Bookmark"}
 ]}

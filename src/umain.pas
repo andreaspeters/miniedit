@@ -41,6 +41,8 @@ type
     actCopyFile: TAction;
     actCutFile: TAction;
     actCompileStop: TAction;
+    actBookmarkAdd: TAction;
+    actBookmarkDel: TAction;
     actRestart: TAction;
     actToggleMessageBox: TAction;
     actOpenExtern: TAction;
@@ -77,6 +79,9 @@ type
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
     MenuItem62: TMenuItem;
+    MenuItem65: TMenuItem;
+    MenuItem66: TMenuItem;
+    miBookmarks: TMenuItem;
     MIMessageBox: TMenuItem;
     MenuItem84: TMenuItem;
     MenuItem85: TMenuItem;
@@ -146,6 +151,7 @@ type
     Separator2: TMenuItem;
     Separator3: TMenuItem;
     Separator4: TMenuItem;
+    Separator5: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -261,6 +267,8 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
+    procedure actBookmarkAddExecute(Sender: TObject);
+    procedure actBookmarkDelExecute(Sender: TObject);
     procedure actCompileStopExecute(Sender: TObject);
     procedure actFolderNewExecute(Sender: TObject);
     procedure actCloseAfterExecute(Sender: TObject);
@@ -373,7 +381,7 @@ type
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
-
+    Bookmarks: TStringList;
     FindText, ReplaceText: string;
     FileToCopy: TFileTreeNode;
     MoveFile: Boolean;
@@ -402,6 +410,7 @@ type
     procedure NewEditor(Editor: TEditor);
     procedure ShowTabs(Sender: TObject);
     Procedure SetupSaveDialog(SaveMode: TSaveMode);
+    procedure DoOnBookmarkClick(Sender: TObject);
   public
     { public declarations }
   end;
@@ -1182,6 +1191,61 @@ begin
   end;
 end;
 
+procedure TfMain.actBookmarkAddExecute(Sender: TObject);
+var i: Integer;
+    found: Boolean;
+    m: TMenuItem;
+begin
+  found := False;
+
+  if not Assigned(Bookmarks) then
+    Bookmarks := TStringList.Create;
+
+  for i :=  0 to Bookmarks.Count -1 do
+  begin
+    if Bookmarks[i] = BrowsingPath then
+      found := True;
+  end;
+
+  if not found then
+  begin
+    Bookmarks.Add(BrowsingPath);
+
+    m := TMenuItem.Create(Self);
+    m.OnClick:=@DoOnBookmarkClick;
+    m.Caption:=BrowsingPath;
+
+    miBookmarks.Add(m);
+  end;
+end;
+
+procedure TfMain.actBookmarkDelExecute(Sender: TObject);
+var i, y: Integer;
+begin
+  if not Assigned(Bookmarks) then
+    Exit;
+
+  for i :=  0 to Bookmarks.Count -1 do
+  begin
+    if Bookmarks[i] = BrowsingPath then
+    begin
+      miBookmarks.Delete(i);
+      Bookmarks.Delete(i);
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfMain.DoOnBookmarkClick(Sender: TObject);
+var bm: string;
+begin
+  with (Sender as TMenuItem) do
+    bm:=Caption;
+
+  if Length(bm) > 0 then
+    LoadDir(bm);
+end;
+
 procedure TfMain.actCloseBeforeExecute(Sender: TObject);
 begin
   EditorFactory.CloseBefore;
@@ -1340,13 +1404,10 @@ begin
 end;
 
 procedure TfMain.FormCreate(Sender: TObject);
-var
-  i: integer;
-  mnuLang: TMenuItem;
-  CurrLetter: string;
-  SaveLetter: string;
-  CurrMenu: TMenuItem;
-  ParamList: TstringList;
+var i: integer;
+    mnuBookmark, CurrMenu, mnuLang: TMenuItem;
+    CurrLetter, SaveLetter: string;
+    ParamList: TstringList;
 
 begin
   MRU := TMRUMenuManager.Create(Self);
@@ -1354,11 +1415,25 @@ begin
   MRU.OnRecentFile := @RecentFileEvent;
   MRU.MaxRecent := 15;
   MRU.Recent.Clear;
+
+  Bookmarks := TStringList.Create;
+
   actShowRowNumber.Checked:=ConfigObj.ShowRowNumber;
   actShowToolbar.Checked:=ConfigObj.ShowToolbar;
   actToggleSpecialChar.Checked:=ConfigObj.ShowSpecialChars;
 
   ConfigObj.ReadStrings('Recent', 'Files', MRU.Recent);
+  ConfigObj.ReadStrings('Bookmarks', 'Item', Bookmarks);
+
+  for i :=  0 to Bookmarks.Count - 1do
+  begin
+    mnuBookmark := TMenuItem.Create(Self);
+    mnuBookmark.Caption:=Bookmarks[i];
+    mnuBookmark.OnClick:=@DoOnBookmarkClick;
+
+    miBookmarks.Add(mnuBookmark);
+  end;
+
   MRU.ShowRecentFiles;
   ReplaceDialog := TCustomReplaceDialog.Create(self);
   with ReplaceDialog do
@@ -1475,6 +1550,7 @@ end;
 procedure TfMain.FormDestroy(Sender: TObject);
 begin
   ConfigObj.WriteStrings('Recent', 'Files', MRU.Recent);
+  ConfigObj.WriteStrings('Bookmarks', 'Item', Bookmarks);
   Mru.Free;
   FreeAndNil(EditorFactory);
   ReplaceDialog.Free;
