@@ -11,6 +11,7 @@
 - ADD: Button to stop the current compile.
 - DEL: Does not show Button hint in Statusbar.
 - ADD: Bookmark Folders
+- FIX: out of bounds error middle mouse button at editor tab.
 
 ## v0.1.0
 

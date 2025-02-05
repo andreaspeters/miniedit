@@ -1208,7 +1208,8 @@ begin
   if Button = mbMiddle then
   begin
     i := IndexOfTabAt(Point(X, Y));
-    CloseEditor(TEditorTabSheet(Page[i]).Editor);
+    if i >= 0 then
+      CloseEditor(TEditorTabSheet(Page[i]).Editor);
     Exit;
   end;
   if (Button = mbLeft) then

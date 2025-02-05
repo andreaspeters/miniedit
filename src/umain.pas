@@ -2359,17 +2359,26 @@ begin
       '.ps1':   myNode.ImageIndex := 27;
       '.html':  myNode.ImageIndex := 28;
       '.htm':   myNode.ImageIndex := 28;
+      '.zip':   myNode.ImageIndex := 30;
+      '.log':   myNode.ImageIndex := 31;
+
     else
       myNode.ImageIndex := 2;
     end;
 
     case LowerCase(ExtractFileName(myNode.FullPath)) of
-      'makefile':          myNode.ImageIndex := 12;
-      'cmake_install.txt': myNode.ImageIndex := 13;
-      'cmakelists.txt':    myNode.ImageIndex := 13;
-      '.gitignore':        myNode.ImageIndex := 21;
-      '.gitmodules':       myNode.ImageIndex := 21;
-      'dockerfile':        myNode.ImageIndex := 29;
+      '.gitignore':  myNode.ImageIndex := 21;
+      '.gitmodules': myNode.ImageIndex := 21;
+    end;
+
+    case LowerCase(ChangeFileExt(ExtractFileName(myNode.FullPath), '')) of
+      'makefile':      myNode.ImageIndex := 12;
+      'cmake_install': myNode.ImageIndex := 13;
+      'cmakelists':    myNode.ImageIndex := 13;
+      'dockerfile':    myNode.ImageIndex := 29;
+      'readme':        myNode.ImageIndex := 32;
+      'changelog':     myNode.ImageIndex := 33;
+      'contributing':  myNode.ImageIndex := 34;
     end;
   end;
 
