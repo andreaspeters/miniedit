@@ -7,8 +7,8 @@ object fMain: TfMain
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 204
-  ClientWidth = 320
+  ClientHeight = 1030
+  ClientWidth = 1910
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2014,7 +2014,6 @@ object fMain: TfMain
   ParentDoubleBuffered = False
   ParentFont = True
   Position = poDesktopCenter
-  LCLVersion = '3.6.0.0'
   Visible = True
   object StatusBar: TStatusBar
     Left = 0
@@ -2053,7 +2052,7 @@ object fMain: TfMain
   object MainToolbar: TToolBar
     Left = 0
     Height = 26
-    Top = 5
+    Top = 29
     Width = 1910
     AutoSize = True
     BorderSpacing.Top = 5
@@ -2089,7 +2088,7 @@ object fMain: TfMain
     end
     object ToolButton5: TToolButton
       Left = 399
-      Height = 5
+      Height = 26
       Top = 0
       Style = tbsDivider
     end
@@ -2120,7 +2119,7 @@ object fMain: TfMain
     end
     object ToolButton12: TToolButton
       Left = 282
-      Height = 5
+      Height = 26
       Top = 0
       Style = tbsDivider
     end
@@ -2143,13 +2142,13 @@ object fMain: TfMain
     end
     object tbbSepClose: TToolButton
       Left = 199
-      Height = 5
+      Height = 26
       Top = 0
       Style = tbsDivider
     end
     object ToolButton4: TToolButton
       Left = 339
-      Height = 8
+      Height = 26
       Top = 0
       Style = tbsSeparator
     end
@@ -2172,14 +2171,14 @@ object fMain: TfMain
     end
     object ToolButton18: TToolButton
       Left = 79
-      Height = 8
+      Height = 26
       Top = 0
       AutoSize = True
       Style = tbsSeparator
     end
     object ToolButton20: TToolButton
       Left = 139
-      Height = 8
+      Height = 26
       Top = 0
       Caption = 'ToolButton20'
       Style = tbsSeparator
@@ -2199,7 +2198,7 @@ object fMain: TfMain
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 24
-    Top = 36
+    Top = 0
     Width = 1910
     Align = alTop
     Alignment = taCenter
@@ -2225,21 +2224,21 @@ object fMain: TfMain
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar
-    Cursor = crDefault
+    Cursor = crHandPoint
     Left = 0
-    Height = 942
-    Top = 60
+    Height = 978
+    Top = 24
     Width = 1910
     Anchors = [akTop, akLeft, akRight, akBottom]
     Position = 300
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 942
+      Height = 978
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 942
+      ClientHeight = 978
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2249,7 +2248,7 @@ object fMain: TfMain
         AnchorSideBottom.Side = asrBottom
         Cursor = crArrow
         Left = 2
-        Height = 942
+        Height = 978
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2278,15 +2277,15 @@ object fMain: TfMain
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 942
+      Height = 978
       Top = 0
       Width = 1605
       ClientWidth = 1605
-      ClientHeight = 942
+      ClientHeight = 978
       object PairSplitter2: TPairSplitter
-        Cursor = crDefault
+        Cursor = crHandPoint
         Left = 0
-        Height = 942
+        Height = 978
         Top = 0
         Width = 1605
         Align = alClient
@@ -2302,7 +2301,7 @@ object fMain: TfMain
         object PSSMessageBox: TPairSplitterSide
           Cursor = crArrow
           Left = 0
-          Height = 937
+          Height = 973
           Top = 5
           Width = 1605
         end
@@ -2311,9 +2310,9 @@ object fMain: TfMain
   end
   object ToolButton19: TToolButton
     Left = 0
-    Height = 5
+    Height = 22
     Top = 0
-    Width = 5
+    Width = 23
     Style = tbsDivider
   end
   object mnuMain: TMainMenu
@@ -3176,6 +3175,7 @@ object fMain: TfMain
     end
   end
   object SaveDialog: TSaveDialog
+    Options = [ofOldStyleDialog, ofEnableSizing, ofViewDetail]
     Left = 472
     Top = 176
   end
