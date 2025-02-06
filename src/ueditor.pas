@@ -100,13 +100,13 @@ type
     FEditor: TEditor;
     FLSP: TLSP;
     FMessageBox: TPageControl;
-    FCmdBoxThread: TCmdBoxThread;
     FLSPBox: TCmdBox;
     FCMDBox: TCmdBox;
   protected
     procedure DoShow; override;
 
   public
+    FCmdBoxThread: TCmdBoxThread;
     property MessageBox: TPageControl read FMessageBox;
     property LSP: TLSP read FLSP;
     property LSPBox: TCmdBox read FLSPBox;
@@ -138,6 +138,7 @@ type
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SetCurrentCMDBoxThread(AThread: TCmdBoxThread);
   protected
     procedure DoChange; override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -145,7 +146,7 @@ type
 
   public
     property CurrentEditor: TEditor read GetCurrentEditor;
-    property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread;
+    property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread write SetCurrentCMDBoxThread;
     property CurrentLSP: TLSP read GetCurrentLSP;
     property CurrentLSPBox: TCmdBox read GetCurrentLSPBox;
     property CurrentCMDBox: TCmdBox read GetCurrentCMDBox;
@@ -715,6 +716,14 @@ begin
     Result := TEditorTabSheet(ActivePage).CmdBoxThread;
 end;
 
+procedure TEditorFactory.SetCurrentCmdBoxThread(AThread: TCmdBoxThread);
+begin
+  if (PageCount > 0) and (ActivePageIndex >= 0) then
+    TEditorTabSheet(ActivePage).FCmdBoxThread := AThread;
+end;
+
+
+
 function TEditorFactory.GetCurrentLSP: TLSP;
 begin
   Result := nil;
@@ -735,6 +744,7 @@ begin
   if (PageCount > 0) and (ActivePageIndex >= 0) then
     Result := TEditorTabSheet(ActivePage).FCMDBox;
 end;
+
 function TEditorFactory.GetCurrentMessageBox: TPageControl;
 begin
   Result := nil;

@@ -14,6 +14,7 @@
 - FIX: out of bounds error middle mouse button at editor tab.
 - ADD: Beautify JSON, XML and SQL Data
 - ADD: Save image from Clipboard into vx_images directory.
+- FIX: Can Rerun Compile Job multiple times.
 
 ## v0.1.0
 

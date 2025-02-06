@@ -1034,6 +1034,7 @@ begin
     CompileRun.Options := [poUsePipes, poStderrToOutPut];
     CompileRun.Execute;
 
+    EditorFactory.CurrentCmdBoxThread := TCmdBoxThread.Create;
     EditorFactory.CurrentCmdBoxThread.Command := CompileRun;
     EditorFactory.CurrentCmdBoxThread.Start;
     TBCompileStop.Enabled := True;
