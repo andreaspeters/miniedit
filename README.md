@@ -84,5 +84,5 @@ It's a great way to create own Syntax highligthing files for SynEdit. So, also m
 ## Screenshot
 
 ![MiniEdit](assets/screenshot.png)
-![MiniEdit with Compile Box](assets/clipboard_20250206222548.bmp)
+![MiniEdit with Compile Output](assets/clipboard_20250206222548.bmp)
 ![LSP](assets/lsp.png)
