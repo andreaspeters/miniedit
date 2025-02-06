@@ -1001,8 +1001,8 @@ begin
 end;
 
 procedure TfMain.actCompileRunExecute(Sender: TObject);
-var
-  CmdBox: TCmdBox;
+var CmdBox: TCmdBox;
+    i: Integer;
 begin
   if not EditorAvalaible then
     exit;
@@ -1028,8 +1028,15 @@ begin
     CompileRun.Executable := ConfigObj.CompileCommand;
     CmdBox.font := ConfigObj.Font;
 
-    CmdBox.Writeln(#13#10#27'[32m'+'>>>' + CompileRun.Executable+'<<<'+#27'[0m'#13#10);
     CompileRun.CurrentDirectory := BrowsingPath;
+
+    for i := 0 to GetEnvironmentVariableCount - 1 do
+    begin
+      CMDBox.Writeln(GetEnvironmentString(i));
+      CompileRun.Environment.Add(GetEnvironmentString(i));
+    end;
+
+    CmdBox.Writeln(#13#10#27'[32m'+'>>>' + CompileRun.Executable + '<<<'+#27'[0m'#13#10);
 
     CompileRun.Options := [poUsePipes, poStderrToOutPut];
     CompileRun.Execute;
