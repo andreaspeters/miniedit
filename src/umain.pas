@@ -1128,7 +1128,7 @@ end;
 
 procedure TfMain.actPasteImageExecute(Sender: TObject);
 var Bitmap: TBitmap;
-    SavePath, SaveName: String;
+    SavePath, SaveName, FilePath: String;
     Ed: TEditor;
 begin
   if not EditorAvalaible then
@@ -1142,12 +1142,16 @@ begin
       Bitmap := TBitmap.Create;
       Bitmap.Assign(Clipboard);
 
-      SavePath := Format('%s%svx_images',[BrowsingPath, PathDelim]);
+      FilePath := BrowsingPath;
+      if Length(ExtractFilePath(Ed.FileName)) > 0 then
+        FilePath := ExtractFilePath(Ed.FileName);
+
+      SavePath := Format('%s%svx_images',[FilePath, PathDelim]);
       if not DirectoryExists(SavePath) then
         CreateDir(SavePath);
 
-      SaveName := Format('%s.bmp', [FormatDateTime('yyyymmddhhnnss', Now)]);
-      SavePath := Format('%s%sclipboard_%s', [SavePath, PathDelim, SaveName]);
+      SaveName := Format('clipboard_%s.bmp', [FormatDateTime('yyyymmddhhnnss', Now)]);
+      SavePath := Format('%s%s%s', [SavePath, PathDelim, SaveName]);
       Bitmap.SaveToFile(SavePath);
 
       if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
@@ -1552,9 +1556,7 @@ begin
     FileNew.Execute;
 
   splLeftBar.Visible := True;
-  //Font := Screen.SystemFont;
-
-  PairSplitter2.Position := 0;
+  Font := Screen.SystemFont;
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
