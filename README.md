@@ -15,6 +15,7 @@
 - Shortcut Support
 - LSP Support for code complition (currently only for golang and python).
 - Bookmark Project Folders
+- Paste Images from Clipboard
 
 ## LSP
 
@@ -83,4 +84,5 @@ It's a great way to create own Syntax highligthing files for SynEdit. So, also m
 ## Screenshot
 
 ![MiniEdit](assets/screenshot.png)
+![MiniEdit with Combile Output](assets/clipboard_20250206214749.bmp)
 ![LSP](assets/lsp.png)
