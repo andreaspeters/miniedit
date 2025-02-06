@@ -1144,11 +1144,11 @@ begin
 
   Ed := EditorFactory.CurrentEditor;
 
-  if Clipboard.HasPictureFormat then
+  if Clipboard.HasFormat(CF_Bitmap) then
   begin
     try
       Bitmap := TBitmap.Create;
-      Bitmap.Assign(Clipboard);
+      Bitmap.LoadFromClipboardFormat(CF_Bitmap);
 
       FilePath := BrowsingPath;
       if Length(Ed.FilePath) > 0 then
