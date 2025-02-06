@@ -410,6 +410,10 @@ msgstr ""
 msgid "Paste File"
 msgstr ""
 
+#: tfmain.actpasteimage.caption
+msgid "Paste Image"
+msgstr ""
+
 #: tfmain.actpathtoclipboard.caption
 msgid "File Path to clipboard"
 msgstr ""

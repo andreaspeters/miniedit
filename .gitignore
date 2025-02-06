@@ -60,3 +60,4 @@ src/**/backup/**/*
 *.bak
 .project
 appimage
+vx_images/**/*

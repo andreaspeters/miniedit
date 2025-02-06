@@ -43,6 +43,7 @@ type
     actCompileStop: TAction;
     actBookmarkAdd: TAction;
     actBookmarkDel: TAction;
+    actPasteImage: TAction;
     actRestart: TAction;
     actToggleMessageBox: TAction;
     actOpenExtern: TAction;
@@ -81,6 +82,8 @@ type
     MenuItem103: TMenuItem;
     MenuItem104: TMenuItem;
     MenuItem105: TMenuItem;
+    MenuItem106: TMenuItem;
+    miPasteImage: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
     MenuItem62: TMenuItem;
@@ -303,6 +306,7 @@ type
     procedure actOpenInHexEditorExecute(Sender: TObject);
     procedure actOpenPropertiesExecute(Sender: TObject);
     procedure actPasteFileExecute(Sender: TObject);
+    procedure actPasteImageExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
@@ -470,12 +474,12 @@ end;
 
 procedure TfMain.EditCutExecute(Sender: TObject);
 begin
-  SendMessage (GetFocus, lM_CUT, 0, 0);
+  SendMessage (GetFocus, LM_CUT, 0, 0);
 end;
 
 procedure TfMain.EditPasteExecute(Sender: TObject);
 begin
-  SendMessage (GetFocus, lM_Paste, 0, 0);
+  SendMessage (GetFocus, LM_Paste, 0, 0);
 end;
 
 procedure TfMain.ContextPopup(Sender: TObject; MousePos: TPoint;var Handled: Boolean);
@@ -1120,6 +1124,38 @@ begin
   actCutFile.Enabled := False;
   MoveFile := False;
   FileToCopy := nil;
+end;
+
+procedure TfMain.actPasteImageExecute(Sender: TObject);
+var Bitmap: TBitmap;
+    SavePath, SaveName: String;
+    Ed: TEditor;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  Ed := EditorFactory.CurrentEditor;
+
+  if Clipboard.HasPictureFormat then
+  begin
+    try
+      Bitmap := TBitmap.Create;
+      Bitmap.Assign(Clipboard);
+
+      SavePath := Format('%s%svx_images',[BrowsingPath, PathDelim]);
+      if not DirectoryExists(SavePath) then
+        CreateDir(SavePath);
+
+      SaveName := Format('%s.bmp', [FormatDateTime('yyyymmddhhnnss', Now)]);
+      SavePath := Format('%s%sclipboard_%s', [SavePath, PathDelim, SaveName]);
+      Bitmap.SaveToFile(SavePath);
+
+      if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
+        Ed.InsertTextAtCaret(Format('![%s](vx_images%s%s)',[SaveName, PathDelim, SaveName]));
+    finally
+      Bitmap.Free;
+    end;
+  end;
 end;
 
 procedure TfMain.actCopyFileExecute(Sender: TObject);
