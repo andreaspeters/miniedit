@@ -2429,8 +2429,9 @@ begin
     end;
 
     case LowerCase(ExtractFileName(myNode.FullPath)) of
-      '.gitignore':  myNode.ImageIndex := 21;
-      '.gitmodules': myNode.ImageIndex := 21;
+      '.gitignore':     myNode.ImageIndex := 21;
+      '.gitmodules':    myNode.ImageIndex := 21;
+      '.gitattributes': myNode.ImageIndex := 21;
     end;
 
     case LowerCase(ChangeFileExt(ExtractFileName(myNode.FullPath), '')) of
