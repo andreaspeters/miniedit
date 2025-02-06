@@ -192,6 +192,7 @@ end;
 { TEditor }
 
 procedure TEditor.SetFileName(AValue: TFileName);
+var ext: String;
 begin
   if FFileName = AValue then
     Exit;
@@ -201,7 +202,18 @@ begin
   begin
     FUntitled := False;
     Highlighter := ConfigObj.getHighLighter(ExtractFileExt(fFileName));
-    FSheet.Caption := ExtractFileName(fFileName)
+
+    case LowerCase(ExtractFileExt(fFileName)) of
+      '.conf': ext := '.ini';
+      '.toml': ext := '.ini';
+    else
+      ext := ExtractFileExt(fFileName);
+    end;
+
+    Highlighter := ConfigObj.getHighLighter(ext);
+    FSheet.Caption := ExtractFileName(fFileName);
+    FFilePath := ExtractFilePath(fFileName);
+
 {$IFDEF NEEDCLOSEBTN}
      // reserve spaces for emulated close button
       + Space(6)
@@ -329,6 +341,7 @@ var
   Error: Integer;
 begin
   SetFileName(AFileName);
+  SetFilePath(ExtractFilePath(AFileName));
   fStream := nil;
   try
     fStream := TFileStream.Create(FFileName, fmOpenRead,fmShareDenyNone);
@@ -399,6 +412,7 @@ begin
       if FFileName <> EmptyStr then
         TEditorFactory(Sheet.Owner).FWatcher.RemoveFile(FFileName);
       SetFileName(AFileName);
+      SetFilePath(ExtractFilePath(AFileName));
       s:= Lines.Text;
 
       if fDiskLineEndingType <> GuessLineEndType(LineEnding) then

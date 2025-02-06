@@ -1151,8 +1151,8 @@ begin
       Bitmap.Assign(Clipboard);
 
       FilePath := BrowsingPath;
-      if Length(ExtractFilePath(Ed.FileName)) > 0 then
-        FilePath := ExtractFilePath(Ed.FileName);
+      if Length(Ed.FilePath) > 0 then
+        FilePath := Ed.FilePath;
 
       SavePath := Format('%s%svx_images',[FilePath, PathDelim]);
       if not DirectoryExists(SavePath) then
@@ -1162,8 +1162,9 @@ begin
       SavePath := Format('%s%s%s', [SavePath, PathDelim, SaveName]);
       Bitmap.SaveToFile(SavePath);
 
-      if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
-        Ed.InsertTextAtCaret(Format('![%s](vx_images%s%s)',[SaveName, PathDelim, SaveName]));
+      if Assigned(Ed.Highlighter) then
+        if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
+          Ed.InsertTextAtCaret(Format('![%s](vx_images%s%s)',[SaveName, PathDelim, SaveName]));
     finally
       Bitmap.Free;
     end;
