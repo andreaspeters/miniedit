@@ -2,7 +2,6 @@
 {"hash":5095492,"name":"tfmain.caption","sourcebytes":[77,105,110,105,69,100,105,116],"value":"MiniEdit"},
 {"hash":202866162,"name":"tfmain.toolbutton14.hint","sourcebytes":[82,101,108,111,97,100,32,70,111,108,100,101,114],"value":"Reload Folder"},
 {"hash":151863744,"name":"tfmain.toolbutton20.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,50,48],"value":"ToolButton20"},
-{"hash":63628709,"name":"tfmain.lbmessage.caption","sourcebytes":[108,98,77,101,115,115,97,103,101],"value":"lbMessage"},
 {"hash":2805797,"name":"tfmain.menuitem1.caption","sourcebytes":[38,70,105,108,101],"value":"&File"},
 {"hash":139726590,"name":"tfmain.mnuopenrecent.caption","sourcebytes":[79,112,101,110,32,82,101,99,101,110,116,32,46,46,46],"value":"Open Recent ..."},
 {"hash":198533332,"name":"tfmain.mnureopenallrecent.caption","sourcebytes":[82,101,111,112,101,110,32,97,108,108,32,114,101,99,101,110,116],"value":"Reopen all recent"},

@@ -252,7 +252,6 @@ type
     SearchFindPrevious: TAction;
     SearchFindNext: TAction;
     SearchReplace: TAction;
-    lbMessage: TStaticText;
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
@@ -1520,14 +1519,6 @@ begin
 
   prn := TSynEditPrint.Create(Self);
   prn.Colors := True;
-
-  {$IFDEF UNIX}
-  if isRoot then
-  begin
-    lbMessage.Caption := RSAdministrativeRights;
-    lbMessage.Visible := True;
-  end;
-  {$ENDIF}
 
   SaveLetter := '';
   for i := 0 to HIGHLIGHTERCOUNT - 1 do

@@ -684,10 +684,6 @@ msgstr ""
 msgid "About ovotext"
 msgstr ""
 
-#: tfmain.lbmessage.caption
-msgid "lbMessage"
-msgstr ""
-
 #: tfmain.menuitem1.caption
 msgid "&File"
 msgstr ""
