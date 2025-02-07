@@ -11,7 +11,7 @@ uses
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
   lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
   ucmdboxthread, SynHighlighterPas, SynExportHTML, udirectoryname,
-  ushowlspmessage, usettings, HtmlView
+  ushowlspmessage, usettings, HtmlView, MarkdownProcessor, MarkdownUtils
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -614,7 +614,7 @@ procedure TfMain.actPreviewExecute(Sender: TObject);
 var Ed, Preview: TEditor;
     Exporter: TSynCustomExporter;
     HtmlStream: TStringStream;
-    Tab: TTabSheet;
+    markdown: TMarkdownProcessor;
 begin
   if not EditorAvalaible then
     exit;
@@ -636,6 +636,14 @@ begin
   Preview.Sheet.Preview.Align := alClient;
   Preview.Sheet.Preview.Parent := Preview.Sheet;
   Preview.Sheet.Preview.LoadFromString(HtmlStream.DataString);
+
+  if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
+  begin
+    markdown := TMarkdownProcessor.createDialect(mdCommonMark);
+    Preview.Sheet.Preview.LoadFromString(markdown.Process(HtmlStream.DataString));
+  end
+  else
+    Preview.Sheet.Preview.LoadFromString(HtmlStream.DataString);
 end;
 
 procedure TfMain.actPrintExecute(Sender: TObject);

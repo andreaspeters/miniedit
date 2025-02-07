@@ -16,6 +16,7 @@
 - LSP Support for code complition (currently only for golang and python).
 - Bookmark Project Folders
 - Paste Images from Clipboard (only works with BMP data).
+- Simple Preview for Markdown files.
 
 ## LSP
 

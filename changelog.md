@@ -3,6 +3,7 @@
 ## master
 
 - ADD: watch miniedit config file for changes.
+- ADD: Preview for Markdown files.
 
 ## v0.2.0
 
