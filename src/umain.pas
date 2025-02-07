@@ -11,7 +11,7 @@ uses
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
   lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
   ucmdboxthread, SynHighlighterPas, SynExportHTML, udirectoryname,
-  ushowlspmessage, usettings
+  ushowlspmessage, usettings, HtmlView
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -611,9 +611,10 @@ begin
 end;
 
 procedure TfMain.actPreviewExecute(Sender: TObject);
-var Ed: TEditor;
+var Ed, Preview: TEditor;
     Exporter: TSynCustomExporter;
     HtmlStream: TStringStream;
+    Tab: TTabSheet;
 begin
   if not EditorAvalaible then
     exit;
@@ -626,7 +627,15 @@ begin
 
   Exporter.ExportAll(Ed.Lines);
   Exporter.SaveToStream(HtmlStream);
-  writeln(HtmlStream.DataString);
+
+  Preview := EditorFactory.AddEditor();
+  Preview.Visible := True;
+  Preview.Sheet.Preview := THtmlViewer.Create(Preview.Sheet);
+  Preview.Sheet.Preview.Visible := True;
+  Preview.Sheet.Preview.Enabled := True;
+  Preview.Sheet.Preview.Align := alClient;
+  Preview.Sheet.Preview.Parent := Preview.Sheet;
+  Preview.Sheet.Preview.LoadFromString(HtmlStream.DataString);
 end;
 
 procedure TfMain.actPrintExecute(Sender: TObject);

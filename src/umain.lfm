@@ -7,8 +7,8 @@ object fMain: TfMain
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 1030
-  ClientWidth = 1910
+  ClientHeight = 204
+  ClientWidth = 320
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2014,6 +2014,7 @@ object fMain: TfMain
   ParentDoubleBuffered = False
   ParentFont = True
   Position = poDesktopCenter
+  LCLVersion = '3.6.0.0'
   Visible = True
   object StatusBar: TStatusBar
     Left = 0
@@ -2088,7 +2089,7 @@ object fMain: TfMain
     end
     object ToolButton5: TToolButton
       Left = 399
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
@@ -2119,7 +2120,7 @@ object fMain: TfMain
     end
     object ToolButton12: TToolButton
       Left = 282
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
@@ -2142,13 +2143,13 @@ object fMain: TfMain
     end
     object tbbSepClose: TToolButton
       Left = 199
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
     object ToolButton4: TToolButton
       Left = 339
-      Height = 26
+      Height = 8
       Top = 0
       Style = tbsSeparator
     end
@@ -2171,14 +2172,14 @@ object fMain: TfMain
     end
     object ToolButton18: TToolButton
       Left = 79
-      Height = 26
+      Height = 8
       Top = 0
       AutoSize = True
       Style = tbsSeparator
     end
     object ToolButton20: TToolButton
       Left = 139
-      Height = 26
+      Height = 8
       Top = 0
       Caption = 'ToolButton20'
       Style = tbsSeparator
@@ -2203,7 +2204,7 @@ object fMain: TfMain
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar
-    Cursor = crHandPoint
+    Cursor = crDefault
     Left = 0
     Height = 966
     Top = 36
@@ -2262,7 +2263,7 @@ object fMain: TfMain
       ClientWidth = 1605
       ClientHeight = 966
       object PairSplitter2: TPairSplitter
-        Cursor = crHandPoint
+        Cursor = crDefault
         Left = 0
         Height = 966
         Top = 0
@@ -2289,9 +2290,9 @@ object fMain: TfMain
   end
   object ToolButton19: TToolButton
     Left = 0
-    Height = 22
+    Height = 5
     Top = 0
-    Width = 23
+    Width = 5
     Style = tbsDivider
   end
   object mnuMain: TMainMenu

@@ -10,7 +10,7 @@ interface
 uses
   Classes, SysUtils, Controls, Dialogs, Buttons, ComCtrls, LCLProc, LCLType, LCLIntf,
   SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
-  SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls,
+  SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls, HTMLView,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
   ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread, ulsp;
@@ -98,6 +98,7 @@ type
   TEditorTabSheet = class(TTabSheet)
   private
     FEditor: TEditor;
+    FPreview: THtmlViewer;
     FLSP: TLSP;
     FMessageBox: TPageControl;
     FLSPBox: TCmdBox;
@@ -112,6 +113,7 @@ type
     property LSPBox: TCmdBox read FLSPBox;
     property CMDBox: TCmdBox read FCMDBox;
     property Editor: TEditor read FEditor;
+    property Preview: THtmlViewer read FPreview write FPreview;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
     //--//
   end;
