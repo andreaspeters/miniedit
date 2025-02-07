@@ -2000,7 +2000,6 @@ object TFInfo: TTFInfo
   OnShow = FormShow
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
-  LCLVersion = '3.6.0.0'
   object Image1: TImage
     Left = 64
     Height = 128
@@ -2388,7 +2387,7 @@ object TFInfo: TTFInfo
     Caption = 'by Andreas Peters'
   end
   object Label3: TLabel
-    Left = 408
+    Left = 407
     Height = 24
     Top = 64
     Width = 60
