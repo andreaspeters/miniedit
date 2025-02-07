@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## v0.2.0
 
 - CHANGE: Combine CMD Box (Run Output) and LSP Output into a MessageBox
           bottom of the Editor.

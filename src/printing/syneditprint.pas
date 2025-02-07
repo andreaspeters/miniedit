@@ -358,8 +358,7 @@ procedure TSynEditPrint.CalcPages;
 {Calculates the total number of pages.}
 var
   AStr, Text: string;
-  StrWidth, i: Integer;
-  YPos: Integer;
+  YPos, i, StrWidth: Integer;
 //  MaxWidth: Integer;                                                          //sb 2000-09-23
   PageLine: TPageLine;
 

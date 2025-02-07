@@ -1226,8 +1226,12 @@ end;
 
 procedure TEditorFactory.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 var
+  {$IFDEF NEEDCLOSEBTN}
   r: TRect;
-  i, h: integer;
+  h: Integer;
+  {$ENDIF}
+  i: integer;
+
 begin
   if Button = mbMiddle then
   begin

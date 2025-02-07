@@ -177,6 +177,8 @@ var Buffer: Byte;
     Regex: TRegExpr;
     Line: String;
 begin
+  Result := '';
+
   if not LSPServer.Running then
     Exit;
 

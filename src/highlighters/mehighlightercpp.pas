@@ -15,7 +15,6 @@ type
     private
       fKeyWordList: TStringList;
       tnDataType: Integer;
-      tnPreprocessor: Integer;
 
     protected
       function IsFilterStored: Boolean; override;
