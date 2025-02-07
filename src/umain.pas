@@ -280,6 +280,7 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
+    Bookmarks: TStringList;
     procedure actBookmarkAddExecute(Sender: TObject);
     procedure actBookmarkDelExecute(Sender: TObject);
     procedure actCompileStopExecute(Sender: TObject);
@@ -391,11 +392,11 @@ type
     procedure StatusBarResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CliParams(aParams: TStringList);
+    procedure DoOnBookmarkClick(Sender: TObject);
     function GetSelectedFileTreePath:String;
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
-    Bookmarks: TStringList;
     FindText, ReplaceText: string;
     FileToCopy: TFileTreeNode;
     MoveFile: Boolean;
@@ -424,7 +425,6 @@ type
     procedure NewEditor(Editor: TEditor);
     procedure ShowTabs(Sender: TObject);
     Procedure SetupSaveDialog(SaveMode: TSaveMode);
-    procedure DoOnBookmarkClick(Sender: TObject);
   public
     { public declarations }
   end;
@@ -1735,6 +1735,8 @@ procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
 begin
+  ConfigObj.DoCheckFileChanges;
+
   if not EditorAvalaible then
     exit;
 

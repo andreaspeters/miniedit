@@ -1,5 +1,9 @@
 # Changelog
 
+## master
+
+- ADD: watch miniedit config file for changes.
+
 ## v0.2.0
 
 - CHANGE: Combine CMD Box (Run Output) and LSP Output into a MessageBox

@@ -4,8 +4,8 @@ unit Config;
 interface
 
 uses
-  Classes, SysUtils, Graphics, JsonTools,  dom,
-  LResources, FGL, SupportFuncs, Stringcostants,
+  Classes, SysUtils, Graphics, JsonTools,  dom, uCheckFileChange,
+  LResources, FGL, SupportFuncs, Stringcostants, Menus,
   SynEditHighlighter, SynEditStrConst, SynEditStrConstExtra,
   // included with Lazarus
   SynHighlighterJava, SynHighlighterPerl, SynHighlighterHTML,
@@ -151,6 +151,7 @@ type
     FCompileCommand: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
+    FWatcher: TFileWatcher;
 
 
     function GetBackGroundColor: TColor;
@@ -169,9 +170,11 @@ type
     procedure LoadHighlighters;
     procedure LoadThemes;
     procedure SetAttribute(AttrName: string; Attribute: TSynHighlighterAttributes; DefaultAttrib: TFontAttributes);
+    procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
 
   public
     constructor Create;
+    procedure LoadConfig;
     procedure ReadConfig;
     procedure SaveConfig;
     procedure WriteStrings(Section: string; Name: string; Values: TStrings);
@@ -186,6 +189,7 @@ type
     destructor Destroy; override;
     function GetFiters: string;
     Procedure SetTheme(Index: integer);
+    procedure DoCheckFileChanges;
 
     // -- //
     property ThemeList: TStringDictionary read fThemesList;
@@ -213,7 +217,7 @@ implementation
 
 { TConfig }
 uses
-  Fileutil, lclproc, typinfo,
+  Fileutil, lclproc, typinfo, umain,
   // only for default font !
   Synedit
 {$ifdef Darwin}
@@ -295,18 +299,31 @@ end;
 
 constructor TConfig.Create;
 begin
+  FWatcher := TFileWatcher.Create;
+  FWatcher.OnFileStateChange := @OnFileChange;
+
+  LoadConfig;
+end;
+
+procedure TConfig.LoadConfig;
+var ConfigText: TStringList;
+begin
   FFont := Tfont.Create;
   FConfigFile := GetAppConfigFile(False
-{$ifdef NEEDCFGSUBDIR}
+  {$ifdef NEEDCFGSUBDIR}
     , True
-{$ENDIF}
+  {$ENDIF}
     );
 
   FConfigFile := ChangeFileExt(FConfigFile,'.json');
   fConfigDir := GetConfigDir;
   fConfigHolder := TJsonNode.Create;
   if FileExists(FConfigFile) then
+  begin
    fConfigHolder.LoadFromFile(FConfigFile);
+   ConfigText := TStringList.Create;
+   ConfigText.LoadFromFile(FConfigFile);
+  end;
 
   fHighlighters := THighlighterList.Create;
   fThemesList := TStringDictionary.Create;
@@ -330,8 +347,37 @@ begin
   if FAppSettings.ColorSchema <> '' then
     fColorSchema.LoadFromFile(FAppSettings.ColorSchema);
 
+  FWatcher.RemoveFile(FConfigFile);
+  FWatcher.AddFile(FConfigFile, ConfigText);
 end;
 
+procedure TConfig.DoCheckFileChanges;
+begin
+  FWatcher.CheckFiles;
+end;
+
+procedure TConfig.OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
+var Bookmarks: TStringList;
+    i: Integer;
+    mnuBookmark: TMenuItem;
+begin
+  LoadConfig;
+
+  Bookmarks := TStringList.Create;
+  ConfigObj.ReadStrings('Bookmarks', 'Item', Bookmarks);
+
+  fmain.miBookmarks.Clear;
+  for i :=  0 to Bookmarks.Count - 1do
+  begin
+    mnuBookmark := TMenuItem.Create(fmain.miBookmarks);
+    mnuBookmark.Caption:=Bookmarks[i];
+    mnuBookmark.OnClick:=@fmain.DoOnBookmarkClick;
+
+    fmain.miBookmarks.Add(mnuBookmark);
+  end;
+
+  fmain.Bookmarks := Bookmarks;
+end;
 
 procedure TConfig.FontAttribToAttribute(Attribute: TSynHighlighterAttributes; Attrib: TFontAttributes);
 begin
