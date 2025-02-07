@@ -418,6 +418,10 @@ msgstr ""
 msgid "File Path to clipboard"
 msgstr ""
 
+#: tfmain.actpreview.caption
+msgid "Preview"
+msgstr ""
+
 #: tfmain.actprint.caption
 msgctxt "tfmain.actprint.caption"
 msgid "Print"

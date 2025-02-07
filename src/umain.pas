@@ -10,7 +10,8 @@ uses
   LazUtils, LazUTF8, uDglGoTo, SynEditPrint, simplemrumanager, SynEditLines,
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
   lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
-  ucmdboxthread, SynHighlighterPas, udirectoryname, ushowlspmessage, usettings
+  ucmdboxthread, SynHighlighterPas, SynExportHTML, udirectoryname,
+  ushowlspmessage, usettings
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -43,6 +44,7 @@ type
     actCompileStop: TAction;
     actBookmarkAdd: TAction;
     actBookmarkDel: TAction;
+    actPreview: TAction;
     actPasteImage: TAction;
     actRestart: TAction;
     actToggleMessageBox: TAction;
@@ -83,6 +85,7 @@ type
     MenuItem104: TMenuItem;
     MenuItem105: TMenuItem;
     MenuItem106: TMenuItem;
+    MenuItem107: TMenuItem;
     miPasteImage: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
@@ -165,6 +168,7 @@ type
     Separator4: TMenuItem;
     Separator5: TMenuItem;
     Separator6: TMenuItem;
+    Separator7: TMenuItem;
     SortAscending: TAction;
     actPrint: TAction;
     SortDescending: TAction;
@@ -255,6 +259,7 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
+    SynExporterHTML1: TSynExporterHTML;
     Timer1: TTimer;
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
@@ -308,6 +313,7 @@ type
     procedure actPasteFileExecute(Sender: TObject);
     procedure actPasteImageExecute(Sender: TObject);
     procedure actPathToClipboardExecute(Sender: TObject);
+    procedure actPreviewExecute(Sender: TObject);
     procedure actPrintExecute(Sender: TObject);
     procedure actQuoteExecute(Sender: TObject);
     procedure actRestartExecute(Sender: TObject);
@@ -423,7 +429,6 @@ type
     procedure RecentFileEvent(Sender: TObject; const AFileName: string; const AData: TObject);
     procedure NewEditor(Editor: TEditor);
     procedure ShowTabs(Sender: TObject);
-    Procedure SetupSaveDialog(SaveMode: TSaveMode);
   public
     { public declarations }
   end;
@@ -434,7 +439,7 @@ var
 
 implementation
 
-uses lclproc, Stringcostants, SynExportHTML;
+uses lclproc, Stringcostants, SynEditExport;
 
 {$R *.lfm}
 
@@ -605,16 +610,33 @@ begin
   Clipboard.AsText := ExtractFilePath(Ed.FileName);
 end;
 
+procedure TfMain.actPreviewExecute(Sender: TObject);
+var Ed: TEditor;
+    Exporter: TSynCustomExporter;
+    HtmlStream: TStringStream;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  Ed := EditorFactory.CurrentEditor;
+
+  Exporter := SynExporterHTML1;
+  Exporter.Highlighter := Ed.Highlighter;
+  HtmlStream := TStringStream.Create('');
+
+  Exporter.ExportAll(Ed.Lines);
+  Exporter.SaveToStream(HtmlStream);
+  writeln(HtmlStream.DataString);
+end;
+
 procedure TfMain.actPrintExecute(Sender: TObject);
 var
   Ed: TEditor;
 begin
-
   Ed := EditorFactory.CurrentEditor;
   prn.SynEdit := Ed;
   if PrintDialog1.Execute then
     prn.Print;
-
 end;
 
 procedure TfMain.actQuoteExecute(Sender: TObject);
@@ -1901,26 +1923,6 @@ end;
 procedure TfMain.ShowTabs(Sender: TObject);
 begin
   EditorFactory.ActivePageIndex := (Sender as TMenuItem).Tag;
-end;
-
-procedure TfMain.SetupSaveDialog(SaveMode: TSaveMode);
-begin
-  case SaveMode of
-    smText:begin
-             SaveDialog.DefaultExt:='.txt';
-             SaveDialog.Filter:= ConfigObj.GetFiters;
-           end;
-    smRTF: begin
-             SaveDialog.DefaultExt:='.rtf';
-             SaveDialog.Filter:= 'RTF Files (*.rtf)|*.rtf';
-             SaveDialog.Title:='Export as RTF File';
-           end;
-    smHTML:begin
-             SaveDialog.DefaultExt:='.html';
-             SaveDialog.Filter:= 'HTML Files (*.htm*)|*.htm*';
-             SaveDialog.Title:='Export as HTML File';
-           end;
-  end;
 end;
 
 procedure TfMain.mnuTabsClick(Sender: TObject);

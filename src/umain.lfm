@@ -3095,6 +3095,12 @@ object fMain: TfMain
     object MenuItem25: TMenuItem
       Caption = '-'
     end
+    object MenuItem107: TMenuItem
+      Action = actPreview
+    end
+    object Separator7: TMenuItem
+      Caption = '-'
+    end
     object MenuItem45: TMenuItem
       Action = actFullNameToClipBoard
     end
@@ -3654,6 +3660,11 @@ object fMain: TfMain
       Category = 'Edit'
       Caption = 'Paste Image'
       OnExecute = actPasteImageExecute
+    end
+    object actPreview: TAction
+      Category = 'Edit'
+      Caption = 'Preview'
+      OnExecute = actPreviewExecute
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
@@ -4772,5 +4783,17 @@ object fMain: TfMain
       5BF01DF0E77D215AA72BFB0828043BE7D8BF22C7BB2CE7A5CF1A721C75E6B40E
       C55C81DE8579603E9EFF133FFF03247D67DD
     }
+  end
+  object SynExporterHTML1: TSynExporterHTML
+    Color = clWindow
+    DefaultFilter = 'HTML Document (*.htm,*.html)|*.htm;*.html'
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'Courier New'
+    HTMLFontSize = fs03
+    Title = 'Untitled'
+    UseBackground = False
+    Left = 619
+    Top = 197
   end
 end
