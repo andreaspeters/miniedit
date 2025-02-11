@@ -2236,12 +2236,14 @@ object fMain: TfMain
         HideSelection = False
         Images = imgListFileIcons
         MultiSelect = True
+        ParentShowHint = False
         PopupMenu = pumFileTree
         ReadOnly = True
         RightClickSelect = True
         RowSelect = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
+        ToolTips = False
         OnCreateNodeClass = FilesTreeCreateNodeClass
         OnDblClick = FilesTreeDblClick
         OnExpanding = FilesTreeExpanding
@@ -2250,7 +2252,7 @@ object fMain: TfMain
         OnKeyDown = FilesTreeKeyDown
         OnMouseDown = FilesTreeMouseDown
         OnSelectionChanged = FilesTreeSelectionChanged
-        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoThemedDraw]
       end
     end
     object PairSplitterSide2: TPairSplitterSide

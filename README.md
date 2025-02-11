@@ -34,6 +34,7 @@ Server could find any information about that.
 ## Features in planing
 
 - Connection with Ollama AI 🤷
+- Remote Edit (SSH)
 
 ## Requirements
 
