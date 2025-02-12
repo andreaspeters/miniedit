@@ -880,8 +880,8 @@ begin
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
         Beauty := TSynBeautifier.Create(Sheet);
-        Beauty.IndentType := sbitCopySpaceTab;
         Sheet.Editor.Beautifier := Beauty;
+        Beauty.IndentType := sbitSpace;
 
         Sheet.Editor.LoadFromfile(FileName);
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
@@ -923,8 +923,7 @@ begin
   // sbitConvertToTabSpace,   - convert to tabs, fill with spcaces if needed
   // sbitConvertToTabOnly     - convert to tabs, even if shorter
   Beauty := TSynBeautifier.Create(Sheet);
-  Beauty.IndentType := sbitCopySpaceTab;
-
+  Beauty.IndentType := sbitSpace;
 
   Result := TEditor.Create(Sheet);
   Result.DoubleBuffered := DoubleBuffered;

@@ -19,6 +19,7 @@ type
     InputStream: TMemoryStream;
     OutputStream: TMemoryStream;
     LSPServer: TProcess;
+    StopIt: Boolean;
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
     function ReceiveData:String;
@@ -52,7 +53,7 @@ constructor TLSP.Create;
 begin
   inherited Create(True);
   Init := False;
-  FreeOnTerminate := True;
+  FreeOnTerminate := False;
   Message := '';
   MessageList := TStringList.Create;
   ServerParameter := TStringList.Create;
@@ -60,6 +61,7 @@ begin
   OutputStream := TMemoryStream.Create;
   FEvent := RTLEventCreate;
   Pause := False;
+  StopIt := False;
 end;
 
 destructor TLSP.Destroy;
@@ -70,7 +72,11 @@ end;
 procedure TLSP.Stop;
 begin
   if Assigned(LSPServer) then
-    LSPServer.Free;
+  begin
+    if LSPServer.Running then
+      LSPServer.Terminate(1);
+    StopIt := True;
+  end;
 end;
 
 procedure TLSP.Execute;
@@ -79,7 +85,7 @@ var Response, Key, Value: String;
     i: Integer;
 begin
   try
-    while (not Terminated) do
+    while (not StopIt) do
     begin
       if Pause then
         RTLEventWaitFor(FEvent);
@@ -156,7 +162,6 @@ begin
       {$ENDIF}
     end;
   end;
-  WaitFor;
 end;
 
 procedure TLSP.Suspend;
@@ -190,7 +195,13 @@ begin
 
   repeat
     if Assigned(LSPServer.Output) then
-      Buffer := LSPServer.Output.ReadByte;
+      try
+       Buffer := LSPServer.Output.ReadByte;
+      except
+        on E: Exception do
+          Writeln('LSP Error: ', E.Message);
+      end;
+
     if Buffer = 10 then
     begin
       Regex := TRegExpr.Create;
