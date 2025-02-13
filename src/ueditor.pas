@@ -880,9 +880,13 @@ begin
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
         Beauty := TSynBeautifier.Create(Sheet);
-        Sheet.Editor.Beautifier := Beauty;
         Beauty.IndentType := sbitSpace;
 
+        Sheet.DoubleBuffered := DoubleBuffered;
+        Sheet.Editor.Beautifier := Beauty;
+        Sheet.Editor.BlockIndent := 0;
+        Sheet.Editor.BlockTabIndent := 0;
+        Sheet.Editor.DoubleBuffered := DoubleBuffered;
         Sheet.Editor.LoadFromfile(FileName);
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
@@ -927,6 +931,8 @@ begin
 
   Result := TEditor.Create(Sheet);
   Result.DoubleBuffered := DoubleBuffered;
+  Result.BlockIndent := 0;
+  Result.BlockTabIndent := 0;
   Result.RightEdge := 80;
   Result.RightEdgeColor := clSilver;
   Result.Options := [eoAutoIndent,eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoSmartTabs,eoTabsToSpaces,eoTrimTrailingSpaces];

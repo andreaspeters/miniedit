@@ -234,7 +234,7 @@ const
 
 const
  {$ifdef UNIX}
-  DefaultDirectory = '/usr/share/ovotext/';
+  DefaultDirectory = '/usr/share/miniedit/';
   {$DEFINE NEEDCFGSUBDIR}
  {$endif}
 
@@ -587,6 +587,7 @@ var
   i: Integer;
 begin
   SaveConfig;
+  FWatcher.Free;
   fConfigHolder.SaveToFile(FConfigFile, true);
   fConfigHolder.Free;
   fColorSchema.Free;

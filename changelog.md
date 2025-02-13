@@ -4,6 +4,7 @@
 
 - ADD: watch miniedit config file for changes.
 - ADD: Preview for Markdown files.
+- FIX: Blockindent
 
 ## v0.2.0
 
