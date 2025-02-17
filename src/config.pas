@@ -586,7 +586,6 @@ destructor TConfig.Destroy;
 var
   i: Integer;
 begin
-  SaveConfig;
   FWatcher.Free;
   fConfigHolder.SaveToFile(FConfigFile, true);
   fConfigHolder.Free;
@@ -618,7 +617,6 @@ begin
   fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
   fConfigHolder.Find('External/HexEditor', true).AsString := FHexEditor;
   fConfigHolder.Find('External/CompileCommand', true).AsString := FCompileCommand;
-
 
   FDirty := false;
 end;

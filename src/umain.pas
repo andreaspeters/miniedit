@@ -1641,7 +1641,6 @@ procedure TfMain.FormDestroy(Sender: TObject);
 begin
   ConfigObj.WriteStrings('Recent', 'Files', MRU.Recent);
   ConfigObj.WriteStrings('Bookmarks', 'Item', Bookmarks);
-  Mru.Free;
   FreeAndNil(EditorFactory);
   ReplaceDialog.Free;
 end;

@@ -5,6 +5,7 @@
 - ADD: watch miniedit config file for changes.
 - ADD: Preview for Markdown files.
 - FIX: Blockindent
+- ADD: shortcut for delete file.
 
 ## v0.2.0
 

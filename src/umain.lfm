@@ -3288,6 +3288,7 @@ object fMain: TfMain
       Hint = 'Delete'
       ImageIndex = 22
       OnExecute = EditDeleteExecute
+      ShortCut = 46
     end
     object FileNew: TAction
       Category = 'File'

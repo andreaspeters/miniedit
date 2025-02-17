@@ -68,6 +68,7 @@ Server could find any information about that.
 - CTRL+Q - Exit without to ask
 - SHIFT+CTRL+Z - Redo
 - SHIFT+ALT-UP/DOWN/RIGHT/LEFT - Block Selection
+- DEL - In Filetree will delete a file
 
 ## Thanks
 

@@ -883,7 +883,7 @@ begin
         Beauty.IndentType := sbitSpace;
 
         Sheet.DoubleBuffered := DoubleBuffered;
-        Sheet.Editor.Beautifier := Beauty;
+        //Sheet.Editor.Beautifier := Beauty;
         Sheet.Editor.BlockIndent := 0;
         Sheet.Editor.BlockTabIndent := 0;
         Sheet.Editor.DoubleBuffered := DoubleBuffered;
@@ -939,7 +939,7 @@ begin
   Result.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
   Result.Font.Quality := fqCleartypeNatural;
   Result.Gutter.Color := clBtnFace;
-  Result.Beautifier := Beauty;
+  //Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
 
   // create tabsheet for run, debug, lsp and so on messages
