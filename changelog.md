@@ -6,6 +6,8 @@
 - ADD: Preview for Markdown files.
 - FIX: Blockindent
 - ADD: shortcut for delete file.
+- CHANGE: [lsp] how to interpret server message.
+- ADD: Mousuescrolling in CMD/LSP message box.
 
 ## v0.2.0
 

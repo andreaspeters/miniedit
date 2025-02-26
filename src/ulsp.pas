@@ -23,6 +23,7 @@ type
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
     function ReceiveData:String;
+    function ExtractJSON(const s: string): string;
   protected
     procedure Execute; override;
   public
@@ -145,22 +146,14 @@ begin
           end;
         except
           on E: Exception do
-          begin
-            {$IFDEF UNIX}
-            writeln('JSON Error: ' + E.Message);
-            {$ENDIF}
-          end;
+            OutputString := 'JSON Error: ' + E.Message;
         end;
       end;
       sleep(10);
     end;
   except
     on E: Exception do
-    begin
-      {$IFDEF UNIX}
-      writeln('Receive Data Error: ', E.Message);
-      {$ENDIF}
-    end;
+      OutputString := 'Receive LSP Data Error: ' + E.Message;
   end;
 end;
 
@@ -177,9 +170,6 @@ end;
 
 function TLSP.ReceiveData:String;
 var Buffer: Byte;
-    ContentLength, i: Integer;
-    Found: Boolean;
-    Regex: TRegExpr;
     Line: String;
 begin
   Result := '';
@@ -187,10 +177,7 @@ begin
   if not LSPServer.Running then
     Exit;
 
-  Result := '';
   Line := '';
-  Found := False;
-  ContentLength := 0;
   Buffer := 0;
 
   repeat
@@ -199,49 +186,79 @@ begin
        Buffer := LSPServer.Output.ReadByte;
       except
         on E: Exception do
-          Writeln('LSP Error: ', E.Message);
+          OutputString := 'Exec LSP Error: ' + E.Message;
       end;
 
-    if Buffer = 10 then
+    Line := Line + Chr(Buffer);
+  until Length(ExtractJSON(Line)) > 0;
+  Result := ExtractJSON(Line);
+end;
+
+
+function TLSP.ExtractJSON(const s: string): string;
+var
+  i, startIndex, level: Integer;
+  inString, escape: Boolean;
+  ch: Char;
+begin
+  Result := '';
+  level := 0;
+  inString := False;
+  escape := False;
+  startIndex := 0;
+
+  for i := 1 to Length(s) do
+  begin
+    ch := s[i];
+
+    if inString then
     begin
-      Regex := TRegExpr.Create;
-      Regex.Expression := '^Content-Length: (\d+).*';
-      Regex.ModifierI := False;
-      if Regex.Exec(Line) then
+      // Falls das vorherige Zeichen ein Escape war, überspringen wir die Prüfung
+      if escape then
       begin
-        ContentLength := StrToInt(RegEx.Match[1]);
-        Found := True;
+        escape := False;
+        Continue;
       end;
+      // Erkennen eines Escaped-Zeichens
+      if ch = '\' then
+      begin
+        escape := True;
+        Continue;
+      end;
+      // Ende des Strings
+      if ch = '"' then
+        inString := False;
     end
     else
     begin
-      Line := Line + Chr(Buffer);
+      // Beginn einer Zeichenkette
+      if ch = '"' then
+      begin
+        inString := True;
+        Continue;
+      end;
+      // Start des JSON-Objekts
+      if ch = '{' then
+      begin
+        if level = 0 then
+          startIndex := i;
+        Inc(level);
+      end
+      else if ch = '}' then
+      begin
+        Dec(level);
+        // Wenn level wieder 0 erreicht, ist das JSON-Objekt vollständig
+        if level = 0 then
+        begin
+          Result := Copy(s, startIndex, i - startIndex + 1);
+          Exit;
+        end;
+      end;
     end;
-  until (LSPServer.Output.NumBytesAvailable <= 0) or (Found);
-
-  if ContentLength = 0 then
-    Exit;
-
-  i := 0;
-  Line := '';
-  repeat
-    Buffer := LSPServer.Output.ReadByte;
-    Line := Line + Chr(Buffer);
-
-    if Pos('Content-Type: application/vscode-jsonrpc; charset=utf8', Line) > 0 then
-    begin
-      Line := StringReplace(Line, 'Content-Type: application/vscode-jsonrpc; charset=utf8', '', [rfReplaceAll]);
-      i := i - 2 - Length('Content-Type: application/vscode-jsonrpc; charset=utf8');
-    end;
-    inc(i);
-  until i-2 = ContentLength;
-
-
-  if Length(Line) > 0 then
-  begin
-    Result := Line;
   end;
+  // Falls kein vollständiges JSON-Objekt gefunden wurde, bleibt Result leer.
 end;
+
 
 procedure TLSP.RunLSPServer;
 begin
@@ -257,11 +274,7 @@ begin
     LSPServer.Execute;
   except
     on E: Exception do
-    begin
-      {$IFDEF UNIX}
-      writeln('Exec LSP Server Error: ', E.Message);
-      {$ENDIF}
-    end;
+      OutputString := 'Exec LSP Server Error: ' + E.Message;
   end;
   Sleep(200);
 end;
@@ -285,6 +298,11 @@ begin
     begin
      Language := 'c';
      ServerExec := 'ccls';
+    end;
+    'pascal':
+    begin
+     Language := 'pascal';
+     ServerExec := 'pasls';
     end
   else
     Suspend;
@@ -495,11 +513,7 @@ begin
 
   except
     on E: Exception do
-    begin
-      {$IFDEF UNIX}
-      writeln('Send Data Error: ', E.Message);
-      {$ENDIF}
-    end;
+      OutputString := 'Send Data Error: ' + E.Message;
   end;
   RequestJSON.Free;
   Result := nil;

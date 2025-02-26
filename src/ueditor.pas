@@ -13,7 +13,7 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls, HTMLView,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxthread, ulsp;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxcustom, ucmdboxthread, ulsp;
 
 type
 
@@ -101,8 +101,8 @@ type
     FPreview: THtmlViewer;
     FLSP: TLSP;
     FMessageBox: TPageControl;
-    FLSPBox: TCmdBox;
-    FCMDBox: TCmdBox;
+    FLSPBox: TCmdBoxCustom;
+    FCMDBox: TCmdBoxCustom;
   protected
     procedure DoShow; override;
 
@@ -110,8 +110,8 @@ type
     FCmdBoxThread: TCmdBoxThread;
     property MessageBox: TPageControl read FMessageBox;
     property LSP: TLSP read FLSP;
-    property LSPBox: TCmdBox read FLSPBox;
-    property CMDBox: TCmdBox read FCMDBox;
+    property LSPBox: TCmdBoxCustom read FLSPBox;
+    property CMDBox: TCmdBoxCustom read FCMDBox;
     property Editor: TEditor read FEditor;
     property Preview: THtmlViewer read FPreview write FPreview;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
@@ -128,19 +128,19 @@ type
     fUntitledCounter: integer;
     FWatcher: TFileWatcher;
     function GetCurrentEditor: TEditor;
-    function GetCurrentCmdBoxThread: TCmdBoxThread;
+    function GetCurrenTCmdBoxThread: TCmdBoxThread;
     function GetCurrentLSP: TLSP;
-    function GetCurrentCMDBox: TCmdBox;
-    function GetCurrentLSPBox: TCmdBox;
+    function GetCurrenTCmdBox: TCmdBoxCustom;
+    function GetCurrentLSPBox: TCmdBoxCustom;
     function GetCurrentMessageBox: TPageControl;
     function CreateEmptyFile(AFileName: TFileName): boolean;
-    function CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBox;
+    function CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBoxCustom;
     procedure SetOnBeforeClose(AValue: TOnBeforeClose);
     procedure SetOnNewEditor(AValue: TOnEditorEvent);
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure SetCurrentCMDBoxThread(AThread: TCmdBoxThread);
+    procedure SetCurrentCmdBoxThread(AThread: TCmdBoxThread);
   protected
     procedure DoChange; override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -148,10 +148,10 @@ type
 
   public
     property CurrentEditor: TEditor read GetCurrentEditor;
-    property CurrentCmdBoxThread: TCmdBoxThread read GetCurrentCmdBoxThread write SetCurrentCMDBoxThread;
+    property CurrenTCmdBoxThread: TCmdBoxThread read GetCurrenTCmdBoxThread write SetCurrentCmdBoxThread;
     property CurrentLSP: TLSP read GetCurrentLSP;
-    property CurrentLSPBox: TCmdBox read GetCurrentLSPBox;
-    property CurrentCMDBox: TCmdBox read GetCurrentCMDBox;
+    property CurrentLSPBox: TCmdBoxCustom read GetCurrentLSPBox;
+    property CurrentCmdBox: TCmdBoxCustom read GetCurrentCmdBox;
     property CurrentMessageBox: TPageControl read GetCurrentMessageBox;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
@@ -747,14 +747,14 @@ begin
     Result := TEditorTabSheet(ActivePage).FLSP;
 end;
 
-function TEditorFactory.GetCurrentLSPBox: TCmdBox;
+function TEditorFactory.GetCurrentLSPBox: TCmdBoxCustom;
 begin
   Result := nil;
   if (PageCount > 0) and (ActivePageIndex >= 0) then
     Result := TEditorTabSheet(ActivePage).FLSPBox;
 end;
 
-function TEditorFactory.GetCurrentCMDBox: TCmdBox;
+function TEditorFactory.GetCurrentCmdBox: TCmdBoxCustom;
 begin
   Result := nil;
   if (PageCount > 0) and (ActivePageIndex >= 0) then
@@ -1016,16 +1016,16 @@ begin
 end;
 
 
-function TEditorFactory.CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBox;
+function TEditorFactory.CreateMessageTab(const AName: String; ABox: TPageControl):TCmdBoxCustom;
 var Tab: TTabSheet;
-    Box: TCmdBox;
+    Box: TCmdBoxCustom;
 begin
   Tab := TTabSheet.Create(ABox);
   Tab.Caption := AName;
   Tab.PageControl := ABox;
   Tab.Visible := True;
 
-  Box := TCmdBox.Create(Tab);
+  Box := TCmdBoxCustom.Create(Tab);
   Box.Parent := Tab;
   Box.Align := alClient;
   Box.EscapeCodeType := esctAnsi;

@@ -11,7 +11,8 @@ uses
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
   lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
   ucmdboxthread, SynHighlighterPas, SynExportHTML, udirectoryname,
-  ushowlspmessage, usettings, HtmlView, MarkdownProcessor, MarkdownUtils
+  ushowlspmessage, usettings, HtmlView, MarkdownProcessor, MarkdownUtils,
+  fpjson, jsonparser
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -1763,6 +1764,7 @@ end;
 procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
+    ResponseJSON: TJSONObject;
 begin
   ConfigObj.DoCheckFileChanges;
 
@@ -1790,6 +1792,12 @@ begin
         begin
           LSPBox.Visible := True;
           EditorFactory.CurrentMessageBox.Visible := True;
+          //if GetJSON(EditorFactory.CurrentLSP.OutputString).JSONType = jtObject then
+          //begin
+          //  ResponseJSON := TJSONObject(GetJSON(EditorFactory.CurrentLSP.OutputString));
+          //  if Assigned(ResponseJSON.FindPath('source')) then
+          //    LSPBox.Write(ResponseJSON.FindPath('source').AsString);
+          //end;
           // Looks strange but we have to besure that all #CR's
           // are #CRLF
           Line := StringReplace(EditorFactory.CurrentLSP.OutputString, #10, #13#10, [rfReplaceAll]);
