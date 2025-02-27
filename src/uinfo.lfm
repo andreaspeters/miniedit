@@ -1,12 +1,12 @@
 object TFInfo: TTFInfo
   Left = 580
-  Height = 425
+  Height = 449
   Top = 638
-  Width = 525
+  Width = 526
   BorderStyle = bsSingle
   Caption = 'FlexPacket - Info'
-  ClientHeight = 425
-  ClientWidth = 525
+  ClientHeight = 449
+  ClientWidth = 526
   DoubleBuffered = True
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
@@ -2000,6 +2000,7 @@ object TFInfo: TTFInfo
   OnShow = FormShow
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
+  LCLVersion = '3.8.0.0'
   object Image1: TImage
     Left = 64
     Height = 128
@@ -2396,8 +2397,8 @@ object TFInfo: TTFInfo
   object BPDefaultButtons: TButtonPanel
     Left = 6
     Height = 43
-    Top = 376
-    Width = 513
+    Top = 400
+    Width = 514
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

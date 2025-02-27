@@ -22,8 +22,14 @@
 
 There is no "one fix all" LSP Server. That means, for every programming
 language, you have to install it's own LSP Server. 😔 Currently, MiniEdit
-does support only LSP for Golang via `gopls`. Be sure that it is installed
-and in one of your PATH directories therefore MiniEdit can find it.
+does support only LSP for:
+
+- Golang via gopls
+- Pascal via [pasls](https://github.com/castle-engine/pascal-language-server)
+- Python via pylsp
+
+Be sure that there binaries are installed in one of your PATH directories
+therefore MiniEdit can find it.
 
 - ALT+. (PERIOD) will open the LSP window for code completion. But only if the
 LSP Server could find any information.

@@ -29,10 +29,12 @@ type
   public
     ServerExec: String;
     ServerParameter: TStringList;
+    ServerInitOptions: TJSONArray;
+    ServerCR: String;
     Message: String;
     MessageList: TStringList;
     OutputString: String;
-    procedure Initialize(const AFilePath: String);
+    procedure Initialize(const AFilePath: String; const AWorkspacePath: String);
     procedure Initialized;
     procedure AddView(const AFileName: String);
     procedure OpenFile(const AFileName: String);
@@ -288,21 +290,25 @@ begin
     begin
      Language := 'go';
      ServerExec := 'gopls';
+     ServerCR := #10;
     end;
     'python':
     begin
      Language := 'python';
      ServerExec := 'pylsp';
+     ServerCR := #10;
     end;
     'c/c++':
     begin
      Language := 'c';
      ServerExec := 'ccls';
+     ServerCR := #10;
     end;
     'pascal':
     begin
      Language := 'pascal';
      ServerExec := 'pasls';
+     ServerCR := #13#10;
     end
   else
     Suspend;
@@ -312,8 +318,9 @@ begin
     RunLSPServer;
 end;
 
-procedure TLSP.Initialize(const AFilePath: String);
-var Params: TJSONObject;
+procedure TLSP.Initialize(const AFilePath: String; const AWorkspacePath: String);
+var Params, FolderObject: TJSONObject;
+    Folder: TJSONArray;
 begin
   if (Length(AFilePath) <= 0) then
     Exit;
@@ -322,9 +329,23 @@ begin
 
   Params := TJSONObject.Create;
 
-  Params.Add('rootUri', 'file://'+FilePath);
+  // Einen WorkspaceFolder hinzufügen
+  FolderObject := TJSONObject.Create;
+  FolderObject.Add('uri', 'file://'+AWorkspacePath);
+  FolderObject.Add('name', 'lsp');
+
+  Folder := TJSONArray.Create;
+  Folder.Add(FolderObject);
+
+  Params.Add('rootUri', 'file://'+AFilePath);
   Params.Add('rootPath', FilePath);
-  Params.Add('trace', 'verbose');
+  Params.Add('trace', 'on');
+  Params.Add('workspaceFolders', Folder);
+
+
+
+  if Assigned(ServerInitOptions) then
+    Params.Add('initializationOptions', ServerInitOptions);
 
   Send(Params, 'initialize');
 end;
@@ -502,7 +523,7 @@ begin
     RequestJSON.Add('params', Params);
 
     RequestText := RequestJSON.AsJSON;
-    SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+1) + #10#10 + RequestText + #10;
+    SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+Length(ServerCR)) + ServerCR+ServerCR + RequestText + ServerCR;
     Data := TEncoding.UTF8.GetBytes(SendString);
 
     //writeln(SendString);

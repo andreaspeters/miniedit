@@ -1,14 +1,14 @@
 object fMain: TfMain
-  Left = 973
-  Height = 1030
-  Top = 141
-  Width = 1910
+  Left = 130
+  Height = 350
+  Top = 1857
+  Width = 2471
   AllowDropFiles = True
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 1030
-  ClientWidth = 1910
+  ClientHeight = 350
+  ClientWidth = 2471
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2018,8 +2018,8 @@ object fMain: TfMain
   object StatusBar: TStatusBar
     Left = 0
     Height = 28
-    Top = 1002
-    Width = 1910
+    Top = 322
+    Width = 2471
     Panels = <    
       item
         Width = 200
@@ -2053,7 +2053,7 @@ object fMain: TfMain
     Left = 0
     Height = 26
     Top = 5
-    Width = 1910
+    Width = 2471
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -2192,7 +2192,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 0
-    Height = 966
+    Height = 286
     Top = 36
     Width = 5
   end
@@ -2205,19 +2205,19 @@ object fMain: TfMain
     AnchorSideBottom.Control = StatusBar
     Cursor = crDefault
     Left = 0
-    Height = 966
+    Height = 286
     Top = 36
-    Width = 1910
+    Width = 2471
     Anchors = [akTop, akLeft, akRight, akBottom]
     Position = 300
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 966
+      Height = 286
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 966
+      ClientHeight = 286
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2227,7 +2227,7 @@ object fMain: TfMain
         AnchorSideBottom.Side = asrBottom
         Cursor = crArrow
         Left = 2
-        Height = 966
+        Height = 286
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2258,17 +2258,17 @@ object fMain: TfMain
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 966
+      Height = 286
       Top = 0
-      Width = 1605
-      ClientWidth = 1605
-      ClientHeight = 966
+      Width = 2166
+      ClientWidth = 2166
+      ClientHeight = 286
       object PairSplitter2: TPairSplitter
         Cursor = crDefault
         Left = 0
-        Height = 966
+        Height = 286
         Top = 0
-        Width = 1605
+        Width = 2166
         Align = alClient
         Position = 0
         SplitterType = pstVertical
@@ -2277,14 +2277,14 @@ object fMain: TfMain
           Left = 0
           Height = 0
           Top = 0
-          Width = 1605
+          Width = 2166
         end
         object PSSMessageBox: TPairSplitterSide
           Cursor = crArrow
           Left = 0
-          Height = 961
+          Height = 281
           Top = 5
-          Width = 1605
+          Width = 2166
         end
       end
     end

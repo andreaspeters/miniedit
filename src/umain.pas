@@ -1369,7 +1369,7 @@ begin
 
   for i := 0 to FileOpen.Dialog.Files.Count - 1 do
   begin
-    EditorFactory.AddEditor(FileOpen.Dialog.Files[i]);
+    EditorFactory.AddEditor(FileOpen.Dialog.Files[i], BrowsingPath);
     MRU.AddToRecent(FileOpen.Dialog.Files[i]);
   end;
 
@@ -2374,7 +2374,7 @@ begin
   end
   else
      begin
-        EditorFactory.AddEditor(Node.FullPath);
+        EditorFactory.AddEditor(Node.FullPath, BrowsingPath);
      end;
 end;
 
@@ -2490,7 +2490,7 @@ begin
       exit
     else
       begin
-         EditorFactory.AddEditor(Node.FullPath);
+         EditorFactory.AddEditor(Node.FullPath, BrowsingPath);
       end;
   end;
 end;

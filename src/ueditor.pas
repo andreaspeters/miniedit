@@ -159,7 +159,7 @@ type
     //--//
     procedure DoCloseTabClicked(APage: TCustomPage); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    function AddEditor(FileName: TFilename = ''): TEditor;
+    function AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''): TEditor;
     function CloseEditor(Editor: TEditor; Force: boolean = False): boolean;
     function CloseAll(KeepCurrent:boolean=false): boolean;
     function CloseAfter: boolean;
@@ -841,7 +841,7 @@ end;
 
 
 
-function TEditorFactory.AddEditor(FileName: TFilename = ''): TEditor;
+function TEditorFactory.AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''): TEditor;
 var
   Sheet: TEditorTabSheet;
   Box: TPageControl;
@@ -898,9 +898,9 @@ begin
           Sheet.LSP.SetLanguage(FileType.LanguageName);
 
           if Length(ExtractFilePath(FileName)) <= 0 then
-            Sheet.LSP.Initialize(GetCurrentDir)
+            Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
           else
-            Sheet.LSP.Initialize(ExtractFilePath(FileName));
+            Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
           Sheet.LSP.OpenFile(FileName);
 
           // create message box
@@ -1000,9 +1000,9 @@ begin
       Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
 
       if Length(ExtractFilePath(FileName)) <= 0 then
-       Result.Sheet.LSP.Initialize(GetCurrentDir)
+       Result.Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
       else
-        Result.Sheet.LSP.Initialize(ExtractFilePath(FileName));
+        Result.Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
       Result.Sheet.LSP.OpenFile(FileName);
     end;
     FWatcher.AddFile(FileName, Result);
