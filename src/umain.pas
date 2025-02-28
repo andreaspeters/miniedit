@@ -9,10 +9,10 @@ uses
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
   LazUtils, LazUTF8, uDglGoTo, SynEditPrint, simplemrumanager, SynEditLines,
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
-  lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, Process, uinfo,
-  ucmdboxthread, SynHighlighterPas, SynExportHTML, udirectoryname,
-  ushowlspmessage, usettings, HtmlView, MarkdownProcessor, MarkdownUtils,
-  fpjson, jsonparser
+  lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, UniqueInstance,
+  Process, uinfo, ucmdboxthread, SynHighlighterPas, SynExportHTML,
+  udirectoryname, ushowlspmessage, usettings, HtmlView, MarkdownProcessor,
+  MarkdownUtils, fpjson, jsonparser, md5
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -286,6 +286,7 @@ type
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
     Bookmarks: TStringList;
+    UniqueInstance1: TUniqueInstance;
     procedure actBookmarkAddExecute(Sender: TObject);
     procedure actBookmarkDelExecute(Sender: TObject);
     procedure actCompileStopExecute(Sender: TObject);
@@ -400,6 +401,8 @@ type
     procedure CliParams(aParams: TStringList);
     procedure DoOnBookmarkClick(Sender: TObject);
     function GetSelectedFileTreePath:String;
+    procedure UniqueInstance1OtherInstance(Sender: TObject;
+      ParamCount: Integer; const Parameters: array of String);
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -785,6 +788,13 @@ begin
   end;
 
   Result := BrowsingPath+PathDelim+Path;
+end;
+
+procedure TfMain.UniqueInstance1OtherInstance(Sender: TObject;
+  ParamCount: Integer; const Parameters: array of String);
+begin
+  if ParamCount > 0 then
+    EditorFactory.AddEditor(Parameters[0], BrowsingPath);
 end;
 
 
@@ -2287,6 +2297,9 @@ end;
 procedure TfMain.LoadDir(Path:string);
 var i: Integer;
 begin
+  UniqueInstance1.Identifier := MD5Print(MD5String(Path));
+  UniqueInstance1.Enabled := True;
+
   ConfigObj.LastDirectory := ExpandFileName(Path);
   splLeftBar.Visible := true;
   BrowsingPath := Path;

@@ -8,6 +8,7 @@
 - ADD: shortcut for delete file.
 - CHANGE: [lsp] how to interpret server message.
 - ADD: Mousuescrolling in CMD/LSP message box.
+- ADD: Use single instance application for the same project directory.
 
 ## v0.2.0
 

@@ -1,3 +1,6 @@
 [submodule "use/fpc-markdown"]
 	path = use/fpc-markdown
 	url = https://github.com/mriscoc/fpc-markdown.git
+[submodule "use/uniqueinstance"]
+	path = use/uniqueinstance
+	url = https://github.com/andreaspeters/uniqueinstance.git

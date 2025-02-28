@@ -4799,4 +4799,9 @@ object fMain: TfMain
     Left = 619
     Top = 197
   end
+  object UniqueInstance1: TUniqueInstance
+    OnOtherInstance = UniqueInstance1OtherInstance
+    Left = 727
+    Top = 170
+  end
 end
