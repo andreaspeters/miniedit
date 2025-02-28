@@ -155,6 +155,8 @@ type
 
 
     function GetBackGroundColor: TColor;
+    function FileIsWriteable: Boolean;
+    function FileIsReadable: Boolean;
     procedure LoadAliases;
     procedure SetHexEditor(AValue: String);
     procedure SetCompileCommand(AValue: String);
@@ -305,6 +307,32 @@ begin
   LoadConfig;
 end;
 
+function TConfig.FileIsWriteable: Boolean;
+var
+  FileHandle: THandle;
+begin
+  Result := False;
+  FileHandle := FileOpen(FConfigFile, fmOpenWrite or fmShareDenyNone);
+  if FileHandle <> THandle(-1) then
+  begin
+    Result := True;
+    FileClose(FileHandle);
+  end;
+end;
+
+function TConfig.FileIsReadable: Boolean;
+var
+  FileHandle: THandle;
+begin
+  Result := False;
+  FileHandle := FileOpen(FConfigFile, fmOpenRead or fmShareDenyNone);
+  if FileHandle <> THandle(-1) then
+  begin
+    Result := True;
+    FileClose(FileHandle);
+  end;
+end;
+
 procedure TConfig.LoadConfig;
 var ConfigText: TStringList;
 begin
@@ -320,9 +348,14 @@ begin
   fConfigHolder := TJsonNode.Create;
   if FileExists(FConfigFile) then
   begin
-   fConfigHolder.LoadFromFile(FConfigFile);
-   ConfigText := TStringList.Create;
-   ConfigText.LoadFromFile(FConfigFile);
+  if (FileIsReadable) then
+  begin
+    fConfigHolder.LoadFromFile(FConfigFile);
+    ConfigText := TStringList.Create;
+    ConfigText.LoadFromFile(FConfigFile);
+  end
+  else
+     Exit;
   end;
 
   fHighlighters := THighlighterList.Create;
@@ -587,7 +620,8 @@ var
   i: Integer;
 begin
   FWatcher.Free;
-  fConfigHolder.SaveToFile(FConfigFile, true);
+  if FileIsWriteable then
+    fConfigHolder.SaveToFile(FConfigFile, true);
   fConfigHolder.Free;
   fColorSchema.Free;
   FFont.Free;
@@ -667,7 +701,6 @@ begin
 
   Result := Values.Count;
 end;
-
 
 procedure TConfig.WriteStrings(Section: string; Name: string; Values: TStrings);
 var
@@ -797,7 +830,8 @@ end;
 
 procedure TConfig.Flush;
 begin
-  fConfigHolder.SaveToFile(FConfigFile);
+  if FileIsWriteable then
+    fConfigHolder.SaveToFile(FConfigFile);
 end;
 
 function TConfig.GetResourcesPath: string;

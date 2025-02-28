@@ -122,6 +122,7 @@ begin
       LSearchText.Visible := True;
       VLECompletion.Strings.Assign(MessageList);
       VLECompletion.Col := 0;
+      VLECompletion.ColWidths[0] := 300;
     end;
 end;
 

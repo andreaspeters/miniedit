@@ -792,9 +792,30 @@ end;
 
 procedure TfMain.UniqueInstance1OtherInstance(Sender: TObject;
   ParamCount: Integer; const Parameters: array of String);
+var str, dir: String;
+   Editor: TEditor;
 begin
   if ParamCount > 0 then
-    EditorFactory.AddEditor(Parameters[0], BrowsingPath);
+  begin
+    str := Parameters[0];
+    if DirectoryExists(str) then
+    begin
+      dir := str;
+      if dir = '.' then
+        dir := GetCurrentDir;
+      LoadDir(dir)
+    end
+    else
+    begin
+      Editor := EditorFactory.AddEditor(str);
+      if Assigned(Editor) then
+      begin
+        Editor.FilePath := ExtractFilePath(str);
+        if Length(Editor.FilePath) <= 0 then
+          Editor.FilePath := GetCurrentDir;
+      end;
+    end;
+  end;
 end;
 
 
@@ -1500,13 +1521,16 @@ begin
       else
       begin
         Editor := EditorFactory.AddEditor(str);
-        Editor.FilePath := ExtractFilePath(str);
-        if Length(Editor.FilePath) <= 0 then
-          Editor.FilePath := GetCurrentDir;
+        if Assigned(Editor) then
+        begin
+          Editor.FilePath := ExtractFilePath(str);
+          if Length(Editor.FilePath) <= 0 then
+            Editor.FilePath := GetCurrentDir;
 
-        LoadDir(Editor.FilePath);
-        if Assigned(Editor) and not Editor.Untitled then
-          MRU.AddToRecent(str);
+          LoadDir(Editor.FilePath);
+          if Assigned(Editor) and not Editor.Untitled then
+            MRU.AddToRecent(str);
+        end;
       end;
     end;
   end;
@@ -1589,7 +1613,7 @@ begin
     CurrMenu.Add(mnuLang);
   end;
 
-  if Length(ConfigObj.LastDirectory) > 0 then
+  if (Length(ConfigObj.LastDirectory) > 0) and (ParamCount <= 0) then
     LoadDir(ConfigObj.LastDirectory);
 
   if ParamCount > 0  then
@@ -1607,6 +1631,7 @@ begin
 
   splLeftBar.Visible := True;
   Font := Screen.SystemFont;
+
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);
@@ -2297,6 +2322,7 @@ end;
 procedure TfMain.LoadDir(Path:string);
 var i: Integer;
 begin
+  writeln(Path);
   UniqueInstance1.Identifier := MD5Print(MD5String(Path));
   UniqueInstance1.Enabled := True;
 

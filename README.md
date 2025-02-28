@@ -50,7 +50,9 @@ Server could find any information about that.
 ## How to compile
 
 - Install Lazarus 3.6
-- TRichMemo, TSynEdit, CmdBox, fpc-markdown
+- TRichMemo, TSynEdit, CmdBox
+- [fpc-markdown](https://github.com/mriscoc/fpc-markdown.git)
+- [uniqueinstance](https://github.com/andreaspeters/uniqueinstance.git)
 
 ## Shortcuts
 

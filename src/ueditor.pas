@@ -228,8 +228,9 @@ end;
 
 procedure TEditor.SetFilePath(AValue: String);
 begin
-  if FFilePath = AValue then
-    Exit;
+  if Length(AValue) > 0 then
+    if FFilePath = AValue then
+      Exit;
 
   FFilePath := AValue;
 end;
