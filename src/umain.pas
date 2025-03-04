@@ -272,7 +272,6 @@ type
     TBCompileRun: TToolButton;
     ToolButton17: TToolButton;
     ToolButton18: TToolButton;
-    ToolButton19: TToolButton;
     ToolButton2: TToolButton;
     ToolButton20: TToolButton;
     ToolButton3: TToolButton;
@@ -1613,6 +1612,9 @@ begin
     CurrMenu.Add(mnuLang);
   end;
 
+  if (ParamCount <= 0) then
+    LoadDir(GetCurrentDir);
+
   if (Length(ConfigObj.LastDirectory) > 0) and (ParamCount <= 0) then
     LoadDir(ConfigObj.LastDirectory);
 
@@ -1631,7 +1633,6 @@ begin
 
   splLeftBar.Visible := True;
   Font := Screen.SystemFont;
-
 end;
 
 procedure TfMain.mnuLangClick(Sender: TObject);

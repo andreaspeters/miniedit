@@ -2289,13 +2289,6 @@ object fMain: TfMain
       end
     end
   end
-  object ToolButton19: TToolButton
-    Left = 0
-    Height = 22
-    Top = 0
-    Width = 23
-    Style = tbsDivider
-  end
   object mnuMain: TMainMenu
     Images = imgListSmall
     Left = 72

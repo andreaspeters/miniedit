@@ -304,7 +304,7 @@ begin
   FWatcher := TFileWatcher.Create;
   FWatcher.OnFileStateChange := @OnFileChange;
 
-  LoadConfig;
+  LoadConfig
 end;
 
 function TConfig.FileIsWriteable: Boolean;
@@ -342,6 +342,7 @@ begin
     , True
   {$ENDIF}
     );
+
 
   FConfigFile := ChangeFileExt(FConfigFile,'.json');
   fConfigDir := GetConfigDir;
@@ -394,7 +395,10 @@ var Bookmarks: TStringList;
     i: Integer;
     mnuBookmark: TMenuItem;
 begin
-  LoadConfig;
+  if (fileIsReadable) then
+    LoadConfig
+  else
+    Exit;
 
   Bookmarks := TStringList.Create;
   ConfigObj.ReadStrings('Bookmarks', 'Item', Bookmarks);
