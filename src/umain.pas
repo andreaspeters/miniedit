@@ -260,6 +260,7 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
+    SynEdit1: TSynEdit;
     SynExporterHTML1: TSynExporterHTML;
     Timer1: TTimer;
     ToolButton1: TToolButton;
@@ -2323,7 +2324,6 @@ end;
 procedure TfMain.LoadDir(Path:string);
 var i: Integer;
 begin
-  writeln(Path);
   UniqueInstance1.Identifier := MD5Print(MD5String(Path));
   UniqueInstance1.Enabled := True;
 

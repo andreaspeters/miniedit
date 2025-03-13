@@ -881,14 +881,17 @@ begin
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
         Beauty := TSynBeautifier.Create(Sheet);
-        Beauty.IndentType := sbitSpace;
+        Beauty.IndentType := sbitConvertToTabOnly;
+        Beauty.AutoIndent := True;
 
         Sheet.DoubleBuffered := DoubleBuffered;
-        //Sheet.Editor.Beautifier := Beauty;
+        Sheet.Editor.Beautifier := Beauty;
         Sheet.Editor.BlockIndent := 0;
         Sheet.Editor.BlockTabIndent := 0;
         Sheet.Editor.DoubleBuffered := DoubleBuffered;
         Sheet.Editor.LoadFromfile(FileName);
+        Sheet.Editor.Options := [eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoTrimTrailingSpaces];
+        Sheet.Editor.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
@@ -928,7 +931,8 @@ begin
   // sbitConvertToTabSpace,   - convert to tabs, fill with spcaces if needed
   // sbitConvertToTabOnly     - convert to tabs, even if shorter
   Beauty := TSynBeautifier.Create(Sheet);
-  Beauty.IndentType := sbitSpace;
+  Beauty.IndentType := sbitConvertToTabSpace;
+  Beauty.AutoIndent := True;
 
   Result := TEditor.Create(Sheet);
   Result.DoubleBuffered := DoubleBuffered;
@@ -936,11 +940,11 @@ begin
   Result.BlockTabIndent := 0;
   Result.RightEdge := 80;
   Result.RightEdgeColor := clSilver;
-  Result.Options := [eoAutoIndent,eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoSmartTabs,eoTabsToSpaces,eoTrimTrailingSpaces];
+  Result.Options := [eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoTrimTrailingSpaces];
   Result.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
   Result.Font.Quality := fqCleartypeNatural;
   Result.Gutter.Color := clBtnFace;
-  //Result.Beautifier := Beauty;
+  Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
 
   // create tabsheet for run, debug, lsp and so on messages
