@@ -1,0 +1,41 @@
+object fAI: TfAI
+  Left = 976
+  Height = 309
+  Top = 819
+  Width = 810
+  BorderStyle = bsDialog
+  Caption = 'fAI'
+  ClientHeight = 309
+  ClientWidth = 810
+  OnShow = FormShow
+  Position = poOwnerFormCenter
+  object bpDefaultButton: TButtonPanel
+    Left = 6
+    Height = 43
+    Top = 260
+    Width = 798
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object MAIMessage: TMemo
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = bpDefaultButton
+    Left = 4
+    Height = 250
+    Top = 4
+    Width = 802
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 4
+    TabOrder = 1
+  end
+end

@@ -1,5 +1,8 @@
 {"version":1,"strings":[
 {"hash":148696435,"name":"tfsettings.caption","sourcebytes":[77,105,110,105,69,100,105,116,32,45,32,83,101,116,116,105,110,103,115],"value":"MiniEdit - Settings"},
 {"hash":79685570,"name":"tfsettings.lehexeditor.editlabel.caption","sourcebytes":[72,101,120,32,69,100,105,116,111,114],"value":"Hex Editor"},
-{"hash":238312292,"name":"tfsettings.lecompilecommand.editlabel.caption","sourcebytes":[67,111,109,112,105,108,101,32,67,111,109,109,97,110,100],"value":"Compile Command"}
+{"hash":238312292,"name":"tfsettings.lecompilecommand.editlabel.caption","sourcebytes":[67,111,109,112,105,108,101,32,67,111,109,109,97,110,100],"value":"Compile Command"},
+{"hash":69871317,"name":"tfsettings.leollamahostname.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,72,111,115,116,110,97,109,101],"value":"Ollama Hostname"},
+{"hash":56845332,"name":"tfsettings.leollamaport.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,80,111,114,116],"value":"Ollama Port"},
+{"hash":103903884,"name":"tfsettings.leollamamodel.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,77,111,100,101,108],"value":"Ollama Model"}
 ]}

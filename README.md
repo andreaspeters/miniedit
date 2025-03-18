@@ -17,6 +17,7 @@
 - Bookmark Project Folders
 - Paste Images from Clipboard (only works with BMP data).
 - Simple Preview for Markdown files.
+- Everything need AI. 🤣 So, I implemented Ollama into MiniEdit. 😁
 
 ## LSP
 
@@ -39,7 +40,6 @@ Server could find any information about that.
 
 ## Features in planing
 
-- Connection with Ollama AI 🤷
 - Remote Edit (SSH)
 
 ## Requirements

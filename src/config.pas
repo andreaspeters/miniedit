@@ -148,6 +148,9 @@ type
     fConfigHolder: TJsonNode;
     fColorSchema: TJsonNode;
     FHexEditor: String;
+    FOllamaHostname: String;
+    FOllamaPort: String;
+    FOllamaModel: String;
     FCompileCommand: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
@@ -159,6 +162,9 @@ type
     function FileIsReadable: Boolean;
     procedure LoadAliases;
     procedure SetHexEditor(AValue: String);
+    procedure SetOllamaHostname(AValue: String);
+    procedure SetOllamaPort(AValue: String);
+    procedure SetOllamaModel(AValue: String);
     procedure SetCompileCommand(AValue: String);
     procedure SetDirty(AValue: boolean);
     procedure SetFont(AValue: TFont);
@@ -200,6 +206,9 @@ type
     property ConfigDir: string read fConfigDir;
     property ConfigFile: string read FConfigFile;
     property HexEditor: string read FHexEditor write SetHexEditor;
+    property OllamaHostname: string read FOllamaHostname write SetOllamaHostname;
+    property OllamaPort: string read FOllamaPort write SetOllamaPort;
+    property OllamaModel: string read FOllamaModel write SetOllamaModel;
     property CompileCommand: string read FCompileCommand write SetCompileCommand;
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
@@ -655,6 +664,9 @@ begin
   fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
   fConfigHolder.Find('External/HexEditor', true).AsString := FHexEditor;
   fConfigHolder.Find('External/CompileCommand', true).AsString := FCompileCommand;
+  fConfigHolder.Find('Ollama/Hostname', true).AsString := FOllamaHostname;
+  fConfigHolder.Find('Ollama/Port', true).AsString := FOllamaPort;
+  fConfigHolder.Find('Ollama/Model', true).AsString := FOllamaModel;
 
   FDirty := false;
 end;
@@ -686,6 +698,9 @@ begin
   FLastDirectory := fConfigHolder.GetValueDef('Editor/LastDirectory', '.');
   FHexEditor := fConfigHolder.GetValueDef('External/HexEditor', 'Hex');
   FCompileCommand := fConfigHolder.GetValueDef('External/CompileCommand', 'make');
+  FOllamaHostname := fConfigHolder.GetValueDef('Ollama/Hostname', 'localhost');
+  FOllamaPort := fConfigHolder.GetValueDef('Ollama/Port', '11434');
+  FOllamaModel := fConfigHolder.GetValueDef('Ollama/Model', 'llama:3.1');
 
   FDirty := False;
 end;
@@ -736,6 +751,24 @@ end;
 procedure TConfig.SetHexEditor(AValue: String);
 begin
   FHexEditor := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetOllamaHostname(AValue: String);
+begin
+  FOllamaHostname := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetOllamaPort(AValue: String);
+begin
+  FOllamaPort := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetOllamaModel(AValue: String);
+begin
+  FOllamaModel := AValue;
   FDirty := True;
 end;
 

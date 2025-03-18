@@ -14,8 +14,11 @@ type
 
   TFSettings = class(TForm)
     BPDefault: TButtonPanel;
+    LEOllamaHostname: TLabeledEdit;
     LEHexEditor: TLabeledEdit;
     LECompileCommand: TLabeledEdit;
+    LEOllamaModel: TLabeledEdit;
+    LEOllamaPort: TLabeledEdit;
     OPSelectFile: TOpenDialog;
     SPChooseDirectory: TSpeedButton;
     SPChooseDirectory1: TSpeedButton;
@@ -54,12 +57,18 @@ procedure TFSettings.FormShow(Sender: TObject);
 begin
   LEHexEditor.Caption := ConfigObj.HexEditor;
   LECompileCommand.Caption := ConfigObj.CompileCommand;
+  LEOllamaHostname.Caption := ConfigObj.OllamaHostname;
+  LEOllamaPort.Caption := ConfigObj.OllamaPort;
+  LEOllamaModel.Caption := ConfigObj.OllamaModel;
 end;
 
 procedure TFSettings.OKButtonClick(Sender: TObject);
 begin
   ConfigObj.HexEditor := LEHexEditor.Caption;
   ConfigObj.CompileCommand := LECompileCommand.Caption;
+  ConfigObj.OllamaHostname := LEOllamaHostname.Caption;
+  ConfigObj.OllamaPort := LEOllamaPort.Caption;
+  ConfigObj.OllamaModel := LEOllamaModel.Caption;
   Close;
 end;
 

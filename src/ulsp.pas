@@ -5,7 +5,7 @@ unit uLSP;
 interface
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, Sockets, netdb, baseunix, RegExpr, Process,
+  Classes, SysUtils, fpjson, jsonparser, RegExpr, Process,
   syncobjs;
 type
   TLSP = class(TThread)

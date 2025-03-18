@@ -9,13 +9,13 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, DefaultTranslator, cmdbox, FrameViewer09,
+  Forms, DefaultTranslator, cmdbox, indylaz, FrameViewer09,
   printer4lazarus, SynEditPrintExtProcs,
   //projects unit
   umain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
   JsonTools, uinfo, ucmdboxthread, uLSP, udirectoryname,
-  ushowlspmessage, usettings, uCmdBoxCustom, SynExportRTF;
+  ushowlspmessage, usettings, uCmdBoxCustom, SynExportRTF, uai;
 
 {$R *.res}
 begin
@@ -29,6 +29,7 @@ begin
   Application.CreateForm(TFLSPMessage, FLSPMessage);
   Application.CreateForm(TFCreateDirectory, FCreateDirectory);
   Application.CreateForm(TFSettings, FSettings);
+  Application.CreateForm(TfAI, fAI);
   Application.Run;
 end.
 

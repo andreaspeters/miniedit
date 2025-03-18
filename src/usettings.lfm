@@ -1,12 +1,12 @@
 object FSettings: TFSettings
   Left = 432
-  Height = 198
+  Height = 331
   Top = 37
   Width = 573
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'MiniEdit - Settings'
-  ClientHeight = 198
+  ClientHeight = 331
   ClientWidth = 573
   DoubleBuffered = True
   Icon.Data = {
@@ -2046,7 +2046,7 @@ object FSettings: TFSettings
   object BPDefault: TButtonPanel
     Left = 6
     Height = 43
-    Top = 149
+    Top = 282
     Width = 561
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2093,6 +2093,40 @@ object FSettings: TFSettings
     Images = fMain.imgListBig
     ImageIndex = 5
     OnClick = ChooseCompileCommand
+  end
+  object LEOllamaHostname: TLabeledEdit
+    Left = 176
+    Height = 37
+    Top = 128
+    Width = 320
+    EditLabel.Height = 24
+    EditLabel.Width = 145
+    EditLabel.Caption = 'Ollama Hostname'
+    LabelPosition = lpLeft
+    TabOrder = 3
+  end
+  object LEOllamaPort: TLabeledEdit
+    Left = 176
+    Height = 37
+    Top = 176
+    Width = 112
+    EditLabel.Height = 24
+    EditLabel.Width = 96
+    EditLabel.Caption = 'Ollama Port'
+    LabelPosition = lpLeft
+    NumbersOnly = True
+    TabOrder = 4
+  end
+  object LEOllamaModel: TLabeledEdit
+    Left = 176
+    Height = 37
+    Top = 224
+    Width = 320
+    EditLabel.Height = 24
+    EditLabel.Width = 112
+    EditLabel.Caption = 'Ollama Model'
+    LabelPosition = lpLeft
+    TabOrder = 5
   end
   object OPSelectFile: TOpenDialog
     Left = 464

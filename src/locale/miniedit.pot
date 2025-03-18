@@ -265,6 +265,10 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
+#: tfai.caption
+msgid "fAI"
+msgstr ""
+
 #: tfcreatedirectory.caption
 msgid "MiniEdit - New Folder"
 msgstr ""
@@ -275,6 +279,10 @@ msgstr ""
 
 #: tflspmessage.caption
 msgid "MiniEdit LSP Window"
+msgstr ""
+
+#: tfmain.actai.caption
+msgid "actAI"
 msgstr ""
 
 #: tfmain.actbookmarkadd.caption
@@ -872,6 +880,18 @@ msgstr ""
 
 #: tfsettings.lehexeditor.editlabel.caption
 msgid "Hex Editor"
+msgstr ""
+
+#: tfsettings.leollamahostname.editlabel.caption
+msgid "Ollama Hostname"
+msgstr ""
+
+#: tfsettings.leollamamodel.editlabel.caption
+msgid "Ollama Model"
+msgstr ""
+
+#: tfsettings.leollamaport.editlabel.caption
+msgid "Ollama Port"
 msgstr ""
 
 #: ttfinfo.caption

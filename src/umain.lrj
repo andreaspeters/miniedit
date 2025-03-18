@@ -136,5 +136,6 @@
 {"hash":37510171,"name":"tfmain.actbookmarkadd.caption","sourcebytes":[65,100,100,32,66,111,111,107,109,97,114,107],"value":"Add Bookmark"},
 {"hash":145491675,"name":"tfmain.actbookmarkdel.caption","sourcebytes":[68,101,108,101,116,101,32,66,111,111,107,109,97,114,107],"value":"Delete Bookmark"},
 {"hash":119192949,"name":"tfmain.actpasteimage.caption","sourcebytes":[80,97,115,116,101,32,73,109,97,103,101],"value":"Paste Image"},
-{"hash":126668695,"name":"tfmain.actpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"}
+{"hash":126668695,"name":"tfmain.actpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"},
+{"hash":6793305,"name":"tfmain.actai.caption","sourcebytes":[97,99,116,65,73],"value":"actAI"}
 ]}

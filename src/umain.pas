@@ -12,7 +12,7 @@ uses
   lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, UniqueInstance,
   Process, uinfo, ucmdboxthread, SynHighlighterPas, SynExportHTML,
   udirectoryname, ushowlspmessage, usettings, HtmlView, MarkdownProcessor,
-  MarkdownUtils, fpjson, jsonparser, md5
+  MarkdownUtils, fpjson, jsonparser, md5, uai
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -45,6 +45,7 @@ type
     actCompileStop: TAction;
     actBookmarkAdd: TAction;
     actBookmarkDel: TAction;
+    actAI: TAction;
     actPreview: TAction;
     actPasteImage: TAction;
     actRestart: TAction;
@@ -260,7 +261,6 @@ type
     splLeftBar: TSplitter;
     StatusBar: TStatusBar;
     MainToolbar: TToolBar;
-    SynEdit1: TSynEdit;
     SynExporterHTML1: TSynExporterHTML;
     Timer1: TTimer;
     ToolButton1: TToolButton;
@@ -287,6 +287,7 @@ type
     ToolButton9: TToolButton;
     Bookmarks: TStringList;
     UniqueInstance1: TUniqueInstance;
+    procedure actAIExecute(Sender: TObject);
     procedure actBookmarkAddExecute(Sender: TObject);
     procedure actBookmarkDelExecute(Sender: TObject);
     procedure actCompileStopExecute(Sender: TObject);
@@ -1349,6 +1350,15 @@ begin
 
     miBookmarks.Add(m);
   end;
+end;
+
+procedure TfMain.actAIExecute(Sender: TObject);
+begin
+  if not Assigned(EditorFactory.CurrentEditor) then
+    Exit;
+
+  fAI.Show;
+  fAI.Editor := EditorFactory.CurrentEditor;
 end;
 
 procedure TfMain.actBookmarkDelExecute(Sender: TObject);
