@@ -56,6 +56,7 @@ Server could find any information about that.
 
 ## Shortcuts
 
+- F2 - Open Ollama AI.
 - F3 - Search the selected text and/or find next
 - SHIFT+F3 - Find previous
 - F4 - View File in Hex Editor
