@@ -156,7 +156,10 @@ type
     mnuTabs: TMenuItem;
     PairSplitter1: TPairSplitter;
     PairSplitter2: TPairSplitter;
+    PairSplitter3: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
+    PairSplitterSide3: TPairSplitterSide;
+    PairSplitterSide4: TPairSplitterSide;
     PSSEditor: TPairSplitterSide;
     PSSMessageBox: TPairSplitterSide;
     pumFileTree: TPopupMenu;
@@ -1357,8 +1360,8 @@ begin
   if not Assigned(EditorFactory.CurrentEditor) then
     Exit;
 
-  fAI.Show;
   fAI.Editor := EditorFactory.CurrentEditor;
+  fAI.Show;
 end;
 
 procedure TfMain.actBookmarkDelExecute(Sender: TObject);
@@ -1758,6 +1761,8 @@ begin
     PairSplitter2.Position := PairSplitterSide2.Height
   else
     PairSplitter2.Position := PairSplitterSide2.Height - EditorSplitterPos;
+
+  PairSplitter3.Position := Width - PairSplitterSide1.Width - 10;
 end;
 
 procedure TfMain.FormShow(Sender: TObject);

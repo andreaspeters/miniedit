@@ -64,6 +64,7 @@ procedure TfAI.FormShow(Sender: TObject);
 begin
   MAIMessage.Clear;
   MAIMessage.SetFocus;
+  MAIMessage.Text := Editor.SelText;
 end;
 
 procedure TfAI.OKButtonClick(Sender: TObject);
@@ -104,6 +105,7 @@ end;
 procedure TAIThread.ProcessJSONMessage(const AJSON: string);
 var ResponseJSON: TJSONObject;
 begin
+  writeln(ajson);
   ResponseJSON := TJSONObject(GetJSON(AJSON));
   if Assigned(ResponseJSON.FindPath('response')) then
     Editor.SelText := ProcessText(ResponseJSON.FindPath('response').AsString);
