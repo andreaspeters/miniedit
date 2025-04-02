@@ -4,4 +4,4 @@ BGRAControls
 CmdLine
 HtmlViewer
 RichMemo
-indylaz
+Indy10
