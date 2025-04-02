@@ -2114,7 +2114,6 @@ object FSettings: TFSettings
     EditLabel.Width = 96
     EditLabel.Caption = 'Ollama Port'
     LabelPosition = lpLeft
-    NumbersOnly = True
     TabOrder = 4
   end
   object LEOllamaModel: TLabeledEdit
