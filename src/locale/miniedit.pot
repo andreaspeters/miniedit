@@ -468,6 +468,10 @@ msgstr ""
 msgid "Toggle Message Box"
 msgstr ""
 
+#: tfmain.acttoggleollamachat.caption
+msgid "Toggle Ollama Chat"
+msgstr ""
+
 #: tfmain.acttogglespecialchar.caption
 msgid "Toggle Special Char"
 msgstr ""

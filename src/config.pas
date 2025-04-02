@@ -151,6 +151,7 @@ type
     FOllamaHostname: String;
     FOllamaPort: String;
     FOllamaModel: String;
+    FOllamaChat: boolean;
     FCompileCommand: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
@@ -165,6 +166,7 @@ type
     procedure SetOllamaHostname(AValue: String);
     procedure SetOllamaPort(AValue: String);
     procedure SetOllamaModel(AValue: String);
+    procedure SetShowOllamaChat(AValue: boolean);
     procedure SetCompileCommand(AValue: String);
     procedure SetDirty(AValue: boolean);
     procedure SetFont(AValue: TFont);
@@ -209,6 +211,7 @@ type
     property OllamaHostname: string read FOllamaHostname write SetOllamaHostname;
     property OllamaPort: string read FOllamaPort write SetOllamaPort;
     property OllamaModel: string read FOllamaModel write SetOllamaModel;
+    property ShowOllamaChat: boolean read FOllamaChat write SetShowOllamaChat;
     property CompileCommand: string read FCompileCommand write SetCompileCommand;
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
@@ -667,6 +670,7 @@ begin
   fConfigHolder.Find('Ollama/Hostname', true).AsString := FOllamaHostname;
   fConfigHolder.Find('Ollama/Port', true).AsString := FOllamaPort;
   fConfigHolder.Find('Ollama/Model', true).AsString := FOllamaModel;
+  fConfigHolder.Find('Ollama/Chat', true).AsBoolean := FOllamaChat;
 
   FDirty := false;
 end;
@@ -701,6 +705,7 @@ begin
   FOllamaHostname := fConfigHolder.GetValueDef('Ollama/Hostname', 'localhost');
   FOllamaPort := fConfigHolder.GetValueDef('Ollama/Port', '11434');
   FOllamaModel := fConfigHolder.GetValueDef('Ollama/Model', 'llama:3.1');
+  FOllamaChat := fConfigHolder.GetValueDef('Ollama/Chat', True);
 
   FDirty := False;
 end;
@@ -769,6 +774,13 @@ end;
 procedure TConfig.SetOllamaModel(AValue: String);
 begin
   FOllamaModel := AValue;
+  FDirty := True;
+end;
+
+procedure TConfig.SetShowOllamaChat(AValue: boolean);
+begin
+  if FOllamaChat=AValue then Exit;
+  FOllamaChat:=AValue;
   FDirty := True;
 end;
 

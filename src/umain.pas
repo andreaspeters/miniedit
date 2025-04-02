@@ -9,10 +9,10 @@ uses
   StdCtrls, ExtCtrls, SynEditTypes, PrintersDlgs, Config, SupportFuncs,
   LazUtils, LazUTF8, uDglGoTo, SynEditPrint, simplemrumanager, SynEditLines,
   SynEdit, SynEditKeyCmds, SynCompletion, SynHighlighterCpp, replacedialog,
-  lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, UniqueInstance,
-  Process, uinfo, ucmdboxthread, SynHighlighterPas, SynExportHTML,
-  udirectoryname, ushowlspmessage, usettings, HtmlView, MarkdownProcessor,
-  MarkdownUtils, fpjson, jsonparser, md5, uai
+  lclintf, jsontools, LMessages, PairSplitter, Buttons, uCmdBox, RichMemo,
+  UniqueInstance, Process, uinfo, ucmdboxthread, SynHighlighterPas,
+  SynExportHTML, udirectoryname, ushowlspmessage, usettings, HtmlView,
+  MarkdownProcessor, MarkdownUtils, fpjson, jsonparser, md5, uai
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -46,6 +46,7 @@ type
     actBookmarkAdd: TAction;
     actBookmarkDel: TAction;
     actAI: TAction;
+    actToggleOllamaChat: TAction;
     actPreview: TAction;
     actPasteImage: TAction;
     actRestart: TAction;
@@ -88,6 +89,7 @@ type
     MenuItem105: TMenuItem;
     MenuItem106: TMenuItem;
     MenuItem107: TMenuItem;
+    miToggleOllamaChat: TMenuItem;
     miPasteImage: TMenuItem;
     MenuItem28: TMenuItem;
     MenuItem29: TMenuItem;
@@ -324,6 +326,7 @@ type
     procedure actQuoteExecute(Sender: TObject);
     procedure actRestartExecute(Sender: TObject);
     procedure actToggleMessageBoxExecute(Sender: TObject);
+    procedure actToggleOllamaChatExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
     procedure EditDeleteExecute(Sender: TObject);
     procedure FileBrowseFolderExecute(Sender: TObject);
@@ -404,9 +407,9 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure CliParams(aParams: TStringList);
     procedure DoOnBookmarkClick(Sender: TObject);
-    function GetSelectedFileTreePath:String;
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; const Parameters: array of String);
+    function GetSelectedFileTreePath:String;
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -459,7 +462,7 @@ const
 
 procedure TfMain.FileExitExecute(Sender: TObject);
 begin
-  Application.terminate;
+  Application.Terminate;
 end;
 
 procedure TfMain.FileCloseExecute(Sender: TObject);
@@ -709,6 +712,17 @@ begin
     PairSplitter2.Position := PairSplitterSide2.Height;
     EditorSplitterPos := 0;
   end
+end;
+
+procedure TfMain.actToggleOllamaChatExecute(Sender: TObject);
+begin
+  actToggleOllamaChat.Checked := not actToggleOllamaChat.Checked;
+  miToggleOllamaChat.Checked := actToggleOllamaChat.Checked;
+
+  if actToggleOllamaChat.Checked then
+    PairSplitter3.Position := PairSplitter3.Position - 400
+  else
+    PairSplitter3.Position := Width - PairSplitterSide1.Width - 10;
 end;
 
 function ExtractQuotedStr(const S: string): string;
@@ -1816,7 +1830,6 @@ end;
 procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
-    ResponseJSON: TJSONObject;
 begin
   ConfigObj.DoCheckFileChanges;
 
@@ -2587,6 +2600,7 @@ begin
     actOpenExtern.Enabled := False;
   end;
 end;
+
 
 end.
 

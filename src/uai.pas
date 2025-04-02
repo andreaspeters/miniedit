@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
-  IdHTTP, IdGlobal, config, fpjson, jsonparser, uEditor;
+  IdHTTP, IdGlobal, config, fpjson, jsonparser, uEditor, ExtCtrls;
 
 type
   TfAI = class;
@@ -20,6 +20,7 @@ type
     MAIMessage: TMemo;
     AI: TAIThread;
     Editor: TEditor;
+    PaintBox1: TPaintBox;
     procedure CancelButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -51,6 +52,9 @@ var
 
 implementation
 
+uses
+  umain;
+
 {$R *.lfm}
 
 { TfAI }
@@ -77,6 +81,8 @@ begin
 
   Close;
 end;
+
+
 
 { TAIThread }
 
@@ -105,10 +111,12 @@ end;
 procedure TAIThread.ProcessJSONMessage(const AJSON: string);
 var ResponseJSON: TJSONObject;
 begin
-  writeln(ajson);
   ResponseJSON := TJSONObject(GetJSON(AJSON));
   if Assigned(ResponseJSON.FindPath('response')) then
-    Editor.SelText := ProcessText(ResponseJSON.FindPath('response').AsString);
+  begin
+    if Length(ResponseJSON.FindPath('response').AsString) > 0 then
+      Editor.SelText := ProcessText(ResponseJSON.FindPath('response').AsString);
+  end;
 
   Terminate;
 end;

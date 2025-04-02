@@ -1,14 +1,14 @@
 object fMain: TfMain
   Left = 130
-  Height = 600
+  Height = 676
   Top = 1857
-  Width = 2471
+  Width = 1262
   AllowDropFiles = True
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 600
-  ClientWidth = 2471
+  ClientHeight = 676
+  ClientWidth = 1262
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2049,8 +2049,8 @@ object fMain: TfMain
   object StatusBar: TStatusBar
     Left = 0
     Height = 28
-    Top = 572
-    Width = 2471
+    Top = 648
+    Width = 1262
     Panels = <    
       item
         Width = 200
@@ -2084,7 +2084,7 @@ object fMain: TfMain
     Left = 0
     Height = 26
     Top = 5
-    Width = 2471
+    Width = 1262
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -2223,7 +2223,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 0
-    Height = 536
+    Height = 612
     Top = 36
     Width = 5
   end
@@ -2236,19 +2236,19 @@ object fMain: TfMain
     AnchorSideBottom.Control = StatusBar
     Cursor = crDefault
     Left = 0
-    Height = 536
+    Height = 612
     Top = 36
-    Width = 2471
+    Width = 1262
     Anchors = [akTop, akLeft, akRight, akBottom]
     Position = 300
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 536
+      Height = 612
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 536
+      ClientHeight = 612
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2258,7 +2258,7 @@ object fMain: TfMain
         AnchorSideBottom.Side = asrBottom
         Cursor = crArrow
         Left = 2
-        Height = 536
+        Height = 612
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2289,30 +2289,30 @@ object fMain: TfMain
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 536
+      Height = 612
       Top = 0
-      Width = 2166
-      ClientWidth = 2166
-      ClientHeight = 536
+      Width = 957
+      ClientWidth = 957
+      ClientHeight = 612
       object PairSplitter3: TPairSplitter
         Left = 0
-        Height = 536
+        Height = 612
         Top = 0
-        Width = 2166
+        Width = 957
         Align = alClient
         Position = 500
         object PairSplitterSide3: TPairSplitterSide
           Cursor = crArrow
           Left = 0
-          Height = 536
+          Height = 612
           Top = 0
           Width = 500
           ClientWidth = 500
-          ClientHeight = 536
+          ClientHeight = 612
           object PairSplitter2: TPairSplitter
             Cursor = crDefault
             Left = 0
-            Height = 536
+            Height = 612
             Top = 0
             Width = 500
             Align = alClient
@@ -2328,7 +2328,7 @@ object fMain: TfMain
             object PSSMessageBox: TPairSplitterSide
               Cursor = crArrow
               Left = 0
-              Height = 531
+              Height = 607
               Top = 5
               Width = 500
             end
@@ -2337,9 +2337,9 @@ object fMain: TfMain
         object PairSplitterSide4: TPairSplitterSide
           Cursor = crArrow
           Left = 505
-          Height = 536
+          Height = 612
           Top = 0
-          Width = 1661
+          Width = 452
         end
       end
     end
@@ -2582,6 +2582,9 @@ object fMain: TfMain
       end
       object MIMessageBox: TMenuItem
         Action = actToggleMessageBox
+      end
+      object miToggleOllamaChat: TMenuItem
+        Action = actToggleOllamaChat
       end
     end
     object MenuItem86: TMenuItem
@@ -3722,6 +3725,12 @@ object fMain: TfMain
       Caption = 'actAI'
       OnExecute = actAIExecute
       ShortCut = 113
+    end
+    object actToggleOllamaChat: TAction
+      Category = 'View'
+      Caption = 'Toggle Ollama Chat'
+      OnExecute = actToggleOllamaChatExecute
+      Visible = False
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
