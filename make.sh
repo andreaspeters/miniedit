@@ -84,4 +84,6 @@ function priv_main
     fi
 )
 
+mv src/backup /tmp/backup
 priv_main "${@}" >/dev/null
+mv /tmp/backup src/backup
