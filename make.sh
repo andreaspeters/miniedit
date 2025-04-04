@@ -84,12 +84,12 @@ function priv_main
     fi
 )
 
-if [ -f "src/backup" ]; then
+if [ -d "src/backup" ]; then
 	mv src/backup /tmp/backup
 fi
 
 priv_main "${@}" >/dev/null
 
-if [ -f "/tmp/backup" ]; then
+if [ -d "/tmp/backup" ]; then
 	mv /tmp/backup src/backup
 fi

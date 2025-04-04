@@ -1253,10 +1253,14 @@ begin
       if Assigned(Ed.Highlighter) then
         if LowerCase(Ed.Highlighter.GetLanguageName()) = 'markdown' then
           Ed.InsertTextAtCaret(Format('![%s](vx_images%s%s)',[SaveName, PathDelim, SaveName]));
-    finally
-      Bitmap.Free;
+    except
+      on E: Exception do
+        ShowMessage(E.Message);
     end;
   end;
+
+  if Assigned(Bitmap) then
+    Bitmap.Free;
 end;
 
 procedure TfMain.actCopyFileExecute(Sender: TObject);
