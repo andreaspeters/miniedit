@@ -1370,6 +1370,8 @@ begin
     m.Caption:=BrowsingPath;
 
     miBookmarks.Add(m);
+
+    ConfigObj.WriteStrings('Bookmarks', 'Item', Bookmarks);
   end;
 end;
 
@@ -1501,6 +1503,7 @@ begin
   end;
   Editor.Save;
 
+  ConfigObj.WriteStrings('Recent', 'Files', MRU.Recent);
 end;
 
 procedure TfMain.FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
@@ -1708,8 +1711,8 @@ end;
 
 procedure TfMain.FormDestroy(Sender: TObject);
 begin
-  ConfigObj.WriteStrings('Recent', 'Files', MRU.Recent);
-  ConfigObj.WriteStrings('Bookmarks', 'Item', Bookmarks);
+  Timer1.Enabled := False;
+
   FreeAndNil(EditorFactory);
   ReplaceDialog.Free;
 end;
@@ -1723,7 +1726,6 @@ begin
     EditorFactory.AddEditor(FileNames[i]);
     MRU.AddToRecent(FileNames[i]);
   end;
-
 end;
 
 procedure TfMain.FormKeyPressDown(Sender: TObject; var Key: Word;
@@ -1835,10 +1837,11 @@ procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
 begin
-  ConfigObj.DoCheckFileChanges;
-
   if not EditorAvalaible then
-    exit;
+    Exit;
+
+  if Assigned(ConfigObj) then
+    ConfigObj.DoCheckFileChanges;
 
   if Assigned(CompileRun) then
     if not CompileRun.Running then
@@ -2445,9 +2448,8 @@ begin
       Node.ImageIndex := 1;
   end
   else
-     begin
-        EditorFactory.AddEditor(Node.FullPath, BrowsingPath);
-     end;
+    EditorFactory.AddEditor(Node.FullPath, BrowsingPath);
+
 end;
 
 procedure TfMain.FilesTreeExpanding(Sender: TObject; Node: TTreeNode;

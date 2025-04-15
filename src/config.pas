@@ -145,6 +145,7 @@ type
     FLastDirectory: String;
     ResourcesPath: string;
 //    fXMLConfigExtended: TXMLConfigExtended;
+    fConfigHolderOld: TJsonNode;
     fConfigHolder: TJsonNode;
     fColorSchema: TJsonNode;
     FHexEditor: String;
@@ -159,8 +160,6 @@ type
 
 
     function GetBackGroundColor: TColor;
-    function FileIsWriteable: Boolean;
-    function FileIsReadable: Boolean;
     procedure LoadAliases;
     procedure SetHexEditor(AValue: String);
     procedure SetOllamaHostname(AValue: String);
@@ -198,6 +197,8 @@ type
     function getHighLighter(Index: integer): TSynCustomHighlighter; overload;
     destructor Destroy; override;
     function GetFiters: string;
+    function FileIsWriteable: Boolean;
+    function FileIsReadable: Boolean;
     Procedure SetTheme(Index: integer);
     procedure DoCheckFileChanges;
 
@@ -324,11 +325,15 @@ var
   FileHandle: THandle;
 begin
   Result := False;
-  FileHandle := FileOpen(FConfigFile, fmOpenWrite or fmShareDenyNone);
-  if FileHandle <> THandle(-1) then
-  begin
-    Result := True;
-    FileClose(FileHandle);
+  try
+    FileHandle := FileOpen(FConfigFile, fmOpenWrite or fmShareDenyNone);
+    if FileHandle <> THandle(-1) then
+    begin
+      Result := True;
+      FileClose(FileHandle);
+    end;
+  except
+    Result := False;
   end;
 end;
 
@@ -337,23 +342,33 @@ var
   FileHandle: THandle;
 begin
   Result := False;
-  FileHandle := FileOpen(FConfigFile, fmOpenRead or fmShareDenyNone);
-  if FileHandle <> THandle(-1) then
-  begin
-    Result := True;
-    FileClose(FileHandle);
+  try
+    FileHandle := FileOpen(FConfigFile, fmOpenRead or fmShareDenyNone);
+    if FileHandle <> THandle(-1) then
+    begin
+      Result := True;
+      FileClose(FileHandle);
+    end;
+  except
+    Result := False;
   end;
 end;
 
 procedure TConfig.LoadConfig;
-var ConfigText: TStringList;
+var ConfigText, ConfigTextOld: TStringList;
 begin
   FFont := Tfont.Create;
-  FConfigFile := GetAppConfigFile(False
-  {$ifdef NEEDCFGSUBDIR}
-    , True
-  {$ENDIF}
-    );
+  try
+    FConfigFile := GetAppConfigFile(False
+    {$ifdef NEEDCFGSUBDIR}
+      , True
+    {$ENDIF}
+      );
+  except
+  end;
+
+  if Length(FConfigFile) <= 0 then
+    Exit;
 
 
   FConfigFile := ChangeFileExt(FConfigFile,'.json');
@@ -361,14 +376,21 @@ begin
   fConfigHolder := TJsonNode.Create;
   if FileExists(FConfigFile) then
   begin
-  if (FileIsReadable) then
-  begin
-    fConfigHolder.LoadFromFile(FConfigFile);
-    ConfigText := TStringList.Create;
-    ConfigText.LoadFromFile(FConfigFile);
-  end
-  else
-     Exit;
+    if (FileIsReadable) then
+    begin
+      fConfigHolderOld := fConfigHolder;
+      ConfigTextOld := ConfigText;
+      try
+        fConfigHolder.LoadFromFile(FConfigFile);
+        ConfigText := TStringList.Create;
+        ConfigText.LoadFromFile(FConfigFile);
+      except
+        fConfigHolder := fConfigHolderOld;
+        ConfigText := ConfigTextOld;
+      end;
+    end
+    else
+      Exit;
   end;
 
   fHighlighters := THighlighterList.Create;
@@ -636,8 +658,13 @@ var
   i: Integer;
 begin
   FWatcher.Free;
-  if FileIsWriteable then
-    fConfigHolder.SaveToFile(FConfigFile, true);
+  if Assigned(fConfigHolder) then
+    try
+      if FileIsWriteable then
+        fConfigHolder.SaveToFile(FConfigFile, true);
+    except
+    end;
+
   fConfigHolder.Free;
   fColorSchema.Free;
   FFont.Free;
