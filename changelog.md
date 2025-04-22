@@ -7,8 +7,9 @@
 - FIX: Blockindent
 - ADD: shortcut for delete file.
 - CHANGE: [lsp] how to interpret server message.
-- ADD: Mousuescrolling in CMD/LSP message box.
+- ADD: Mousescrolling in CMD/LSP message box.
 - ADD: Use single instance application for the same project directory.
+- FIX: miniedit config file overwrite
 
 ## v0.2.0
 

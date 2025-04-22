@@ -356,6 +356,7 @@ end;
 
 procedure TConfig.LoadConfig;
 var ConfigText, ConfigTextOld: TStringList;
+    TmpFileName: String;
 begin
   FFont := Tfont.Create;
   try
@@ -367,11 +368,16 @@ begin
   except
   end;
 
+  // create temporary config filename
+  TmpFileName := GetTempFileName(ExtractFilePath(FConfigFile),'miniedit');
+
+  FConfigFile := ChangeFileExt(FConfigFile,'.json');
+  CopyFile(FConfigFile, TmpFileName);
+  FConfigFile := TmpFileName;
+
   if Length(FConfigFile) <= 0 then
     Exit;
 
-
-  FConfigFile := ChangeFileExt(FConfigFile,'.json');
   fConfigDir := GetConfigDir;
   fConfigHolder := TJsonNode.Create;
   if FileExists(FConfigFile) then
@@ -654,14 +660,28 @@ begin
 end;
 
 destructor TConfig.Destroy;
-var
-  i: Integer;
+var i: Integer;
+    TmpFileName: String;
 begin
   FWatcher.Free;
   if Assigned(fConfigHolder) then
     try
       if FileIsWriteable then
+      begin
         fConfigHolder.SaveToFile(FConfigFile, true);
+        try
+          TmpFileName := GetAppConfigFile(False
+          {$ifdef NEEDCFGSUBDIR}
+            , True
+          {$ENDIF}
+            );
+        except
+        end;
+
+        TmpFileName := ChangeFileExt(TmpFileName,'.json');
+        CopyFile(FConfigFile, TmpFileName);
+        DeleteFile(FConfigFile);
+      end;
     except
     end;
 
