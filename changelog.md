@@ -10,6 +10,7 @@
 - ADD: Mousescrolling in CMD/LSP message box.
 - ADD: Use single instance application for the same project directory.
 - FIX: miniedit config file overwrite
+- ADD: Wordrap for whole files.
 
 ## v0.2.0
 

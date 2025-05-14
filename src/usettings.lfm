@@ -1,13 +1,13 @@
 object FSettings: TFSettings
   Left = 432
-  Height = 331
+  Height = 1062
   Top = 37
-  Width = 573
+  Width = 636
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'MiniEdit - Settings'
-  ClientHeight = 331
-  ClientWidth = 573
+  ClientHeight = 1062
+  ClientWidth = 636
   DoubleBuffered = True
   Icon.Data = {
     32FC00000000010001007D7D0000010020001CFC000016000000280000007D00
@@ -2029,15 +2029,16 @@ object FSettings: TFSettings
     0000000000000000000000000000000000000000000000000000000000000000
     00000000000000000000000000000000000000000000
   }
-  OnShow = FormShow
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
+  LCLVersion = '4.0.0.4'
+  OnShow = FormShow
   object LEHexEditor: TLabeledEdit
     Left = 176
     Height = 37
     Top = 32
     Width = 320
-    EditLabel.Height = 24
+    EditLabel.Height = 37
     EditLabel.Width = 83
     EditLabel.Caption = 'Hex Editor'
     LabelPosition = lpLeft
@@ -2046,8 +2047,8 @@ object FSettings: TFSettings
   object BPDefault: TButtonPanel
     Left = 6
     Height = 43
-    Top = 282
-    Width = 561
+    Top = 1013
+    Width = 624
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -2077,7 +2078,7 @@ object FSettings: TFSettings
     Height = 37
     Top = 80
     Width = 320
-    EditLabel.Height = 24
+    EditLabel.Height = 37
     EditLabel.Width = 154
     EditLabel.Caption = 'Compile Command'
     LabelPosition = lpLeft
@@ -2099,7 +2100,7 @@ object FSettings: TFSettings
     Height = 37
     Top = 128
     Width = 320
-    EditLabel.Height = 24
+    EditLabel.Height = 37
     EditLabel.Width = 145
     EditLabel.Caption = 'Ollama Hostname'
     LabelPosition = lpLeft
@@ -2110,7 +2111,7 @@ object FSettings: TFSettings
     Height = 37
     Top = 176
     Width = 112
-    EditLabel.Height = 24
+    EditLabel.Height = 37
     EditLabel.Width = 96
     EditLabel.Caption = 'Ollama Port'
     LabelPosition = lpLeft
@@ -2121,7 +2122,7 @@ object FSettings: TFSettings
     Height = 37
     Top = 224
     Width = 320
-    EditLabel.Height = 24
+    EditLabel.Height = 37
     EditLabel.Width = 112
     EditLabel.Caption = 'Ollama Model'
     LabelPosition = lpLeft

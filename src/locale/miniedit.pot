@@ -510,6 +510,10 @@ msgstr ""
 msgid "UPPERCASE"
 msgstr ""
 
+#: tfmain.actwordwrap.caption
+msgid "Text Wrap"
+msgstr ""
+
 #: tfmain.actxmlcompact.caption
 msgid "Compact XML"
 msgstr ""

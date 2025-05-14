@@ -1,14 +1,14 @@
 object fMain: TfMain
   Left = 130
-  Height = 676
+  Height = 840
   Top = 1857
-  Width = 1262
+  Width = 1098
   AllowDropFiles = True
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 676
-  ClientWidth = 1262
+  ClientHeight = 840
+  ClientWidth = 1098
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2033,6 +2033,10 @@ object fMain: TfMain
   }
   KeyPreview = True
   Menu = mnuMain
+  ParentDoubleBuffered = False
+  ParentFont = True
+  Position = poDesktopCenter
+  Visible = True
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -2042,15 +2046,11 @@ object fMain: TfMain
   OnResize = FormResize
   OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
-  ParentDoubleBuffered = False
-  ParentFont = True
-  Position = poDesktopCenter
-  Visible = True
   object StatusBar: TStatusBar
     Left = 0
     Height = 28
-    Top = 648
-    Width = 1262
+    Top = 812
+    Width = 1098
     Panels = <    
       item
         Width = 200
@@ -2084,7 +2084,7 @@ object fMain: TfMain
     Left = 0
     Height = 26
     Top = 5
-    Width = 1262
+    Width = 1098
     AutoSize = True
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 5
@@ -2223,7 +2223,7 @@ object fMain: TfMain
   end
   object splLeftBar: TSplitter
     Left = 0
-    Height = 612
+    Height = 776
     Top = 36
     Width = 5
   end
@@ -2236,19 +2236,19 @@ object fMain: TfMain
     AnchorSideBottom.Control = StatusBar
     Cursor = crDefault
     Left = 0
-    Height = 612
+    Height = 776
     Top = 36
-    Width = 1262
+    Width = 1098
     Anchors = [akTop, akLeft, akRight, akBottom]
     Position = 300
     object PairSplitterSide1: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 612
+      Height = 776
       Top = 0
       Width = 300
       ClientWidth = 300
-      ClientHeight = 612
+      ClientHeight = 776
       object FilesTree: TTreeView
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
@@ -2258,7 +2258,7 @@ object fMain: TfMain
         AnchorSideBottom.Side = asrBottom
         Cursor = crArrow
         Left = 2
-        Height = 612
+        Height = 776
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2275,6 +2275,7 @@ object fMain: TfMain
         ScrollBars = ssAutoBoth
         TabOrder = 0
         ToolTips = False
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoThemedDraw]
         OnCreateNodeClass = FilesTreeCreateNodeClass
         OnDblClick = FilesTreeDblClick
         OnExpanding = FilesTreeExpanding
@@ -2283,36 +2284,35 @@ object fMain: TfMain
         OnKeyDown = FilesTreeKeyDown
         OnMouseDown = FilesTreeMouseDown
         OnSelectionChanged = FilesTreeSelectionChanged
-        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoThemedDraw]
       end
     end
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 305
-      Height = 612
+      Height = 776
       Top = 0
-      Width = 957
-      ClientWidth = 957
-      ClientHeight = 612
+      Width = 793
+      ClientWidth = 793
+      ClientHeight = 776
       object PairSplitter3: TPairSplitter
         Left = 0
-        Height = 612
+        Height = 776
         Top = 0
-        Width = 957
+        Width = 793
         Align = alClient
         Position = 500
         object PairSplitterSide3: TPairSplitterSide
           Cursor = crArrow
           Left = 0
-          Height = 612
+          Height = 776
           Top = 0
           Width = 500
           ClientWidth = 500
-          ClientHeight = 612
+          ClientHeight = 776
           object PairSplitter2: TPairSplitter
             Cursor = crDefault
             Left = 0
-            Height = 612
+            Height = 776
             Top = 0
             Width = 500
             Align = alClient
@@ -2328,7 +2328,7 @@ object fMain: TfMain
             object PSSMessageBox: TPairSplitterSide
               Cursor = crArrow
               Left = 0
-              Height = 607
+              Height = 771
               Top = 5
               Width = 500
             end
@@ -2337,9 +2337,9 @@ object fMain: TfMain
         object PairSplitterSide4: TPairSplitterSide
           Cursor = crArrow
           Left = 505
-          Height = 612
+          Height = 776
           Top = 0
-          Width = 452
+          Width = 288
         end
       end
     end
@@ -2541,6 +2541,9 @@ object fMain: TfMain
         end
         object MenuItem74: TMenuItem
           Action = actSQLPrettyPrint
+        end
+        object MenuItem109: TMenuItem
+          Action = actWordWrap
         end
       end
     end
@@ -3144,6 +3147,9 @@ object fMain: TfMain
       object MenuItem105: TMenuItem
         Action = actSQLPrettyPrint
       end
+      object MenuItem108: TMenuItem
+        Action = actWordWrap
+      end
     end
     object MenuItem25: TMenuItem
       Caption = '-'
@@ -3240,32 +3246,32 @@ object fMain: TfMain
       Caption = '&Cut'
       Hint = 'Cut'
       ImageIndex = 2
-      OnExecute = EditCutExecute
       ShortCut = 16472
+      OnExecute = EditCutExecute
     end
     object EditCopy: TEditCopy
       Category = 'Edit'
       Caption = '&Copy'
       Hint = 'Copy'
       ImageIndex = 1
-      OnExecute = EditCopyExecute
       ShortCut = 16451
+      OnExecute = EditCopyExecute
     end
     object EditPaste: TEditPaste
       Category = 'Edit'
       Caption = '&Paste'
       Hint = 'Paste'
       ImageIndex = 6
-      OnExecute = EditPasteExecute
       ShortCut = 16470
+      OnExecute = EditPasteExecute
     end
     object EditSelectAll: TEditSelectAll
       Category = 'Edit'
       Caption = 'Select &all'
       Hint = 'Select all'
       ImageIndex = 23
-      OnExecute = EditSelectAllExecute
       ShortCut = 16449
+      OnExecute = EditSelectAllExecute
     end
     object EditUndo: TEditUndo
       Category = 'Edit'
@@ -3280,32 +3286,32 @@ object fMain: TfMain
       Caption = '&Search…'
       Hint = 'Search for text'
       ImageIndex = 8
-      OnExecute = SearchFindExecute
       ShortCut = 16454
+      OnExecute = SearchFindExecute
     end
     object SearchReplace: TAction
       Category = 'Search'
       Caption = '&Replace…'
       Hint = 'Search and Replace'
       ImageIndex = 21
-      OnExecute = SearchReplaceExecute
       ShortCut = 16466
+      OnExecute = SearchReplaceExecute
     end
     object SearchFindPrevious: TAction
       Category = 'Search'
       Caption = '&Find Previous'
       Hint = 'Find Previous'
       ImageIndex = 20
-      OnExecute = SearchFindPreviousExecute
       ShortCut = 8306
+      OnExecute = SearchFindPreviousExecute
     end
     object SearchFindNext: TAction
       Category = 'Search'
       Caption = 'Find next'
       Hint = 'Find next occ'
       ImageIndex = 19
-      OnExecute = SearchFindNextExecute
       ShortCut = 114
+      OnExecute = SearchFindNextExecute
     end
     object FileOpen: TFileOpen
       Category = 'File'
@@ -3330,16 +3336,16 @@ object fMain: TfMain
       Enabled = False
       Hint = 'Redo'
       ImageIndex = 7
-      OnExecute = EditRedoExecute
       ShortCut = 24666
+      OnExecute = EditRedoExecute
     end
     object EditDelete: TEditDelete
       Category = 'Edit'
       Caption = '&Delete File'
       Hint = 'Delete'
       ImageIndex = 22
-      OnExecute = EditDeleteExecute
       ShortCut = 46
+      OnExecute = EditDeleteExecute
     end
     object FileNew: TAction
       Category = 'File'
@@ -3347,8 +3353,8 @@ object fMain: TfMain
       DisableIfNoHandler = False
       Hint = 'New'
       ImageIndex = 3
-      OnExecute = FileNewExecute
       ShortCut = 16462
+      OnExecute = FileNewExecute
     end
     object FileClose: TAction
       Category = 'File'
@@ -3356,8 +3362,8 @@ object fMain: TfMain
       DisableIfNoHandler = False
       Hint = 'Close current tab'
       ImageIndex = 11
-      OnExecute = FileCloseExecute
       ShortCut = 16499
+      OnExecute = FileCloseExecute
     end
     object FileCloseAll: TAction
       Category = 'File'
@@ -3372,8 +3378,8 @@ object fMain: TfMain
       DisableIfNoHandler = False
       Hint = 'Save'
       ImageIndex = 0
-      OnExecute = FileSaveExecute
       ShortCut = 16467
+      OnExecute = FileSaveExecute
     end
     object actFont: TAction
       Category = 'Settings'
@@ -3435,8 +3441,8 @@ object fMain: TfMain
       DisableIfNoHandler = False
       Hint = 'Go to line'
       ImageIndex = 19
-      OnExecute = actGoToExecute
       ShortCut = 116
+      OnExecute = actGoToExecute
     end
     object actPrint: TAction
       Category = 'File'
@@ -3492,8 +3498,8 @@ object fMain: TfMain
       Tag = 1
       Category = 'PrettyPrint'
       Caption = 'Beautify  XML'
-      OnExecute = actXMLPrettyPrintExecute
       ShortCut = 57432
+      OnExecute = actXMLPrettyPrintExecute
     end
     object actQuote: TAction
       Tag = 1
@@ -3505,8 +3511,8 @@ object fMain: TfMain
       Tag = 1
       Category = 'PrettyPrint'
       Caption = 'Beautify JSON'
-      OnExecute = actJSONPrettyPrintExecute
       ShortCut = 57418
+      OnExecute = actJSONPrettyPrintExecute
     end
     object actXMLCompact: TAction
       Tag = 1
@@ -3518,8 +3524,8 @@ object fMain: TfMain
       Tag = 1
       Category = 'PrettyPrint'
       Caption = 'Beautify SQL'
-      OnExecute = actSQLPrettyPrintExecute
       ShortCut = 57427
+      OnExecute = actSQLPrettyPrintExecute
     end
     object actPathToClipboard: TAction
       Category = 'Filename'
@@ -3561,20 +3567,20 @@ object fMain: TfMain
     object actZoomIn: TAction
       Category = 'Navigation'
       Caption = 'Zoom In'
-      OnExecute = actZoomInExecute
       ShortCut = 16491
+      OnExecute = actZoomInExecute
     end
     object actZoomOut: TAction
       Category = 'Navigation'
       Caption = 'Zoom Out'
-      OnExecute = actZoomOutExecute
       ShortCut = 16493
+      OnExecute = actZoomOutExecute
     end
     object actZoomReset: TAction
       Category = 'Navigation'
       Caption = 'Zoom Reset'
-      OnExecute = actZoomResetExecute
       ShortCut = 16480
+      OnExecute = actZoomResetExecute
     end
     object actJSONCompact: TAction
       Category = 'PrettyPrint'
@@ -3594,8 +3600,8 @@ object fMain: TfMain
     object actFullScreen: TAction
       Category = 'Settings'
       Caption = 'Toggle Fullscreen'
-      OnExecute = actFullScreenExecute
       ShortCut = 122
+      OnExecute = actFullScreenExecute
     end
     object actFileNameToClipboard: TAction
       Category = 'Filename'
@@ -3636,13 +3642,13 @@ object fMain: TfMain
       DisableIfNoHandler = False
       Hint = 'Compile'
       ImageIndex = 18
-      OnExecute = actCompileRunExecute
       ShortCut = 120
+      OnExecute = actCompileRunExecute
     end
     object actOpenInHexEditor: TAction
       Caption = 'Open in Hex Editor'
-      OnExecute = actOpenInHexEditorExecute
       ShortCut = 115
+      OnExecute = actOpenInHexEditorExecute
     end
     object actFolderNew: TAction
       Category = 'FileTree'
@@ -3723,14 +3729,19 @@ object fMain: TfMain
     object actAI: TAction
       Category = 'AI'
       Caption = 'actAI'
-      OnExecute = actAIExecute
       ShortCut = 113
+      OnExecute = actAIExecute
     end
     object actToggleOllamaChat: TAction
       Category = 'View'
       Caption = 'Toggle Ollama Chat'
-      OnExecute = actToggleOllamaChatExecute
       Visible = False
+      OnExecute = actToggleOllamaChatExecute
+    end
+    object actWordWrap: TAction
+      Category = 'PrettyPrint'
+      Caption = 'Text Wrap'
+      OnExecute = actWordWrapExecute
     end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog

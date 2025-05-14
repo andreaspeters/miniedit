@@ -46,6 +46,7 @@ type
     actBookmarkAdd: TAction;
     actBookmarkDel: TAction;
     actAI: TAction;
+    actWordWrap: TAction;
     actToggleOllamaChat: TAction;
     actPreview: TAction;
     actPasteImage: TAction;
@@ -89,6 +90,8 @@ type
     MenuItem105: TMenuItem;
     MenuItem106: TMenuItem;
     MenuItem107: TMenuItem;
+    MenuItem108: TMenuItem;
+    MenuItem109: TMenuItem;
     miToggleOllamaChat: TMenuItem;
     miPasteImage: TMenuItem;
     MenuItem28: TMenuItem;
@@ -328,6 +331,7 @@ type
     procedure actToggleMessageBoxExecute(Sender: TObject);
     procedure actToggleOllamaChatExecute(Sender: TObject);
     procedure actUnQuoteExecute(Sender: TObject);
+    procedure actWordWrapExecute(Sender: TObject);
     procedure EditDeleteExecute(Sender: TObject);
     procedure FileBrowseFolderExecute(Sender: TObject);
     procedure FileCloseFolderExecute(Sender: TObject);
@@ -876,6 +880,17 @@ begin
   ConfigObj.ShowToolbar := actShowToolbar.Checked;
   MainToolbar.Visible := ConfigObj.ShowToolbar;
 end;
+
+procedure TfMain.actWordWrapExecute(Sender: TObject);
+var Ed: TEditor;
+begin
+  if not EditorAvalaible then
+    exit;
+
+  Ed := EditorFactory.CurrentEditor;
+  Ed.TextOperation(@WordWrapText, [tomFullText]);
+end;
+
 
 procedure TfMain.actFileNameToClipboardExecute(Sender: TObject);
 var

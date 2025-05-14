@@ -1,12 +1,12 @@
 object TFInfo: TTFInfo
   Left = 580
-  Height = 449
+  Height = 1062
   Top = 638
-  Width = 526
+  Width = 634
   BorderStyle = bsSingle
   Caption = 'FlexPacket - Info'
-  ClientHeight = 449
-  ClientWidth = 526
+  ClientHeight = 1062
+  ClientWidth = 634
   DoubleBuffered = True
   Icon.Data = {
     3EF800000000010001007C7C00000100200028F8000016000000280000007C00
@@ -1997,9 +1997,10 @@ object TFInfo: TTFInfo
     0000000000000000000000000000000000000000000000000000000000000000
     0000
   }
-  OnShow = FormShow
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
+  LCLVersion = '4.0.0.4'
+  OnShow = FormShow
   object Image1: TImage
     Left = 64
     Height = 128
@@ -2658,8 +2659,8 @@ object TFInfo: TTFInfo
   object BPDefaultButtons: TButtonPanel
     Left = 6
     Height = 43
-    Top = 400
-    Width = 514
+    Top = 1013
+    Width = 622
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -2679,7 +2680,6 @@ object TFInfo: TTFInfo
     Height = 25
     Top = 208
     Width = 24
-    OnClick = IFlexPacketSourceCodeClick
     Picture.Data = {
       1754506F727461626C654E6574776F726B477261706869631E06000089504E47
       0D0A1A0A0000000D49484452000000320000003208060000001E3F88B1000000
@@ -2733,6 +2733,7 @@ object TFInfo: TTFInfo
       37DCF8FFE21F21F847EF5B03D1D70000000049454E44AE426082
     }
     Proportional = True
+    OnClick = IFlexPacketSourceCodeClick
   end
   object LGithubDonation: TLabel
     Left = 224
@@ -2759,7 +2760,6 @@ object TFInfo: TTFInfo
     Height = 56
     Top = 152
     Width = 152
-    OnClick = IGithubDonationClick
     Picture.Data = {
       1754506F727461626C654E6574776F726B477261706869633C14000089504E47
       0D0A1A0A0000000D49484452000000930000002F0806000000E7EDF81B000000
@@ -2925,5 +2925,6 @@ object TFInfo: TTFInfo
       84389CAC6B44DC9DD785CAC88DB85D23C3278CDE1714BA282F2FE37987C30E4B
       4202FE0FA7AFCAB4D05DC1CE0000000049454E44AE426082
     }
+    OnClick = IGithubDonationClick
   end
 end

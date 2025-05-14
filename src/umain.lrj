@@ -138,5 +138,6 @@
 {"hash":119192949,"name":"tfmain.actpasteimage.caption","sourcebytes":[80,97,115,116,101,32,73,109,97,103,101],"value":"Paste Image"},
 {"hash":126668695,"name":"tfmain.actpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"},
 {"hash":6793305,"name":"tfmain.actai.caption","sourcebytes":[97,99,116,65,73],"value":"actAI"},
-{"hash":3576548,"name":"tfmain.acttoggleollamachat.caption","sourcebytes":[84,111,103,103,108,101,32,79,108,108,97,109,97,32,67,104,97,116],"value":"Toggle Ollama Chat"}
+{"hash":3576548,"name":"tfmain.acttoggleollamachat.caption","sourcebytes":[84,111,103,103,108,101,32,79,108,108,97,109,97,32,67,104,97,116],"value":"Toggle Ollama Chat"},
+{"hash":258323008,"name":"tfmain.actwordwrap.caption","sourcebytes":[84,101,120,116,32,87,114,97,112],"value":"Text Wrap"}
 ]}

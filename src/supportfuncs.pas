@@ -50,6 +50,7 @@ function CompactXML(const S: string): string;
 function FormatJson(const S: string): string;
 function CompactJson(const S: string): string;
 function FormatSQL(const S: string): string;
+function WordWrapText(const S: string): string;
 function BuildFolderList(const Path: string; const List: TStrings): boolean;
 function BuildFileList(const Path: string; const Attr: integer; const List: TStrings; Recurring: boolean): boolean;
 function DecodeExtendedSearch(S: string): string;
@@ -399,7 +400,86 @@ begin
   st.Free;
 end;
 
+function WordWrapText(const S: string): string;
+var  st: TMemoryStream;
+     Lines: TStringList;
+     Line, WordBuf, LineBuf: string;
+     i, MaxWidth, p, len: Integer;
+begin
+  MaxWidth := 80;
+  st := TMemoryStream.Create;
+  Lines := TStringList.Create;
+  try
+    Lines.Text := S;
 
+    for i := 0 to Lines.Count - 1 do
+    begin
+      Line := TrimRight(Lines[i]);
+
+      if Length(Line) <= MaxWidth then
+      begin
+        st.Write(PChar(Line)^, Length(Line));
+        st.Write(PChar(sLineBreak)^, Length(sLineBreak));
+        Continue;
+      end;
+
+      LineBuf := '';
+      WordBuf := '';
+      p := 1;
+      len := Length(Line);
+
+      while p <= len do
+      begin
+        if Line[p] > ' ' then
+          WordBuf := WordBuf + Line[p]
+        else
+        begin
+          if WordBuf <> '' then
+          begin
+            if LineBuf = '' then
+              LineBuf := WordBuf
+            else if Length(LineBuf) + 1 + Length(WordBuf) <= MaxWidth then
+              LineBuf := LineBuf + ' ' + WordBuf
+            else
+            begin
+              st.Write(PChar(LineBuf)^, Length(LineBuf));
+              st.Write(PChar(sLineBreak)^, Length(sLineBreak));
+              LineBuf := WordBuf;
+            end;
+            WordBuf := '';
+          end;
+        end;
+        Inc(p);
+      end;
+
+      // letztes Wort verarbeiten
+      if WordBuf <> '' then
+      begin
+        if LineBuf = '' then
+          LineBuf := WordBuf
+        else if Length(LineBuf) + 1 + Length(WordBuf) <= MaxWidth then
+          LineBuf := LineBuf + ' ' + WordBuf
+        else
+        begin
+          st.Write(PChar(LineBuf)^, Length(LineBuf));
+          st.Write(PChar(sLineBreak)^, Length(sLineBreak));
+          LineBuf := WordBuf;
+        end;
+      end;
+
+      if LineBuf <> '' then
+      begin
+        st.Write(PChar(LineBuf)^, Length(LineBuf));
+        st.Write(PChar(sLineBreak)^, Length(sLineBreak));
+      end;
+    end;
+
+    SetString(Result, PChar(st.Memory), st.Size);
+  finally
+    Lines.Free;
+    st.Free;
+  end;
+end;
 
 function Spaces(Num: integer): string;
 begin

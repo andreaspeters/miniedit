@@ -9,7 +9,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Dialogs, Buttons, ComCtrls, LCLProc, LCLType, LCLIntf,
-  SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber,
+  SynEditTypes, SynEdit, SynGutter, SynGutterMarks, SynGutterLineNumber, LazUtilities,
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls, HTMLView,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
