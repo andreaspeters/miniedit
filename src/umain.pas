@@ -460,7 +460,7 @@ uses lclproc, Stringcostants, SynEditExport;
 
 const
   IDX_IMG_MODIFIED = 3;
-  IDX_IMG_STANDARD = -1;
+  IDX_IMG_STANDARD = 13;
 
 { TfMain }
 
