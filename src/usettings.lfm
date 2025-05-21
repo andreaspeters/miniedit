@@ -1,13 +1,13 @@
 object FSettings: TFSettings
   Left = 432
-  Height = 1062
+  Height = 341
   Top = 37
-  Width = 636
+  Width = 554
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'MiniEdit - Settings'
-  ClientHeight = 1062
-  ClientWidth = 636
+  ClientHeight = 341
+  ClientWidth = 554
   DoubleBuffered = True
   Icon.Data = {
     32FC00000000010001007D7D0000010020001CFC000016000000280000007D00
@@ -2031,7 +2031,6 @@ object FSettings: TFSettings
   }
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
-  LCLVersion = '4.0.0.4'
   OnShow = FormShow
   object LEHexEditor: TLabeledEdit
     Left = 176
@@ -2047,8 +2046,8 @@ object FSettings: TFSettings
   object BPDefault: TButtonPanel
     Left = 6
     Height = 43
-    Top = 1013
-    Width = 624
+    Top = 292
+    Width = 542
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
