@@ -28,7 +28,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="460"/>
+      <BuildNr Value="465"/>
       <Language Value="0809"/>
       <CharSet Value="04B0"/>
       <StringTable Comments="A simple editor" CompanyName="AVENTER" FileDescription="Marco Caselli Editor" InternalName="ovotext" LegalCopyright="Marco Caselli" LegalTrademarks="Marco Caselli" ProductName="ovotext" ProductVersion="0.1"/>
@@ -36,6 +36,9 @@
     <BuildModes Count="4">
       <Item1 Name="Debug" Default="True"/>
       <Item2 Name="Release">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="qt6"/>
+        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -113,6 +116,9 @@
         </CompilerOptions>
       </Item3>
       <Item4 Name="Release64">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="qt6"/>
+        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -149,6 +155,9 @@
           </Other>
         </CompilerOptions>
       </Item4>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="672844463492" Modes="Release,Release64" Type="IDEMacro" MacroName="LCLWidgetType" Value="qt6"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>

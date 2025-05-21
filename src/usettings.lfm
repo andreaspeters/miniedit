@@ -2034,19 +2034,19 @@ object FSettings: TFSettings
   OnShow = FormShow
   object LEHexEditor: TLabeledEdit
     Left = 176
-    Height = 37
+    Height = 32
     Top = 32
     Width = 320
-    EditLabel.Height = 37
-    EditLabel.Width = 83
+    EditLabel.Height = 32
+    EditLabel.Width = 65
     EditLabel.Caption = 'Hex Editor'
     LabelPosition = lpLeft
     TabOrder = 0
   end
   object BPDefault: TButtonPanel
     Left = 6
-    Height = 43
-    Top = 292
+    Height = 37
+    Top = 298
     Width = 542
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2074,11 +2074,11 @@ object FSettings: TFSettings
   end
   object LECompileCommand: TLabeledEdit
     Left = 176
-    Height = 37
+    Height = 32
     Top = 80
     Width = 320
-    EditLabel.Height = 37
-    EditLabel.Width = 154
+    EditLabel.Height = 32
+    EditLabel.Width = 118
     EditLabel.Caption = 'Compile Command'
     LabelPosition = lpLeft
     TabOrder = 2
@@ -2096,33 +2096,33 @@ object FSettings: TFSettings
   end
   object LEOllamaHostname: TLabeledEdit
     Left = 176
-    Height = 37
+    Height = 32
     Top = 128
     Width = 320
-    EditLabel.Height = 37
-    EditLabel.Width = 145
+    EditLabel.Height = 32
+    EditLabel.Width = 111
     EditLabel.Caption = 'Ollama Hostname'
     LabelPosition = lpLeft
     TabOrder = 3
   end
   object LEOllamaPort: TLabeledEdit
     Left = 176
-    Height = 37
+    Height = 32
     Top = 176
     Width = 112
-    EditLabel.Height = 37
-    EditLabel.Width = 96
+    EditLabel.Height = 32
+    EditLabel.Width = 73
     EditLabel.Caption = 'Ollama Port'
     LabelPosition = lpLeft
     TabOrder = 4
   end
   object LEOllamaModel: TLabeledEdit
     Left = 176
-    Height = 37
+    Height = 32
     Top = 224
     Width = 320
-    EditLabel.Height = 37
-    EditLabel.Width = 112
+    EditLabel.Height = 32
+    EditLabel.Width = 86
     EditLabel.Caption = 'Ollama Model'
     LabelPosition = lpLeft
     TabOrder = 5
