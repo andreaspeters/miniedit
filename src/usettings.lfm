@@ -2031,6 +2031,7 @@ object FSettings: TFSettings
   }
   ParentDoubleBuffered = False
   Position = poOwnerFormCenter
+  LCLVersion = '4.1.0.0'
   OnShow = FormShow
   object LEHexEditor: TLabeledEdit
     Left = 176

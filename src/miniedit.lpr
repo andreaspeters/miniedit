@@ -3,14 +3,13 @@ program miniedit;
 
 uses
   {$IFDEF UNIX}
-  cthreads,
+  cthreads, printer4lazarus, SynEditPrintExtProcs,
   {$ENDIF}
   {$IFDEF HASAMIGA}
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, DefaultTranslator, cmdbox, indylaz, FrameViewer09,
-  printer4lazarus, SynEditPrintExtProcs,
   //projects unit
   umain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,

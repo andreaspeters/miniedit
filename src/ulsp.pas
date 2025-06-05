@@ -263,6 +263,7 @@ end;
 
 
 procedure TLSP.RunLSPServer;
+var i: Integer;
 begin
   if Length(ServerExec) <= 0 then
     Exit;
@@ -271,6 +272,12 @@ begin
   try
     LSPServer.Executable := ServerExec;
     LSPServer.Parameters := ServerParameter;
+
+    for i := 0 to GetEnvironmentVariableCount - 1 do
+    begin
+      OutputString := OutputString + GetEnvironmentString(i) + #13#10;
+      LSPServer.Environment.Add(GetEnvironmentString(i));
+    end;
 
     LSPServer.Options := [poUsePipes, poNoConsole];
     LSPServer.Execute;
@@ -282,32 +289,38 @@ begin
 end;
 
 procedure TLSP.SetLanguage(const ALanguage: String);
+var ext: String;
 begin
   Language := '';
+  {$IFDEF Windows}
+    ext := '.exe';
+  {$ELSE}
+    ext := ''; // z. B. Linux, macOS
+  {$ENDIF}
 
   case LowerCase(ALanguage) of
     'go':
     begin
      Language := 'go';
-     ServerExec := 'gopls';
+     ServerExec := 'gopls'+ext;
      ServerCR := #10;
     end;
     'python':
     begin
      Language := 'python';
-     ServerExec := 'pylsp';
+     ServerExec := 'pylsp'+ext;
      ServerCR := #10;
     end;
     'c/c++':
     begin
      Language := 'c';
-     ServerExec := 'ccls';
+     ServerExec := 'ccls'+ext;
      ServerCR := #10;
     end;
     'pascal':
     begin
      Language := 'pascal';
-     ServerExec := 'pasls';
+     ServerExec := 'pasls'+ext;
      ServerCR := #13#10;
     end
   else

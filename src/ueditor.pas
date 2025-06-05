@@ -214,7 +214,7 @@ begin
 
     Highlighter := ConfigObj.getHighLighter(ext);
     FSheet.Caption := ExtractFileName(fFileName);
-    FFilePath := ExtractFilePath(fFileName);
+    FFilePath := ExtractFilePath(fFileName)
 
 {$IFDEF NEEDCLOSEBTN}
      // reserve spaces for emulated close button
