@@ -142,6 +142,8 @@ type
     FShowRowNumber: boolean;
     FShowToolbar: boolean;
     FShowSpecialChars: boolean;
+    FWindowHeight: Integer;
+    FWindowWidth: Integer;
     FLastDirectory: String;
     ResourcesPath: string;
 //    fXMLConfigExtended: TXMLConfigExtended;
@@ -173,6 +175,8 @@ type
     procedure SetShowToolbar(AValue: boolean);
     procedure SetShowSpecialChars(AValue: boolean);
     procedure SetLastDirectory(AValue: String);
+    procedure SetWindowHeight(AValue: Integer);
+    procedure SetWindowWidth(AValue: Integer);
     procedure WriteColor(const Section, Ident: string; const Value: TColor);
     procedure InitializeHighlighter(Highlighter: TSynCustomHighlighter);
     procedure FontAttribToAttribute(Attribute: TSynHighlighterAttributes; Attrib: TFontAttributes);
@@ -218,6 +222,8 @@ type
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
     property ShowToolbar: boolean read FShowToolbar write SetShowToolbar;
     property ShowSpecialChars: boolean read FShowSpecialChars write SetShowSpecialChars;
+    property WindowHeight: integer read FWindowHeight write SetWindowHeight;
+    property WindowWidth: integer read FWindowWidth write SetWindowWidth;
     property LastDirectory: String read FLastDirectory write SetLastDirectory;
     property AppSettings: RAppSettings read FAppSettings write FAppSettings;
     property BackGroundColor: TColor read GetBackGroundColor;
@@ -563,6 +569,15 @@ begin
 
 end;
 
+procedure TConfig.SetWindowHeight(AValue: integer);
+begin
+  FWindowHeight := AValue;
+end;
+
+procedure TConfig.SetWindowWidth(AValue: integer);
+begin
+  FWindowWidth := AValue;
+end;
 
 procedure TConfig.LoadHighlighters;
 var
@@ -712,6 +727,8 @@ begin
   fConfigHolder.Find('Editor/ShowToolbar', true).AsBoolean := FShowToolbar;
   fConfigHolder.Find('Editor/ShowSpecialChars', true).AsBoolean := FShowSpecialChars;
   fConfigHolder.Find('Editor/LastDirectory', true).AsString := FLastDirectory;
+  fConfigHolder.Find('Editor/Height', true).AsInteger := FWindowHeight;
+  fConfigHolder.Find('Editor/Width', true).AsInteger := FWindowWidth;
   fConfigHolder.Find('External/HexEditor', true).AsString := FHexEditor;
   fConfigHolder.Find('External/CompileCommand', true).AsString := FCompileCommand;
   fConfigHolder.Find('Ollama/Hostname', true).AsString := FOllamaHostname;
@@ -743,6 +760,8 @@ begin
     FFont.Size := fConfigHolder.GetValueDef('Editor/Font/Size', 0);
   end;
 
+  FWindowHeight := fConfigHolder.GetValueDef('Editor/Height', 810);
+  FWindowWidth := fConfigHolder.GetValueDef('Editor/Width', 1000);
   FShowRowNumber := fConfigHolder.GetValueDef('Editor/ShowRowNumber', True);
   FShowToolbar := fConfigHolder.GetValueDef('Editor/ShowToolbar', True);
   FShowSpecialChars := fConfigHolder.GetValueDef('Editor/ShowSpecialChars', False);
@@ -753,6 +772,7 @@ begin
   FOllamaPort := fConfigHolder.GetValueDef('Ollama/Port', '11434');
   FOllamaModel := fConfigHolder.GetValueDef('Ollama/Model', 'llama:3.1');
   FOllamaChat := fConfigHolder.GetValueDef('Ollama/Chat', True);
+
 
   FDirty := False;
 end;

@@ -11,6 +11,7 @@
 - ADD: Use single instance application for the same project directory.
 - FIX: miniedit config file overwrite
 - ADD: Wordrap for whole files.
+- ADD: Save current window size.
 
 ## v0.2.0
 

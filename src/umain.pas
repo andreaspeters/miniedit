@@ -13,6 +13,7 @@ uses
   UniqueInstance, Process, uinfo, ucmdboxthread, SynHighlighterPas,
   SynExportHTML, udirectoryname, ushowlspmessage, usettings, HtmlView,
   MarkdownProcessor, MarkdownUtils, fpjson, jsonparser, md5, uai
+  {$IFDEF LCLQT6},Qt6{$ENDIF}
   {$IFDEF LCLGTK2},Gtk2{$ENDIF}
   ;
 
@@ -1549,6 +1550,9 @@ begin
     CanClose := EditorFactory.CloseAll
   else
     CanClose := True;
+
+  ConfigObj.WindowHeight := FMain.Height;
+  ConfigObj.WindowWidth := FMain.Width;
 end;
 
 procedure TfMain.CliParams(aParams: TStringList);
@@ -1592,7 +1596,6 @@ var i: integer;
     mnuBookmark, CurrMenu, mnuLang: TMenuItem;
     CurrLetter, SaveLetter: string;
     ParamList: TstringList;
-
 begin
   MRU := TMRUMenuManager.Create(Self);
   MRU.MenuItem := mnuOpenRecent;
@@ -1608,6 +1611,16 @@ begin
 
   ConfigObj.ReadStrings('Recent', 'Files', MRU.Recent);
   ConfigObj.ReadStrings('Bookmarks', 'Item', Bookmarks);
+
+  if ConfigObj.WindowHeight > 0 then
+    Self.Height := ConfigObj.WindowHeight
+  else
+    ConfigObj.WindowHeight := Self.Height;
+
+  if ConfigObj.WindowWidth > 0 then
+    Self.Width := ConfigObj.WindowWidth
+  else
+    ConfigObj.WindowWidth := Self.Width;
 
   for i :=  0 to Bookmarks.Count - 1do
   begin
@@ -1798,6 +1811,9 @@ begin
     PairSplitter2.Position := PairSplitterSide2.Height - EditorSplitterPos;
 
   PairSplitter3.Position := Width - PairSplitterSide1.Width - 10;
+
+  ConfigObj.WindowHeight := FMain.Height;
+  ConfigObj.WindowWidth := FMain.Width;
 end;
 
 procedure TfMain.FormShow(Sender: TObject);
