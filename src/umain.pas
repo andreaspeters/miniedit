@@ -2427,7 +2427,7 @@ begin
   CurrentPath:=IncludeTrailingPathDelimiter(Path);
   try
     BuildFolderList(CurrentPath, DirList);
-    DirList.Sort;
+    SortWithDotFirst(DirList);
     for i := 0 to DirList.Count -1 do
       begin
         NewNode:=TFileTreeNode(FilesTree.items.AddChild(NodeDir, ExtractFileName(DirList[i])));

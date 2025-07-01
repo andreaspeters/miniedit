@@ -54,6 +54,8 @@ function WordWrapText(const S: string): string;
 function BuildFolderList(const Path: string; const List: TStrings): boolean;
 function BuildFileList(const Path: string; const Attr: integer; const List: TStrings; Recurring: boolean): boolean;
 function DecodeExtendedSearch(S: string): string;
+function DotFirstCompare(List: TStringList; Index1, Index2: Integer): Integer;
+procedure SortWithDotFirst(List: TStringList);
 
 implementation
 
@@ -79,6 +81,31 @@ var
   sqlKeyWord: array[1..SQLKEYWORDMAX] of string = (' INNER JOIN', ' LEFT JOIN', ' RIGHT JOIN', ' WHERE', ' LEFT OUTER JOIN', ' GROUP BY',
                                                    ' ORDER BY', ' HAVING', ' FROM', ' SELECT', ' AND', ' FOR', ' INSERT INTO', ' OR',
                                                    ' UPDATE', ' SET', ' DELETE', ' ALTER ', ' JOIN', ' DROP', ' VALUES');
+
+
+function DotFirstCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  S1, S2: String;
+  IsDot1, IsDot2: Boolean;
+begin
+  S1 := List[Index1];
+  S2 := List[Index2];
+  IsDot1 := (Length(S1) > 0) and (S1[1] = '.');
+  IsDot2 := (Length(S2) > 0) and (S2[1] = '.');
+
+  // Punkt-Dateien zuerst
+  if IsDot1 and not IsDot2 then
+    Result := -1
+  else if not IsDot1 and IsDot2 then
+    Result := 1
+  else
+    Result := CompareText(S1, S2); // Alphabetisch
+end;
+
+procedure SortWithDotFirst(List: TStringList);
+begin
+  List.CustomSort(@DotFirstCompare);
+end;
 
 function DecodeExtendedSearch(S: string): string;
 const
@@ -849,7 +876,7 @@ begin
     end;
 
   {* search all files in the directory *}
-  Result := FindFirstUTF8(Directory + AllFilesMask, faDirectory, SearchRec) = 0;
+  Result := FindFirstUTF8(Directory + AllFilesMask, (faDirectory or faHidden), SearchRec) = 0;
 
   List.BeginUpdate;
   try
@@ -857,9 +884,9 @@ begin
       begin
         if (SearchRec.Name <> '.') and
            (SearchRec.Name <> '..') and
-           ((SearchRec.Attr and faDirectory) = faDirectory)  then
+           ((SearchRec.Attr and faDirectory) = faDirectory) then
           begin
-          List.Add(Directory + SearchRec.Name);
+            List.Add(Directory + SearchRec.Name);
           end;
 
       case FindNextUTF8(SearchRec) of
@@ -870,6 +897,7 @@ begin
           Result := False;
         end;
       end;
+
   finally
     FindCloseUTF8(SearchRec);
     List.EndUpdate;

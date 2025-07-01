@@ -12,6 +12,7 @@
 - FIX: miniedit config file overwrite
 - ADD: Wordrap for whole files.
 - ADD: Save current window size.
+- ADD: show hidden directories.
 
 ## v0.2.0
 
