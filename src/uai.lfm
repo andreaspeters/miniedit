@@ -2031,8 +2031,8 @@ object fAI: TfAI
   OnShow = FormShow
   object bpDefaultButton: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 266
+    Height = 41
+    Top = 262
     Width = 798
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2051,7 +2051,7 @@ object fAI: TfAI
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = bpDefaultButton
     Left = 4
-    Height = 256
+    Height = 252
     Top = 4
     Width = 802
     Anchors = [akTop, akLeft, akRight, akBottom]

@@ -285,6 +285,10 @@ msgstr ""
 msgid "actAI"
 msgstr ""
 
+#: tfmain.actai.hint
+msgid "Open Ollama Window (F2)"
+msgstr ""
+
 #: tfmain.actbookmarkadd.caption
 msgid "Add Bookmark"
 msgstr ""
@@ -310,7 +314,7 @@ msgid "none"
 msgstr ""
 
 #: tfmain.actcompilerun.hint
-msgid "Compile"
+msgid "Compile (F9)"
 msgstr ""
 
 #: tfmain.actcompilestop.caption
@@ -867,6 +871,10 @@ msgstr ""
 #: tfmain.sortdescending.hint
 msgctxt "tfmain.sortdescending.hint"
 msgid "Sort Descending"
+msgstr ""
+
+#: tfmain.toolbutton11.caption
+msgid "ToolButton11"
 msgstr ""
 
 #: tfmain.toolbutton14.hint

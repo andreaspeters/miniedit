@@ -2,6 +2,7 @@
 {"hash":5095492,"name":"tfmain.caption","sourcebytes":[77,105,110,105,69,100,105,116],"value":"MiniEdit"},
 {"hash":202866162,"name":"tfmain.toolbutton14.hint","sourcebytes":[82,101,108,111,97,100,32,70,111,108,100,101,114],"value":"Reload Folder"},
 {"hash":151863744,"name":"tfmain.toolbutton20.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,50,48],"value":"ToolButton20"},
+{"hash":151863761,"name":"tfmain.toolbutton11.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,49,49],"value":"ToolButton11"},
 {"hash":2805797,"name":"tfmain.menuitem1.caption","sourcebytes":[38,70,105,108,101],"value":"&File"},
 {"hash":139726590,"name":"tfmain.mnuopenrecent.caption","sourcebytes":[79,112,101,110,32,82,101,99,101,110,116,32,46,46,46],"value":"Open Recent ..."},
 {"hash":198533332,"name":"tfmain.mnureopenallrecent.caption","sourcebytes":[82,101,111,112,101,110,32,97,108,108,32,114,101,99,101,110,116],"value":"Reopen all recent"},
@@ -121,7 +122,7 @@
 {"hash":224707570,"name":"tfmain.filebrowsefolder.caption","sourcebytes":[66,114,111,119,115,101,32,70,111,108,100,101,114],"value":"Browse Folder"},
 {"hash":189415987,"name":"tfmain.actunquote.caption","sourcebytes":[85,110,113,117,111,116,101,32,108,105,110,101,115],"value":"Unquote lines"},
 {"hash":480837,"name":"tfmain.actcompilerun.caption","sourcebytes":[110,111,110,101],"value":"none"},
-{"hash":174354533,"name":"tfmain.actcompilerun.hint","sourcebytes":[67,111,109,112,105,108,101],"value":"Compile"},
+{"hash":114593465,"name":"tfmain.actcompilerun.hint","sourcebytes":[67,111,109,112,105,108,101,32,40,70,57,41],"value":"Compile (F9)"},
 {"hash":265889698,"name":"tfmain.actopeninhexeditor.caption","sourcebytes":[79,112,101,110,32,105,110,32,72,101,120,32,69,100,105,116,111,114],"value":"Open in Hex Editor"},
 {"hash":80832082,"name":"tfmain.actfoldernew.caption","sourcebytes":[78,101,119,32,70,111,108,100,101,114],"value":"New Folder"},
 {"hash":114087587,"name":"tfmain.actopenproperties.caption","sourcebytes":[80,114,111,112,101,114,116,105,101,115],"value":"Properties"},
@@ -138,6 +139,7 @@
 {"hash":119192949,"name":"tfmain.actpasteimage.caption","sourcebytes":[80,97,115,116,101,32,73,109,97,103,101],"value":"Paste Image"},
 {"hash":126668695,"name":"tfmain.actpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"},
 {"hash":6793305,"name":"tfmain.actai.caption","sourcebytes":[97,99,116,65,73],"value":"actAI"},
+{"hash":14287337,"name":"tfmain.actai.hint","sourcebytes":[79,112,101,110,32,79,108,108,97,109,97,32,87,105,110,100,111,119,32,40,70,50,41],"value":"Open Ollama Window (F2)"},
 {"hash":3576548,"name":"tfmain.acttoggleollamachat.caption","sourcebytes":[84,111,103,103,108,101,32,79,108,108,97,109,97,32,67,104,97,116],"value":"Toggle Ollama Chat"},
 {"hash":258323008,"name":"tfmain.actwordwrap.caption","sourcebytes":[84,101,120,116,32,87,114,97,112],"value":"Text Wrap"}
 ]}

@@ -35,7 +35,6 @@ type
     FURL: String;
     FMessageQueue: TThreadList; // Warteschlange (enthält PString)
     procedure ProcessJSONMessage(const AJSON: String);
-    function ProcessText(const InputText: String): String;
     function BuildJSONMessage(const msg: String): TJSONObject;
   protected
     procedure Execute; override;
@@ -110,50 +109,20 @@ end;
 
 procedure TAIThread.ProcessJSONMessage(const AJSON: string);
 var ResponseJSON: TJSONObject;
+    tmp: String;
 begin
   ResponseJSON := TJSONObject(GetJSON(AJSON));
   if Assigned(ResponseJSON.FindPath('response')) then
   begin
     if Length(ResponseJSON.FindPath('response').AsString) > 0 then
-      Editor.SelText := ProcessText(ResponseJSON.FindPath('response').AsString);
+    begin
+      tmp := ResponseJSON.FindPath('response').ASString;
+      Editor.SelText := tmp;
+    end;
   end;
 
   Terminate;
 end;
-
-function TAIThread.ProcessText(const InputText: string): string;
-var
-  Lines, OutputLines: TStringList;
-  i: Integer;
-  InCodeBlock: Boolean;
-  CurrentLine: string;
-begin
-  Lines := TStringList.Create;
-  OutputLines := TStringList.Create;
-  try
-    Lines.Text := InputText;
-    InCodeBlock := False;
-    for i := 0 to Lines.Count - 1 do
-    begin
-      CurrentLine := Lines[i];
-      // Falls die Zeile mit ``` beginnt, schalten wir den Code-Modus um
-      if Pos('```', CurrentLine) = 1 then
-      begin
-        InCodeBlock := not InCodeBlock;
-        // Die Zeile mit ``` wird nicht in das Ergebnis übernommen
-        Continue;
-      end;
-      // Liegt der Text außerhalb eines Code-Blocks, wird ein Kommentarpräfix gesetzt
-      if InCodeBlock then
-        OutputLines.Add(CurrentLine);
-    end;
-    Result := OutputLines.Text;
-  finally
-    Lines.Free;
-    OutputLines.Free;
-  end;
-end;
-
 
 function TAIThread.BuildJSONMessage(const msg: String): TJSONObject;
 var FJSON: TJSONObject;
@@ -162,6 +131,7 @@ begin
   FJSON.Add('model', ConfigObj.OllamaModel);
   FJSON.Add('stream', False);
   FJSON.Add('prompt', msg);
+  FJSON.Add('Think', True);
 
   Result := FJSON;
 end;

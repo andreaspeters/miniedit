@@ -275,11 +275,13 @@ type
     ToolButton1: TToolButton;
     ToolButton10: TToolButton;
     TBCompileStop: TToolButton;
+    ToolButton11: TToolButton;
     ToolButton12: TToolButton;
     ToolButton13: TToolButton;
     ToolButton14: TToolButton;
     ToolButton15: TToolButton;
     TBCompileRun: TToolButton;
+    ToolButton16: TToolButton;
     ToolButton17: TToolButton;
     ToolButton18: TToolButton;
     ToolButton2: TToolButton;
