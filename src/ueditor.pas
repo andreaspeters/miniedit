@@ -13,7 +13,8 @@ uses
   SynPluginMultiCaret, SynPluginSyncroEdit, SynEditKeyCmds, ExtCtrls, HTMLView,
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
-  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxcustom, ucmdboxthread, ulsp;
+  ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxcustom,
+  SynEditSearch, SynEditMiscClasses, ucmdboxthread, ulsp;
 
 type
 
@@ -55,6 +56,7 @@ type
     FDiskEncoding: String;
     fDiskLineEndingType : TSynLinesFileLineEndType;
     fOldDiskLineEndingType : TSynLinesFileLineEndType;
+    LineX, LineY: Integer;
     procedure CreateDefaultGutterParts;
     procedure GetDialogPosition(AWidth, AHeight: integer; out _Left, _Top: integer);
     function GetDiskEncoding: string;
@@ -69,6 +71,7 @@ type
     procedure SetOnSearcReplace(AValue: TOnSearchReplaceEvent);
     procedure SetText(NewText: string);
     procedure SetUntitled(AValue: boolean);
+    procedure SpecialLineColors(Sender: TObject; Line: Integer; var Special: Boolean; var FG, BG: TColor);
   protected
     procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
   public
@@ -842,6 +845,16 @@ begin
 end;
 
 
+procedure TEditor.SpecialLineColors(Sender: TObject; Line: Integer; var Special: Boolean; var FG, BG: TColor);
+begin
+  if Line = LineY then    // z.B. die 4. Zeile farbig machen
+  begin
+    Special := True;
+    BG := clYellow;
+    FG := clBlack;
+  end;
+end;
+
 
 function TEditorFactory.AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''; X: Integer = 0; Y: Integer = 0): TEditor;
 var
@@ -862,6 +875,14 @@ begin
       if Sheet.Editor.FileName = FileName then
       begin
         ActivePageIndex := i;
+        Sheet.Editor.SetFocus;
+        if (X > 0) and (Y > 0) then
+        begin
+          // set caret to position and change the background color for that line
+          Sheet.Editor.CaretXY := Point(X, Y);
+          Sheet.Editor.LineX := X;
+          Sheet.Editor.LineY := Y;
+        end;
         exit;
       end;
     end;
@@ -893,6 +914,9 @@ begin
         Sheet.Editor.LoadFromfile(FileName);
         Sheet.Editor.Options := [eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoTrimTrailingSpaces];
         Sheet.Editor.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
+        Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
+        Sheet.Editor.OnMouseDown := @EditorOnMouseDown;
+        Sheet.Editor.OnSpecialLineColors := @Sheet.Editor.SpecialLineColors;
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
         if Assigned(FileType) then
         begin
@@ -915,11 +939,13 @@ begin
           if not Assigned(Sheet.FMessageBox) then
             Sheet.FMessageBox := TPageControl.Create(Self);
 
-          Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
-          Sheet.Editor.OnMouseDown := @EditorOnMouseDown;
-
           if (X > 0) and (Y > 0) then
-             Sheet.Editor.CaretXY := Point(X, Y);
+          begin
+            // set caret to position and change the background color for that line
+            Sheet.Editor.CaretXY := Point(X, Y);
+            Sheet.Editor.LineX := X;
+            Sheet.Editor.LineY := Y;
+          end;
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
         FWatcher.AddFile(FileName, Sheet.Editor);
@@ -955,6 +981,7 @@ begin
   Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
   Result.OnMouseDown := @EditorOnMouseDown;
+  Result.OnSpecialLineColors := @Result.SpecialLineColors;
 
   // create tabsheet for run, debug, lsp and so on messages
   Box := TPageControl.Create(fMain.PSSMessageBox);
@@ -1020,7 +1047,11 @@ begin
       Result.Sheet.LSP.OpenFile(FileName);
 
       if (X > 0) and (Y > 0) then
-         Result.Sheet.Editor.CaretXY := Point(X, Y);
+      begin
+         Result.CaretXY := Point(X, Y);
+         Result.LineX := X;
+         Result.LineY := Y;
+      end;
     end;
     FWatcher.AddFile(FileName, Result);
   end;

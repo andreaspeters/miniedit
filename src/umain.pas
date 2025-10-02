@@ -1869,7 +1869,6 @@ end;
 procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
-    Ed: TEditor;
 begin
   if not EditorAvalaible then
     Exit;
@@ -1954,8 +1953,9 @@ begin
         Line := EditorFactory.CurrentLSP.URI;
         EditorFactory.CurrentLSP.URI := '';
 
-        if (EditorFactory.CurrentLSP.CharacterNumber > 0) and (EditorFactory.CurrentLSP.LineNumber > 0) then
-          EditorFactory.AddEditor(Line, BrowsingPath, EditorFactory.CurrentLSP.CharacterNumber, EditorFactory.CurrentLSP.LineNumber)
+        // open file and jump to position
+        if EditorFactory.CurrentLSP.LineNumber > 0 then
+          EditorFactory.AddEditor(Line, BrowsingPath, 1, EditorFactory.CurrentLSP.LineNumber+1)
         else
           EditorFactory.AddEditor(Line)
       end;
@@ -2171,6 +2171,7 @@ end;
 procedure TfMain.EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
 var
   Editor: TEditor;
+  LineCount, ColCount: Integer;
 begin
   if not EditorAvalaible then
     exit;
@@ -2188,7 +2189,11 @@ begin
     StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
 
   if Editor.SelAvail then
-    StatusBar.Panels[3].Text := Format(RSStatusBarSel, [Editor.SelEnd - Editor.SelStart])
+  begin
+    LineCount := Abs(Editor.BlockEnd.Y - Editor.BlockBegin.Y) + 1;
+    ColCount  := Abs(Editor.BlockEnd.X - Editor.BlockBegin.X);
+    StatusBar.Panels[3].Text := Format('Block: %d Zeilen, %d Spalten', [LineCount, ColCount]);
+  end
   else
     StatusBar.Panels[3].Text := '';
 

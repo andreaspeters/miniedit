@@ -148,14 +148,16 @@ begin
                 end;
               Suspend;
             end;
-            if Assigned(ResponseJSON.FindPath('result').Items[0].FindPath('uri')) then
-            begin
-              tmpURI := ResponseJSON.FindPath('result').Items[0].FindPath('uri').AsString;
-              LineNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.line').AsInteger;
-              CharacterNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.character').AsInteger;
-              URIToFilename(tmpURI, URI);
-              Suspend;
-            end;
+            if Assigned(ResponseJSON.FindPath('result')) then
+              if Assigned(ResponseJSON.FindPath('result').Items[0]) then
+                if Assigned(ResponseJSON.FindPath('result').Items[0].FindPath('uri')) then
+                begin
+                  tmpURI := ResponseJSON.FindPath('result').Items[0].FindPath('uri').AsString;
+                  LineNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.line').AsInteger;
+                  CharacterNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.character').AsInteger;
+                  URIToFilename(tmpURI, URI);
+                  Suspend;
+                end;
           end;
         except
           on E: Exception do

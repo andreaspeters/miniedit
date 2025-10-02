@@ -14,6 +14,7 @@
 - ADD: Save current window size.
 - ADD: show hidden directories.
 - ADD: [lsp] Jump to the definition. `CTRL+LeftMouseButton`
+- ADD: [lsp] highlight the selected definition.
 
 ## v0.2.0
 

@@ -7,8 +7,8 @@ object fMain: TfMain
   Anchors = []
   Caption = 'MiniEdit'
   ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ClientHeight = 806
-  ClientWidth = 1098
+  ClientHeight = 206
+  ClientWidth = 320
   DefaultMonitor = dmDesktop
   DoubleBuffered = True
   Icon.Data = {
@@ -2036,6 +2036,7 @@ object fMain: TfMain
   ParentDoubleBuffered = False
   ParentFont = True
   Position = poDesktopCenter
+  LCLVersion = '4.1.0.0'
   Visible = True
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
@@ -2119,7 +2120,7 @@ object fMain: TfMain
     end
     object ToolButton5: TToolButton
       Left = 399
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
@@ -2150,7 +2151,7 @@ object fMain: TfMain
     end
     object ToolButton12: TToolButton
       Left = 282
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
@@ -2173,13 +2174,13 @@ object fMain: TfMain
     end
     object tbbSepClose: TToolButton
       Left = 199
-      Height = 26
+      Height = 5
       Top = 0
       Style = tbsDivider
     end
     object ToolButton4: TToolButton
       Left = 339
-      Height = 26
+      Height = 8
       Top = 0
       Style = tbsSeparator
     end
@@ -2202,14 +2203,14 @@ object fMain: TfMain
     end
     object ToolButton18: TToolButton
       Left = 79
-      Height = 26
+      Height = 8
       Top = 0
       AutoSize = True
       Style = tbsSeparator
     end
     object ToolButton20: TToolButton
       Left = 139
-      Height = 26
+      Height = 8
       Top = 0
       Caption = 'ToolButton20'
       Style = tbsSeparator
@@ -2222,7 +2223,7 @@ object fMain: TfMain
     end
     object ToolButton11: TToolButton
       Left = 456
-      Height = 26
+      Height = 8
       Top = 0
       Caption = 'ToolButton11'
       Style = tbsSeparator
@@ -2307,6 +2308,7 @@ object fMain: TfMain
       ClientWidth = 793
       ClientHeight = 743
       object PairSplitter3: TPairSplitter
+        Cursor = crDefault
         Left = 0
         Height = 743
         Top = 0
