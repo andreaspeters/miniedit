@@ -1869,6 +1869,7 @@ end;
 procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
     Line: String;
+    Ed: TEditor;
 begin
   if not EditorAvalaible then
     Exit;
@@ -1946,6 +1947,17 @@ begin
 
         FLSPMessage.ShowMessage(EditorFactory.CurrentLSP.Message);
         EditorFactory.CurrentLSP.Message := '';
+      end;
+      if Length(EditorFactory.CurrentLSP.URI) > 0 then
+      begin
+        EditorFactory.CurrentLSP.Suspend;
+        Line := EditorFactory.CurrentLSP.URI;
+        EditorFactory.CurrentLSP.URI := '';
+
+        if (EditorFactory.CurrentLSP.CharacterNumber > 0) and (EditorFactory.CurrentLSP.LineNumber > 0) then
+          EditorFactory.AddEditor(Line, BrowsingPath, EditorFactory.CurrentLSP.CharacterNumber, EditorFactory.CurrentLSP.LineNumber)
+        else
+          EditorFactory.AddEditor(Line)
       end;
 
       if EditorFactory.CurrentLSP.MessageList.Count > 1 then

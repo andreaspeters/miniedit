@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ButtonPanel,
-  Buttons, Config;
+  Buttons, StdCtrls, Config;
 
 type
 
@@ -14,6 +14,7 @@ type
 
   TFSettings = class(TForm)
     BPDefault: TButtonPanel;
+    cbLSP: TCheckBox;
     LEOllamaHostname: TLabeledEdit;
     LEHexEditor: TLabeledEdit;
     LECompileCommand: TLabeledEdit;
@@ -60,6 +61,7 @@ begin
   LEOllamaHostname.Caption := ConfigObj.OllamaHostname;
   LEOllamaPort.Caption := ConfigObj.OllamaPort;
   LEOllamaModel.Caption := ConfigObj.OllamaModel;
+  cbLSP.Checked := ConfigObj.EnableLSP;
 end;
 
 procedure TFSettings.OKButtonClick(Sender: TObject);
@@ -69,6 +71,7 @@ begin
   ConfigObj.OllamaHostname := LEOllamaHostname.Caption;
   ConfigObj.OllamaPort := LEOllamaPort.Caption;
   ConfigObj.OllamaModel := LEOllamaModel.Caption;
+  ConfigObj.EnableLSP := cbLSP.Checked;
   Close;
 end;
 

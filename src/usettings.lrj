@@ -4,5 +4,6 @@
 {"hash":238312292,"name":"tfsettings.lecompilecommand.editlabel.caption","sourcebytes":[67,111,109,112,105,108,101,32,67,111,109,109,97,110,100],"value":"Compile Command"},
 {"hash":69871317,"name":"tfsettings.leollamahostname.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,72,111,115,116,110,97,109,101],"value":"Ollama Hostname"},
 {"hash":56845332,"name":"tfsettings.leollamaport.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,80,111,114,116],"value":"Ollama Port"},
-{"hash":103903884,"name":"tfsettings.leollamamodel.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,77,111,100,101,108],"value":"Ollama Model"}
+{"hash":103903884,"name":"tfsettings.leollamamodel.editlabel.caption","sourcebytes":[79,108,108,97,109,97,32,77,111,100,101,108],"value":"Ollama Model"},
+{"hash":153327088,"name":"tfsettings.cblsp.caption","sourcebytes":[69,110,97,98,108,101,32,76,83,80],"value":"Enable LSP"}
 ]}

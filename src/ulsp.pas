@@ -5,7 +5,7 @@ unit uLSP;
 interface
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, RegExpr, Process,
+  Classes, SysUtils, fpjson, jsonparser, RegExpr, Process, URIParser,
   syncobjs;
 type
   TLSP = class(TThread)
@@ -32,6 +32,8 @@ type
     ServerInitOptions: TJSONArray;
     ServerCR: String;
     Message: String;
+    URI: String;
+    LineNumber, CharacterNumber: Integer;
     MessageList: TStringList;
     OutputString: String;
     procedure Initialize(const AFilePath: String; const AWorkspacePath: String);
@@ -42,6 +44,7 @@ type
     procedure Change(const Text: String);
     procedure Hover(const Line, Character: Integer);
     procedure Completion(const Line, Character, Trigger: Integer);
+    procedure GoToDefinition(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
     procedure Suspend;
     procedure Resume;
@@ -83,7 +86,7 @@ begin
 end;
 
 procedure TLSP.Execute;
-var Response, Key, Value: String;
+var Response, Key, Value, tmpURI: String;
     ResponseJSON: TJSONObject;
     i: Integer;
 begin
@@ -143,6 +146,14 @@ begin
                     Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
                   MessageList.Add(Key + '=' + Value);
                 end;
+              Suspend;
+            end;
+            if Assigned(ResponseJSON.FindPath('result').Items[0].FindPath('uri')) then
+            begin
+              tmpURI := ResponseJSON.FindPath('result').Items[0].FindPath('uri').AsString;
+              LineNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.line').AsInteger;
+              CharacterNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.character').AsInteger;
+              URIToFilename(tmpURI, URI);
               Suspend;
             end;
           end;
@@ -513,6 +524,27 @@ begin
   Params.Add('context', Context);
 
   Send(Params, 'textDocument/completion');
+end;
+
+procedure TLSP.GoToDefinition(const Line, Character: Integer);
+var
+  Params, TextDoc, Position: TJSONObject;
+begin
+  if Length(FileName) <= 0 then
+    Exit;
+
+  Params := TJSONObject.Create;
+  TextDoc := TJSONObject.Create;
+  Position := TJSONObject.Create;
+
+  TextDoc.Add('uri', 'file://' + FileName);
+  Position.Add('line', Line - 1);
+  Position.Add('character', Character - 1);
+
+  Params.Add('textDocument', TextDoc);
+  Params.Add('position', Position);
+
+  Send(Params, 'textDocument/definition');
 end;
 
 function TLSP.Send(Params: TJSONObject; const method: String): TJSONData;

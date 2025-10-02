@@ -155,6 +155,7 @@ type
     FOllamaPort: String;
     FOllamaModel: String;
     FOllamaChat: boolean;
+    FEnableLSP: boolean;
     FCompileCommand: String;
     fThemesList: TStringDictionary;
     fAttributeAliases : TStringDictionary;
@@ -168,6 +169,7 @@ type
     procedure SetOllamaPort(AValue: String);
     procedure SetOllamaModel(AValue: String);
     procedure SetShowOllamaChat(AValue: boolean);
+    procedure SetEnableLSP(AValue: boolean);
     procedure SetCompileCommand(AValue: String);
     procedure SetDirty(AValue: boolean);
     procedure SetFont(AValue: TFont);
@@ -217,6 +219,7 @@ type
     property OllamaPort: string read FOllamaPort write SetOllamaPort;
     property OllamaModel: string read FOllamaModel write SetOllamaModel;
     property ShowOllamaChat: boolean read FOllamaChat write SetShowOllamaChat;
+    property EnableLSP: boolean read FEnableLSP write SetEnableLSP;
     property CompileCommand: string read FCompileCommand write SetCompileCommand;
     property Font: TFont read FFont write SetFont;
     property ShowRowNumber: boolean read FShowRowNumber write SetShowRowNumber;
@@ -735,6 +738,7 @@ begin
   fConfigHolder.Find('Ollama/Port', true).AsString := FOllamaPort;
   fConfigHolder.Find('Ollama/Model', true).AsString := FOllamaModel;
   fConfigHolder.Find('Ollama/Chat', true).AsBoolean := FOllamaChat;
+  fConfigHolder.Find('LSP/Enabled', true).AsBoolean := FEnableLSP;
 
   FDirty := false;
 end;
@@ -772,6 +776,7 @@ begin
   FOllamaPort := fConfigHolder.GetValueDef('Ollama/Port', '11434');
   FOllamaModel := fConfigHolder.GetValueDef('Ollama/Model', 'llama:3.1');
   FOllamaChat := fConfigHolder.GetValueDef('Ollama/Chat', True);
+  FEnableLSP := fConfigHolder.GetValueDef('LSP/Enabled', True);
 
 
   FDirty := False;
@@ -850,6 +855,14 @@ begin
   FOllamaChat:=AValue;
   FDirty := True;
 end;
+
+procedure TConfig.SetEnableLSP(AValue: boolean);
+begin
+  if FEnableLSP = AValue then Exit;
+  FEnableLSP := AValue;
+  FDirty := True;
+end;
+
 
 procedure TConfig.SetCompileCommand(AValue: String);
 begin

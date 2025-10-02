@@ -13,6 +13,7 @@
 - ADD: Wordrap for whole files.
 - ADD: Save current window size.
 - ADD: show hidden directories.
+- ADD: [lsp] Jump to the definition. `CTRL+LeftMouseButton`
 
 ## v0.2.0
 

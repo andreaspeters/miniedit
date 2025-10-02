@@ -32,11 +32,12 @@ does support only LSP for:
 Be sure that there binaries are installed in one of your PATH directories
 therefore MiniEdit can find it.
 
-- ALT+. (PERIOD) will open the LSP window for code completion. But only if the
+- ALT+. (PERIOD) - will open the LSP window for code completion. But only if the
 LSP Server could find any information.
 - ALT+- (MINUS) - on a package name (as example `import "fmt"`) will open the
 LSP window with a description to these package. But again, only if the LSP
 Server could find any information about that.
+- CTRL+LeftMouseButton - will jump to the definition
 
 ## Features in planing
 

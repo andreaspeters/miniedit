@@ -890,6 +890,10 @@ msgstr ""
 msgid "MiniEdit - Settings"
 msgstr ""
 
+#: tfsettings.cblsp.caption
+msgid "Enable LSP"
+msgstr ""
+
 #: tfsettings.lecompilecommand.editlabel.caption
 msgid "Compile Command"
 msgstr ""

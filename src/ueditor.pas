@@ -140,6 +140,7 @@ type
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure SetCurrentCmdBoxThread(AThread: TCmdBoxThread);
   protected
     procedure DoChange; override;
@@ -159,7 +160,7 @@ type
     //--//
     procedure DoCloseTabClicked(APage: TCustomPage); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    function AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''): TEditor;
+    function AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''; X: Integer = 0; Y: Integer = 0): TEditor;
     function CloseEditor(Editor: TEditor; Force: boolean = False): boolean;
     function CloseAll(KeepCurrent:boolean=false): boolean;
     function CloseAfter: boolean;
@@ -842,7 +843,7 @@ end;
 
 
 
-function TEditorFactory.AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''): TEditor;
+function TEditorFactory.AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''; X: Integer = 0; Y: Integer = 0): TEditor;
 var
   Sheet: TEditorTabSheet;
   Box: TPageControl;
@@ -898,7 +899,10 @@ begin
           // create lsp thread
           if not Assigned(Sheet.FLSP) then
             Sheet.FLSP := TLSP.Create;
-          Sheet.LSP.Start;
+
+          if configObj.EnableLSP then
+            Sheet.LSP.Start;
+
           Sheet.LSP.SetLanguage(FileType.LanguageName);
 
           if Length(ExtractFilePath(FileName)) <= 0 then
@@ -912,6 +916,10 @@ begin
             Sheet.FMessageBox := TPageControl.Create(Self);
 
           Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
+          Sheet.Editor.OnMouseDown := @EditorOnMouseDown;
+
+          if (X > 0) and (Y > 0) then
+             Sheet.Editor.CaretXY := Point(X, Y);
         end;
         ChangeOptions(eoShowSpecialChars, ConfigObj.ShowSpecialChars);
         FWatcher.AddFile(FileName, Sheet.Editor);
@@ -946,6 +954,7 @@ begin
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
+  Result.OnMouseDown := @EditorOnMouseDown;
 
   // create tabsheet for run, debug, lsp and so on messages
   Box := TPageControl.Create(fMain.PSSMessageBox);
@@ -1009,6 +1018,9 @@ begin
       else
         Result.Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
       Result.Sheet.LSP.OpenFile(FileName);
+
+      if (X > 0) and (Y > 0) then
+         Result.Sheet.Editor.CaretXY := Point(X, Y);
     end;
     FWatcher.AddFile(FileName, Result);
   end;
@@ -1060,6 +1072,23 @@ begin
     Ed.Sheet.LSP.Resume;
     Ed.Sheet.LSP.Change(Ed.Text);
     Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)
+  end;
+end;
+
+procedure TEditorFactory.EditorOnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var Ed: TEditor;
+begin
+  Ed := GetCurrentEditor;
+  if not Assigned(Ed) then
+    Exit;
+
+  if (Button = mbLeft) and (ssCtrl in Shift) then
+  begin
+    // hier LSP-Definition anfragen
+    Ed.Sheet.LSP.Resume;
+    Ed.Sheet.LSP.Change(Ed.Text);
+    Ed.Sheet.LSP.GoToDefinition(Ed.CaretY, Ed.CaretX);
   end;
 end;
 
