@@ -22,6 +22,7 @@ type
     StopIt: Boolean;
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
+    function SendNotification(Params: TJSONObject; const method: String): TJSONData;
     function ReceiveData:String;
     function ExtractJSON(const s: string): string;
   protected
@@ -89,6 +90,8 @@ procedure TLSP.Execute;
 var Response, Key, Value, tmpURI: String;
     ResponseJSON: TJSONObject;
     i: Integer;
+    Items, Item: TJSONArray;
+    Obj: TJSONObject;
 begin
   try
     while (not StopIt) do
@@ -136,28 +139,43 @@ begin
             end;
             if Assigned(ResponseJSON.FindPath('result.items')) then
             begin
-              if ResponseJSON.FindPath('result.items').Count > 0 then
-                for i := 0 to ResponseJSON.FindPath('result.items').Count - 1 do
-                begin
-                  if Assigned(ResponseJSON.FindPath('result.items').Items[i].FindPath('label')) then
-                    Key := ResponseJSON.FindPath('result.items').Items[i].FindPath('label').AsString;
+              Items := ResponseJSON.FindPath('result.items') as TJSONArray;
+              for i := 0 to Items.Count - 1 do
+              begin
+                Obj := Items.Objects[i];
+                Key := '';
+                Value := '';
 
-                  if Assigned(ResponseJSON.FindPath('result.items').Items[i].FindPath('detail')) then
-                    Value := ResponseJSON.FindPath('result.items').Items[i].FindPath('detail').AsString;
-                  MessageList.Add(Key + '=' + Value);
-                end;
+                if Obj.Find('label') <> nil then
+                  Key := Obj.Strings['label'];
+
+                if Obj.Find('detail') <> nil then
+                  Value := Obj.Strings['detail'];
+
+                MessageList.Add(Key + '=' + Value);
+              end;
               Suspend;
             end;
             if Assigned(ResponseJSON.FindPath('result')) then
-              if Assigned(ResponseJSON.FindPath('result').Items[0]) then
-                if Assigned(ResponseJSON.FindPath('result').Items[0].FindPath('uri')) then
-                begin
-                  tmpURI := ResponseJSON.FindPath('result').Items[0].FindPath('uri').AsString;
-                  LineNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.line').AsInteger;
-                  CharacterNumber := ResponseJSON.FindPath('result').Items[0].FindPath('range.start.character').AsInteger;
-                  URIToFilename(tmpURI, URI);
-                  Suspend;
-                end;
+            begin
+              Items := ResponseJSON.FindPath('result') as TJSONArray;
+              Obj := Items.Objects[0];
+              if not Assigned(Obj) then
+                Exit;
+
+              if Obj.FindPath('uri') <> nil then
+              begin
+                tmpURI := Obj.FindPath('uri').AsString;
+                LineNumber := Obj.FindPath('range.start.line').AsInteger;
+                CharacterNumber := Obj.FindPath('range.start.character').AsInteger;
+                URIToFilename(tmpURI, URI);
+                Suspend;
+              end;
+            end;
+            if Assigned(ResponseJSON.FindPath('error')) then
+              if Assigned(ResponseJSON.FindPath('error.code')) then
+                if ResponseJSON.FindPath('error.code').AsInteger = -32600 then
+                  OpenFile(FileName);
           end;
         except
           on E: Exception do
@@ -428,7 +446,7 @@ begin
   Params.Add('textDocument', TextDoc);
   Params.Add('contentChanges', Changes);
 
-  Send(Params, 'textDocument/didChange');
+  SendNotification(Params, 'textDocument/didChange');
 end;
 
 procedure TLSP.AddView(const AFileName: String);
@@ -455,7 +473,7 @@ begin
   Event.Add('added', Added);
   Params.Add('event', Event);
 
-  Send(Params, 'workspace/didChangeWorkspaceFolders');
+  SendNotification(Params, 'workspace/didChangeWorkspaceFolders');
 end;
 
 procedure TLSP.OpenFile(const AFileName: String);
@@ -484,7 +502,7 @@ begin
   TextDoc.Add('version', 1);
   Params.Add('textDocument', TextDoc);
 
-  Send(Params, 'textDocument/didOpen');
+  SendNotification(Params, 'textDocument/didOpen');
 end;
 
 procedure TLSP.Hover(const Line, Character: Integer);
@@ -554,6 +572,8 @@ var RequestText, SendString: string;
     RequestJSON: TJSONObject;
     Data: TBytes;
 begin
+  Result := nil;
+
   if not Assigned(LSPServer) then
     Exit;
 
@@ -583,8 +603,47 @@ begin
     on E: Exception do
       OutputString := 'Send Data Error: ' + E.Message;
   end;
+
   RequestJSON.Free;
+end;
+
+function TLSP.SendNotification(Params: TJSONObject; const method: String): TJSONData;
+var
+  RequestText, SendString: string;
+  RequestJSON: TJSONObject;
+  Data: TBytes;
+begin
   Result := nil;
+
+  if not Assigned(LSPServer) then
+    Exit;
+
+  if not LSPServer.Running then
+    Exit;
+
+  RequestJSON := TJSONObject.Create;
+  try
+    RequestJSON.Add('jsonrpc', '2.0');
+    RequestJSON.Add('method', method);
+    if Assigned(Params) then
+      RequestJSON.Add('params', Params);
+
+    RequestText := RequestJSON.AsJSON;
+    SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+Length(ServerCR)) +
+                  ServerCR + ServerCR + RequestText + ServerCR;
+
+    Data := TEncoding.UTF8.GetBytes(SendString);
+
+    InputStream.Clear;
+    InputStream.Write(PChar(SendString)^, Length(SendString));
+    InputStream.SaveToStream(LSPServer.Input);
+
+  except
+    on E: Exception do
+      OutputString := 'Send Notification Error: ' + E.Message;
+  end;
+
+  RequestJSON.Free;
 end;
 
 end.

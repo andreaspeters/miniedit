@@ -1120,6 +1120,15 @@ begin
     Ed.Sheet.LSP.Resume;
     Ed.Sheet.LSP.Change(Ed.Text);
     Ed.Sheet.LSP.GoToDefinition(Ed.CaretY, Ed.CaretX);
+    Exit;
+  end;
+
+  if (Button = mbLeft) and (ssAlt in Shift) then
+  begin
+    Ed.Sheet.LSP.Resume;
+    Ed.Sheet.LSP.Change(Ed.Text);
+    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1);
+    Exit;
   end;
 end;
 
