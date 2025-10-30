@@ -382,6 +382,7 @@ type
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -1546,6 +1547,14 @@ begin
     EditorFactory.CurrentEditor.SetFocus;
 end;
 
+procedure TfMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Timer1.Enabled := False;
+
+  FreeAndNil(EditorFactory);
+  ReplaceDialog.Free;
+end;
+
 procedure TfMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   if Assigned(EditorFactory) and (EditorFactory.PageCount > 0) then
@@ -1741,10 +1750,7 @@ end;
 
 procedure TfMain.FormDestroy(Sender: TObject);
 begin
-  Timer1.Enabled := False;
 
-  FreeAndNil(EditorFactory);
-  ReplaceDialog.Free;
 end;
 
 procedure TfMain.FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -2176,51 +2182,59 @@ begin
   if not EditorAvalaible then
     exit;
 
-  Editor := EditorFactory.CurrentEditor;
+  try
+    Editor := EditorFactory.CurrentEditor;
 
-  if Assigned(Editor.Highlighter) then
-    StatusBar.panels[0].Text := Editor.Highlighter.LanguageName
-  else
-    StatusBar.panels[0].Text := RSNormalText;
-
-  StatusBar.panels[1].Text := GetCurrentGitBranchFromHead;
-
-  if (scCaretX in Changes) or (scCaretY in Changes) then
-    StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
-
-  if Editor.SelAvail then
-  begin
-    LineCount := Abs(Editor.BlockEnd.Y - Editor.BlockBegin.Y) + 1;
-    ColCount  := Abs(Editor.BlockEnd.X - Editor.BlockBegin.X);
-    StatusBar.Panels[3].Text := Format('Block: %d Zeilen, %d Spalten', [LineCount, ColCount]);
-  end
-  else
-    StatusBar.Panels[3].Text := '';
-
-  StatusBar.Panels[4].Text := BrowsingPath;
-
-  if (scModified in Changes) then
-    if Editor.Modified then
-      Editor.Sheet.ImageIndex := IDX_IMG_MODIFIED
+    if Assigned(Editor.Highlighter) then
+      StatusBar.panels[0].Text := Editor.Highlighter.LanguageName
     else
-      Editor.Sheet.ImageIndex := IDX_IMG_STANDARD;
+      StatusBar.panels[0].Text := RSNormalText;
 
-  case Editor.LineEndingType of
-    sfleCrLf: StatusBar.Panels[5].Text := mnuCRLF.Caption;
-    sfleLf:   StatusBar.Panels[5].Text := mnuLF.Caption;
-      sfleCr:   StatusBar.Panels[5].Text := mnuCR.Caption;
+    StatusBar.panels[1].Text := GetCurrentGitBranchFromHead;
+
+    if (scCaretX in Changes) or (scCaretY in Changes) then
+      StatusBar.Panels[2].Text := Format(RSStatusBarPos, [Editor.CaretY, Editor.CaretX]);
+
+    if Editor.SelAvail then
+    begin
+      LineCount := Abs(Editor.BlockEnd.Y - Editor.BlockBegin.Y) + 1;
+      ColCount  := Abs(Editor.BlockEnd.X - Editor.BlockBegin.X);
+      StatusBar.Panels[3].Text := Format('Block: %d Zeilen, %d Spalten', [LineCount, ColCount]);
+    end
     else
-      StatusBar.Panels[5].Text:= '';
+      StatusBar.Panels[3].Text := '';
+
+    StatusBar.Panels[4].Text := BrowsingPath;
+
+    if (scModified in Changes) then
+      if Editor.Modified then
+        Editor.Sheet.ImageIndex := IDX_IMG_MODIFIED
+      else
+        Editor.Sheet.ImageIndex := IDX_IMG_STANDARD;
+
+    case Editor.LineEndingType of
+      sfleCrLf: StatusBar.Panels[5].Text := mnuCRLF.Caption;
+      sfleLf:   StatusBar.Panels[5].Text := mnuLF.Caption;
+        sfleCr:   StatusBar.Panels[5].Text := mnuCR.Caption;
+      else
+        StatusBar.Panels[5].Text:= '';
+      end;
+
+    StatusBar.Panels[6].Text := Editor.DiskEncoding;
+
+    if (scInsertMode in Changes) then
+      if Editor.InsertMode then
+        StatusBar.Panels[7].Text := RSStatusBarInsMode
+      else
+        StatusBar.Panels[7].Text := RSStatusBarOvrMode;
+  except
+    on E: Exception do
+    begin
+      {$IFDEF UNIX}
+      writeln('Error Editor Status Change: ', E.Message);
+      {$ENDIF}
     end;
-
- StatusBar.Panels[6].Text := Editor.DiskEncoding;
-
- if (scInsertMode in Changes) then
-    if Editor.InsertMode then
-      StatusBar.Panels[7].Text := RSStatusBarInsMode
-    else
-      StatusBar.Panels[7].Text := RSStatusBarOvrMode;
-
+  end;
 end;
 
 procedure TfMain.RecentFileEvent(Sender: TObject; const AFileName: string; const AData: TObject);
