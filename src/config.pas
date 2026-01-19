@@ -31,7 +31,7 @@ uses
   MySEHighlighterZ80, MySEHighlighterATMega, MySEHighlighterProtoBuf,
   // from minieditor
   MEHighlighterYAML, MEHighlighterHCL, MEHighlighterNix, MEHighlighterCPP,
-  MEHighlighterPascal
+  MEHighlighterPascal, MEHighlighterJavaScript
   ;
 
 type
@@ -72,7 +72,7 @@ const
     (HLClass: TSynIniSyn; Filter: SYNS_FilterINI; HL: nil),
     (HLClass: TSynInnoSyn; Filter: SYNS_FilterInno; HL: nil),
     (HLClass: TSynJavaSyn; Filter: SYNS_FilterJava; HL: nil),
-    (HLClass: TSynJScriptSyn; Filter: SYNS_FilterJScript; HL: nil),
+    (HLClass: TMEHighlighterJavaScript; Filter: SYNS_FilterJavaScript; HL: nil),
     (HLClass: TSynJSONSyn; Filter: SYNS_FilterJSON; HL: nil),
     (HLClass: TSynLFMSyn; Filter: SYNS_FilterLFM; HL: nil),
     (HLClass: TSynLDRSyn; Filter: SYNS_FilterLDraw; HL: nil),
