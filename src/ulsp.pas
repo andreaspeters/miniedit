@@ -158,18 +158,30 @@ begin
             end;
             if Assigned(ResponseJSON.FindPath('result')) then
             begin
-              Items := ResponseJSON.FindPath('result') as TJSONArray;
-              Obj := Items.Objects[0];
-              if not Assigned(Obj) then
-                Exit;
-
-              if Obj.FindPath('uri') <> nil then
+              if (ResponseJSON.FindPath('result') <> nil) and (ResponseJSON.FindPath('result') is TJSONArray) then
               begin
-                tmpURI := Obj.FindPath('uri').AsString;
-                LineNumber := Obj.FindPath('range.start.line').AsInteger;
-                CharacterNumber := Obj.FindPath('range.start.character').AsInteger;
-                URIToFilename(tmpURI, URI);
-                Suspend;
+                Items := ResponseJSON.FindPath('result') as TJSONArray;
+                if Items.Count <= 0 then
+                begin
+                  Suspend;
+                  Exit;
+                end;
+
+                Obj := Items.Objects[0];
+                if not Assigned(Obj) then
+                begin
+                  Suspend;
+                  Exit;
+                end;
+
+                if Obj.FindPath('uri') <> nil then
+                begin
+                  tmpURI := Obj.FindPath('uri').AsString;
+                  LineNumber := Obj.FindPath('range.start.line').AsInteger;
+                  CharacterNumber := Obj.FindPath('range.start.character').AsInteger;
+                  URIToFilename(tmpURI, URI);
+                  Suspend;
+                end;
               end;
             end;
             if Assigned(ResponseJSON.FindPath('error')) then
