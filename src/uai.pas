@@ -32,10 +32,10 @@ type
   TAIThread = class(TThread)
   private
     FIdHTTP: TIdHTTP;
-    FURL: String;
+    FURL: string;
     FMessageQueue: TThreadList; // Warteschlange (enthält PString)
-    procedure ProcessJSONMessage(const AJSON: String);
-    function BuildJSONMessage(const msg: String): TJSONObject;
+    procedure ProcessJSONMessage(const AJSON: string);
+    function BuildJSONMessage(const msg: string): TJSONObject;
   protected
     procedure Execute; override;
   public
@@ -43,7 +43,7 @@ type
     constructor Create;
     destructor Destroy; override;
     /// Reihte eine Nachricht zur asynchronen Verarbeitung ein
-    procedure SendMessage(const msg: String);
+    procedure SendMessage(const msg: string);
   end;
 
 var
@@ -54,9 +54,9 @@ implementation
 uses
   umain;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TfAI }
+  { TfAI }
 
 procedure TfAI.CancelButtonClick(Sender: TObject);
 begin
@@ -95,7 +95,8 @@ begin
   FIdHTTP.ReadTimeout := 30000;   // 30 Sekunden
   FIdHTTP.Request.ContentType := 'application/json';
 
-  FURL := Format('http://%s:%s/api/generate', [ConfigObj.OllamaHostname, ConfigObj.OllamaPort]);
+  FURL := Format('http://%s:%s/api/generate', [ConfigObj.OllamaHostname,
+    ConfigObj.OllamaPort]);
 
   FMessageQueue := TThreadList.Create;
 end;
@@ -108,15 +109,16 @@ begin
 end;
 
 procedure TAIThread.ProcessJSONMessage(const AJSON: string);
-var ResponseJSON: TJSONObject;
-    tmp: String;
+var
+  ResponseJSON: TJSONObject;
+  tmp: string;
 begin
   ResponseJSON := TJSONObject(GetJSON(AJSON));
   if Assigned(ResponseJSON.FindPath('response')) then
   begin
     if Length(ResponseJSON.FindPath('response').AsString) > 0 then
     begin
-      tmp := ResponseJSON.FindPath('response').ASString;
+      tmp := ResponseJSON.FindPath('response').AsString;
       Editor.SelText := tmp;
     end;
   end;
@@ -124,19 +126,19 @@ begin
   Terminate;
 end;
 
-function TAIThread.BuildJSONMessage(const msg: String): TJSONObject;
-var FJSON: TJSONObject;
+function TAIThread.BuildJSONMessage(const msg: string): TJSONObject;
+var
+  FJSON: TJSONObject;
 begin
   FJSON := TJSONObject.Create;
   FJSON.Add('model', ConfigObj.OllamaModel);
   FJSON.Add('stream', False);
   FJSON.Add('prompt', msg);
-  FJSON.Add('Think', True);
 
   Result := FJSON;
 end;
 
-procedure TAIThread.SendMessage(const msg: String);
+procedure TAIThread.SendMessage(const msg: string);
 var
   msgPtr: PString;
 begin
@@ -146,12 +148,13 @@ begin
 end;
 
 procedure TAIThread.Execute;
-var list: TList;
-    i: Integer;
-    msgPtr: PString;
-    json: TJSONObject;
-    PostData: TStringStream;
-    Response: string;
+var
+  list: TList;
+  i: integer;
+  msgPtr: PString;
+  json: TJSONObject;
+  PostData: TStringStream;
+  Response: string;
 begin
   while not Terminated do
   begin
@@ -185,4 +188,3 @@ begin
 end;
 
 end.
-

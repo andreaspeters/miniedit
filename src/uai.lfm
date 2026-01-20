@@ -2028,6 +2028,7 @@ object fAI: TfAI
     00000000000000000000000000000000000000000000
   }
   Position = poOwnerFormCenter
+  LCLVersion = '4.4.0.0'
   OnShow = FormShow
   object bpDefaultButton: TButtonPanel
     Left = 6
