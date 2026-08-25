@@ -17,6 +17,9 @@ type
     FTitleLabel: TLabel;
     FLeftChanged: TBits;
     FRightChanged: TBits;
+    FSyncingScroll: Boolean;
+    procedure LeftStatusChange(Sender: TObject; Changes: TSynStatusChanges);
+    procedure RightStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure LeftSpecialLineColors(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
     procedure RightSpecialLineColors(Sender: TObject; Line: Integer;
@@ -57,6 +60,7 @@ begin
   ConfigureEditor(FLeftEditor);
   FLeftEditor.Parent := Self;
   FLeftEditor.OnSpecialLineColors := @LeftSpecialLineColors;
+  FLeftEditor.OnStatusChange := @LeftStatusChange;
 
   FSplitter := TSplitter.Create(Self);
   FSplitter.Parent := Self;
@@ -66,6 +70,41 @@ begin
   ConfigureEditor(FRightEditor);
   FRightEditor.Parent := Self;
   FRightEditor.OnSpecialLineColors := @RightSpecialLineColors;
+  FRightEditor.OnStatusChange := @RightStatusChange;
+end;
+
+procedure TGitDiffView.LeftStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  if FSyncingScroll or
+    not ((scTopLine in Changes) or (scLeftChar in Changes)) then
+    Exit;
+  FSyncingScroll := True;
+  try
+    if scTopLine in Changes then
+      FRightEditor.TopLine := FLeftEditor.TopLine;
+    if scLeftChar in Changes then
+      FRightEditor.LeftChar := FLeftEditor.LeftChar;
+  finally
+    FSyncingScroll := False;
+  end;
+end;
+
+procedure TGitDiffView.RightStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  if FSyncingScroll or
+    not ((scTopLine in Changes) or (scLeftChar in Changes)) then
+    Exit;
+  FSyncingScroll := True;
+  try
+    if scTopLine in Changes then
+      FLeftEditor.TopLine := FRightEditor.TopLine;
+    if scLeftChar in Changes then
+      FLeftEditor.LeftChar := FRightEditor.LeftChar;
+  finally
+    FSyncingScroll := False;
+  end;
 end;
 
 procedure TGitDiffView.EqualColumns;

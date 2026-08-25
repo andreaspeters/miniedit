@@ -2288,7 +2288,7 @@ object fMain: TfMain
           Width = 120
           Caption = 'Git-Changes'
         end
-        object GitChangesList: TListView
+        object GitChangesList: TTreeView
           AnchorSideLeft.Control = GitChangesPanel
           AnchorSideTop.Control = GitChangesLabel
           AnchorSideTop.Side = asrBottom
@@ -2305,12 +2305,13 @@ object fMain: TfMain
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           HideSelection = False
+          Images = imgListFileIcons
           ReadOnly = True
           RowSelect = True
-          SmallImages = imgListFileIcons
           TabOrder = 1
-          ViewStyle = vsList
-          OnClick = GitChangesListClick
+          Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoThemedDraw]
+          OnCreateNodeClass = FilesTreeCreateNodeClass
+          OnDblClick = GitChangesListDblClick
         end
       end
       object FilesTree: TTreeView

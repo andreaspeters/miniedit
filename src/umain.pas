@@ -83,7 +83,7 @@ type
     FilesTree: TTreeView;
     GitChangesPanel: TPanel;
     GitChangesLabel: TLabel;
-    GitChangesList: TListView;
+    GitChangesList: TTreeView;
     imgListFileIcons: TImageList;
     imgListSmall: TImageList;
     MenuItem100: TMenuItem;
@@ -382,7 +382,7 @@ type
     procedure FilesTreeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FilesTreeSelectionChanged(Sender: TObject);
-    procedure GitChangesListClick(Sender: TObject);
+    procedure GitChangesListDblClick(Sender: TObject);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -426,6 +426,8 @@ type
     procedure UpdateGitChanges(const Path: String);
   private
     EditorFactory: TEditorFactory;
+    FGitChangesSignature: String;
+    FLastGitChangesRefresh: QWord;
 
     MRU: TMRUMenuManager;
     FindText, ReplaceText: string;
@@ -1891,6 +1893,13 @@ var LSPBox, CmdBox: TCmdBox;
     CompletionPos: TPoint;
     i: Integer;
 begin
+  if (BrowsingPath <> '') and
+    (GetTickCount64 - FLastGitChangesRefresh >= 1000) then
+  begin
+    FLastGitChangesRefresh := GetTickCount64;
+    UpdateGitChanges(BrowsingPath);
+  end;
+
   if not EditorAvalaible then
     Exit;
 
@@ -2456,84 +2465,119 @@ var
   Lines: TStringList;
   StatusLine: String;
   ChangedFile: String;
-  Item: TListItem;
+  Parts: TStringList;
+  ParentNode, Node: TTreeNode;
+  GitNode: TFileTreeNode;
+  CurrentRelative: String;
   ExitStatus: Integer;
-  i: Integer;
+  i, j: Integer;
 begin
+  if not DirectoryExists(Path) then
+  begin
+    GitChangesList.Items.Clear;
+    GitChangesPanel.Visible := False;
+    FGitChangesSignature := '';
+    Exit;
+  end;
+
+  Lines := TStringList.Create;
+  Git := TProcess.Create(nil);
+  try
+    Git.Executable := 'git';
+    Git.CurrentDirectory := ExpandFileName(Path);
+    Git.Parameters.Add('status');
+    Git.Parameters.Add('--porcelain');
+    Git.Parameters.Add('--untracked-files=all');
+    Git.Options := [poUsePipes, poWaitOnExit];
+    Git.Execute;
+    Lines.LoadFromStream(Git.Output);
+    ExitStatus := Git.ExitStatus;
+  finally
+    Git.Free;
+  end;
+  if ExitStatus <> 0 then
+  begin
+    Lines.Free;
+    Exit;
+  end;
+  if Lines.Text = FGitChangesSignature then
+  begin
+    Lines.Free;
+    Exit;
+  end;
+  FGitChangesSignature := Lines.Text;
+
   GitChangesList.Items.BeginUpdate;
   try
-    GitChangesList.Clear;
-    GitChangesPanel.Visible := False;
-
-    if not DirectoryExists(Path) then
-      Exit;
-
-    Lines := TStringList.Create;
-    Git := TProcess.Create(nil);
+    GitChangesList.Items.Clear;
+    Parts := TStringList.Create;
     try
-      Git.Executable := 'git';
-      Git.CurrentDirectory := ExpandFileName(Path);
-      Git.Parameters.Add('status');
-      Git.Parameters.Add('--porcelain');
-      Git.Parameters.Add('--untracked-files=all');
-      Git.Options := [poUsePipes, poWaitOnExit];
-      Git.Execute;
-      Lines.LoadFromStream(Git.Output);
-      ExitStatus := Git.ExitStatus;
-    finally
-      Git.Free;
-    end;
-    if ExitStatus <> 0 then
-    begin
-      Lines.Free;
-      Exit;
-    end;
-
-    try
+      Parts.Delimiter := PathDelim;
+      Parts.StrictDelimiter := True;
       for i := 0 to Lines.Count - 1 do
       begin
         StatusLine := Lines[i];
-        if Length(StatusLine) >= 4 then
+        if Length(StatusLine) < 4 then
+          Continue;
+        ChangedFile := Copy(StatusLine, 4, Length(StatusLine));
+        ChangedFile := StringReplace(ChangedFile, '/', PathDelim,
+          [rfReplaceAll]);
+        Parts.DelimitedText := ChangedFile;
+        ParentNode := nil;
+        CurrentRelative := '';
+        for j := 0 to Parts.Count - 1 do
         begin
-          ChangedFile := Copy(StatusLine, 4, Length(StatusLine));
-          Item := GitChangesList.Items.Add;
-          Item.Caption := Copy(StatusLine, 1, 2) + ' ' + ChangedFile;
-          Item.ImageIndex := GetFileImageIndex(ChangedFile);
-        end
-        else if Length(StatusLine) > 0 then
-        begin
-          Item := GitChangesList.Items.Add;
-          Item.Caption := StatusLine;
+          CurrentRelative := CurrentRelative + Parts[j] + PathDelim;
+          Node := nil;
+          if ParentNode = nil then
+            Node := GitChangesList.Items.GetFirstNode;
+          if Assigned(ParentNode) then
+            Node := ParentNode.GetFirstChild;
+          while Assigned(Node) do
+          begin
+            if SameText(Node.Text, Parts[j]) then
+              Break;
+            Node := Node.GetNextSibling;
+          end;
+          if not Assigned(Node) then
+          begin
+            GitNode := TFileTreeNode(GitChangesList.Items.AddChild(ParentNode,
+              Parts[j]));
+            GitNode.FullPath := ExpandFileName(Path + PathDelim +
+              CurrentRelative);
+            GitNode.isDir := j < Parts.Count - 1;
+            if not GitNode.isDir then
+            begin
+              GitNode.FullPath := ExcludeTrailingPathDelimiter(
+                GitNode.FullPath);
+              GitNode.Text := Copy(StatusLine, 1, 2) + ' ' + Parts[j];
+              GitNode.ImageIndex := GetFileImageIndex(GitNode.FullPath);
+              GitNode.SelectedIndex := GitNode.ImageIndex;
+            end;
+            Node := GitNode;
+          end;
+          ParentNode := Node;
         end;
       end;
     finally
-      Lines.Free;
+      Parts.Free;
     end;
-
-    if GitChangesList.Items.Count = 0 then
-    begin
-      Item := GitChangesList.Items.Add;
-      Item.Caption := '(keine Änderungen seit dem letzten Commit)';
-    end;
-    GitChangesPanel.Visible := True;
+    GitChangesPanel.Visible := GitChangesList.Items.Count > 0;
   finally
     GitChangesList.Items.EndUpdate;
   end;
+  Lines.Free;
 end;
 
-procedure TfMain.GitChangesListClick(Sender: TObject);
+procedure TfMain.GitChangesListDblClick(Sender: TObject);
 var
-  Item: TListItem;
-  ChangedFile: String;
+  Node: TFileTreeNode;
 begin
-  Item := GitChangesList.Selected;
-  if (Item = nil) or (Pos('(keine Änderungen', Item.Caption) = 1) then
-    Exit;
-  ChangedFile := Copy(Item.Caption, 4, Length(Item.Caption));
-  if ChangedFile = '' then
+  Node := TFileTreeNode(GitChangesList.Selected);
+  if (Node = nil) or Node.isDir or (Node.FullPath = '') then
     Exit;
   EditorFactory.Visible := True;
-  EditorFactory.AddDiff(ExpandFileName(BrowsingPath + PathDelim + ChangedFile));
+  EditorFactory.AddDiff(Node.FullPath);
 end;
 
 procedure TfMain.LoadDir(Path:string);

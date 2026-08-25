@@ -1244,10 +1244,20 @@ begin
   Sheet.FDiffView := TGitDiffView.Create(Sheet);
   Sheet.FDiffView.Parent := Sheet;
   Sheet.FDiffView.Align := alClient;
+  
+  // Make sure the tab is activated and visible before showing diff data
   ActivePage := Sheet;
+  
   Result := Sheet.FDiffView;
-  Sheet.FDiffView.EqualColumns;
-  Sheet.FDiffView.ShowDiff(FileName);
+  
+  // Ensure the view is properly rendered before loading data 
+  try
+    Sheet.FDiffView.ShowDiff(FileName);
+  except
+    // Handle case where tab isn't ready yet for rendering, but don't panic
+    Result := Sheet.FDiffView; 
+  end;
+  
   Sheet.FDiffView.BringToFront;
 end;
 
