@@ -382,6 +382,7 @@ type
     procedure FilesTreeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FilesTreeSelectionChanged(Sender: TObject);
+    procedure GitChangesListClick(Sender: TObject);
     procedure FindDialogClose(Sender: TObject; var CloseAction:TCloseAction);
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -425,6 +426,7 @@ type
     procedure UpdateGitChanges(const Path: String);
   private
     EditorFactory: TEditorFactory;
+
     MRU: TMRUMenuManager;
     FindText, ReplaceText: string;
     FileToCopy: TFileTreeNode;
@@ -1671,6 +1673,7 @@ begin
   EditorFactory.Images := imgListBig;
   EditorFactory.Parent := PSSEditor;
 
+
   // Parameters
   FileOpen.Dialog.Filter := configobj.GetFiters;
 
@@ -2518,6 +2521,21 @@ begin
   end;
 end;
 
+procedure TfMain.GitChangesListClick(Sender: TObject);
+var
+  Item: TListItem;
+  ChangedFile: String;
+begin
+  Item := GitChangesList.Selected;
+  if (Item = nil) or (Pos('(keine Änderungen', Item.Caption) = 1) then
+    Exit;
+  ChangedFile := Copy(Item.Caption, 4, Length(Item.Caption));
+  if ChangedFile = '' then
+    Exit;
+  EditorFactory.Visible := True;
+  EditorFactory.AddDiff(ExpandFileName(BrowsingPath + PathDelim + ChangedFile));
+end;
+
 procedure TfMain.LoadDir(Path:string);
 var i: Integer;
 begin
@@ -2599,6 +2617,7 @@ procedure TfMain.FilesTreeDblClick(Sender: TObject);
 var
   Node: TFileTreeNode;
 begin
+  EditorFactory.Visible := True;
   Node := TFileTreeNode(FilesTree.Selected);
   if Node = nil then
      exit;

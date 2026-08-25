@@ -14,7 +14,7 @@ uses
   umain, Stringcostants, SupportFuncs, config, uCheckFileChange, udglgoto, simplemrumanager,
   ReplaceDialog, LazLogger,
   JsonTools, uinfo, ucmdboxthread, uLSP, udirectoryname,
-  ushowlspmessage, usettings, uCmdBoxCustom, SynExportRTF, uai;
+  ushowlspmessage, usettings, uCmdBoxCustom, SynExportRTF, uai, ugitdiff;
 
 {$R *.res}
 begin

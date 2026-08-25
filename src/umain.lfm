@@ -2310,6 +2310,7 @@ object fMain: TfMain
           SmallImages = imgListFileIcons
           TabOrder = 1
           ViewStyle = vsList
+          OnClick = GitChangesListClick
         end
       end
       object FilesTree: TTreeView

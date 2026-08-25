@@ -28,7 +28,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="612"/>
+      <BuildNr Value="615"/>
       <Language Value="0809"/>
       <CharSet Value="04B0"/>
       <StringTable Comments="A simple editor" CompanyName="AVENTER" FileDescription="Marco Caselli Editor" InternalName="ovotext" LegalCopyright="Marco Caselli" LegalTrademarks="Marco Caselli" ProductName="ovotext" ProductVersion="0.1"/>
@@ -222,7 +222,7 @@
         <PackageName Value="LCL"/>
       </Item13>
     </RequiredPackages>
-    <Units Count="26">
+    <Units Count="27">
       <Unit0>
         <Filename Value="miniedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -361,6 +361,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit25>
+      <Unit26>
+        <Filename Value="ugitdiff.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit26>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

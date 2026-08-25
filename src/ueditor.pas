@@ -14,7 +14,7 @@ uses
   SynEditMouseCmds, SynEditLines, Stringcostants, Forms, Graphics, Config,
   uCheckFileChange, SynEditHighlighter, Clipbrd, LConvEncoding, LazStringUtils,SynBeautifier,
   ReplaceDialog, SupportFuncs, LCLVersion, SynCompletion, ucmdbox, ucmdboxcustom,
-  SynEditSearch, SynEditMiscClasses, ucmdboxthread, ulsp;
+  SynEditSearch, SynEditMiscClasses, ucmdboxthread, ulsp, ugitdiff;
 
 type
 
@@ -103,6 +103,7 @@ type
   TEditorTabSheet = class(TTabSheet)
   private
     FEditor: TEditor;
+    FDiffView: TGitDiffView;
     FPreview: THtmlViewer;
     FLSP: TLSP;
     FMessageBox: TPageControl;
@@ -118,6 +119,7 @@ type
     property LSPBox: TCmdBoxCustom read FLSPBox;
     property CMDBox: TCmdBoxCustom read FCMDBox;
     property Editor: TEditor read FEditor;
+    property DiffView: TGitDiffView read FDiffView;
     property Preview: THtmlViewer read FPreview write FPreview;
     property CmdBoxThread: TCmdBoxThread read FCmdBoxThread;
     //--//
@@ -176,6 +178,7 @@ type
     procedure DoCloseTabClicked(APage: TCustomPage); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     function AddEditor(FileName: TFilename = ''; BrowsingPath: String = ''; X: Integer = 0; Y: Integer = 0): TEditor;
+    function AddDiff(const FileName: String): TGitDiffView;
     function CloseEditor(Editor: TEditor; Force: boolean = False): boolean;
     function CloseAll(KeepCurrent:boolean=false): boolean;
     function CloseAfter: boolean;
@@ -815,6 +818,9 @@ var Node: TFileTreeNode;
 begin
   if FClosing or (csDestroying in ComponentState) or not Assigned(ActivePage) then
     Exit;
+  // Skip diff tab handling
+  if Assigned(TEditorTabSheet(ActivePage).FDiffView) then
+    Exit;
   inherited DoChange;
   //  Hint := TEditorTabSheet(ActivePage).Editor.FileName;
   if Assigned(OnStatusChange) then
@@ -865,7 +871,12 @@ procedure TEditorFactory.DoCloseTabClicked(APage: TCustomPage);
 begin
   inherited DoCloseTabClicked(APage);
   if Assigned(APage) and (APage is TEditorTabSheet) then
-    CloseEditor(TEditorTabSheet(APage).FEditor);
+  begin
+    if Assigned(TEditorTabSheet(APage).FDiffView) then
+      APage.Free
+    else
+      CloseEditor(TEditorTabSheet(APage).FEditor);
+  end;
 end;
 
 
@@ -896,6 +907,8 @@ begin
     for i := 0 to PageCount - 1 do
     begin
       Sheet := TEditorTabSheet(Pages[i]);
+      if Assigned(Sheet.FDiffView) then
+        Continue;  // Skip diff tabs in this comparison 
       if Sheet.Editor.FileName = FileName then
       begin
         ActivePageIndex := i;
@@ -924,6 +937,8 @@ begin
     for i := 0 to PageCount - 1 do
     begin
       Sheet := TEditorTabSheet(Pages[i]);
+      if Assigned(Sheet.FDiffView) then
+        Continue;
       if (Sheet.Editor.Untitled) and not Sheet.Editor.Modified then
       begin
         Beauty := TSynBeautifier.Create(Sheet);
@@ -1219,6 +1234,23 @@ begin
   end;
 end;
 
+function TEditorFactory.AddDiff(const FileName: String): TGitDiffView;
+var
+  Sheet: TEditorTabSheet;
+begin
+  Sheet := TEditorTabSheet.Create(Self);
+  Sheet.PageControl := Self;
+  Sheet.Caption := 'Diff - ' + ExtractFileName(FileName);
+  Sheet.FDiffView := TGitDiffView.Create(Sheet);
+  Sheet.FDiffView.Parent := Sheet;
+  Sheet.FDiffView.Align := alClient;
+  ActivePage := Sheet;
+  Result := Sheet.FDiffView;
+  Sheet.FDiffView.EqualColumns;
+  Sheet.FDiffView.ShowDiff(FileName);
+  Sheet.FDiffView.BringToFront;
+end;
+
 function TEditorFactory.CloseEditor(Editor: TEditor; Force: boolean = False): boolean;
 var
   Sheet: TEditorTabSheet;
@@ -1268,7 +1300,9 @@ begin
       if KeepCurrent and (I = ActivePageIndex) then
         continue;
 
-      if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
+      if Assigned(TEditorTabSheet(Pages[i]).FDiffView) then
+        TEditorTabSheet(Pages[i]).Free
+      else if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
       begin
         Result := False;
         break;
@@ -1284,7 +1318,9 @@ begin
   Result := True;
   for i := ActivePageIndex - 1 downto 0 do
     begin
-      if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
+      if Assigned(TEditorTabSheet(Pages[i]).FDiffView) then
+        TEditorTabSheet(Pages[i]).Free
+      else if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
       begin
         Result := False;
         break;
@@ -1300,7 +1336,9 @@ begin
   Result := True;
   for i := PageCount - 1 downto ActivePageIndex + 1 do
     begin
-      if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
+      if Assigned(TEditorTabSheet(Pages[i]).FDiffView) then
+        TEditorTabSheet(Pages[i]).Free
+      else if not CloseEditor(TEditorTabSheet(Pages[i]).Editor) then
       begin
         Result := False;
         break;
@@ -1315,7 +1353,8 @@ var
 begin
   Result := True;
   for i := PageCount - 1 downto 0 do
-    if not TEditorTabSheet(Pages[i]).Editor.Save then
+    if not Assigned(TEditorTabSheet(Pages[i]).FDiffView) and
+      not TEditorTabSheet(Pages[i]).Editor.Save then
     begin
       Result := False;
       break;
@@ -1335,6 +1374,8 @@ var
 begin
     for i := PageCount - 1 downto 0 do
     begin
+      if Assigned(TEditorTabSheet(Pages[i]).FDiffView) then
+        Continue;
       ed := TEditorTabSheet(Pages[i]).Editor;
       if Add then
         ed.Options := ed.Options + [Option]
@@ -1358,6 +1399,8 @@ begin
 
   for i := PageCount - 1 downto 0 do
   begin
+    if Assigned(TEditorTabSheet(Pages[i]).FDiffView) then
+      Continue;
     ed := TEditorTabSheet(Pages[i]).Editor;
     ed.Font.Color := DefaultAttr.Foreground;
     ed.Font.Style := DefaultAttr.Styles;
@@ -1412,7 +1455,10 @@ begin
   begin
     i := IndexOfTabAt(Point(X, Y));
     if i >= 0 then
-      CloseEditor(TEditorTabSheet(Page[i]).Editor);
+      if Assigned(TEditorTabSheet(Page[i]).FDiffView) then
+        Page[i].Free
+      else
+        CloseEditor(TEditorTabSheet(Page[i]).Editor);
     Exit;
   end;
   if (Button = mbLeft) then
@@ -1423,8 +1469,11 @@ begin
     h := (r.Bottom - r.Top);
     if (X > r.right - h) and (Y > r.bottom - h) then
       begin
-       CloseEditor(TEditorTabSheet(Page[i]).Editor);
-       Invalidate;
+      if Assigned(TEditorTabSheet(Page[i]).FDiffView) then
+        Page[i].Free
+      else
+        CloseEditor(TEditorTabSheet(Page[i]).Editor);
+      Invalidate;
       end
     else
     {$ENDIF}
@@ -1469,7 +1518,10 @@ begin
   if Tab < 0 then
     Exit;
 
-  HintInfo^.HintStr := TEditorTabSheet(Pages[Tab]).Editor.FileName;
+  if Assigned(TEditorTabSheet(Pages[Tab]).FDiffView) then
+    HintInfo^.HintStr := TEditorTabSheet(Pages[Tab]).Caption
+  else
+    HintInfo^.HintStr := TEditorTabSheet(Pages[Tab]).Editor.FileName;
 
 end;
 
