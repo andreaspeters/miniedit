@@ -2261,16 +2261,67 @@ object fMain: TfMain
       Width = 300
       ClientWidth = 300
       ClientHeight = 743
-      object FilesTree: TTreeView
+      object GitChangesPanel: TPanel
         AnchorSideLeft.Control = PairSplitterSide1
         AnchorSideTop.Control = PairSplitterSide1
         AnchorSideRight.Control = PairSplitterSide1
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = PairSplitterSide1
         AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 170
+        Top = 573
+        Width = 300
+        Anchors = [akLeft, akRight, akBottom]
+        BevelOuter = bvNone
+        Caption = ''
+        ClientHeight = 170
+        ClientWidth = 300
+        TabOrder = 0
+        Visible = False
+        object GitChangesLabel: TLabel
+          AnchorSideLeft.Control = GitChangesPanel
+          AnchorSideTop.Control = GitChangesPanel
+          Left = 6
+          Height = 17
+          Top = 5
+          Width = 120
+          Caption = 'Git-Changes'
+        end
+        object GitChangesList: TListView
+          AnchorSideLeft.Control = GitChangesPanel
+          AnchorSideTop.Control = GitChangesLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GitChangesPanel
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = GitChangesPanel
+          AnchorSideBottom.Side = asrBottom
+          Left = 6
+          Height = 142
+          Top = 27
+          Width = 288
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Bottom = 4
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          HideSelection = False
+          ReadOnly = True
+          RowSelect = True
+          SmallImages = imgListFileIcons
+          TabOrder = 1
+          ViewStyle = vsList
+        end
+      end
+      object FilesTree: TTreeView
+        AnchorSideLeft.Control = PairSplitterSide1
+        AnchorSideTop.Control = PairSplitterSide1
+        AnchorSideRight.Control = PairSplitterSide1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = GitChangesPanel
+        AnchorSideBottom.Side = asrTop
         Cursor = crArrow
         Left = 2
-        Height = 743
+        Height = 568
         Top = 0
         Width = 298
         Anchors = [akTop, akLeft, akRight, akBottom]

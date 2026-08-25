@@ -81,6 +81,9 @@ type
     actUpperCase: TAction;
     actLowerCase: TAction;
     FilesTree: TTreeView;
+    GitChangesPanel: TPanel;
+    GitChangesLabel: TLabel;
+    GitChangesList: TListView;
     imgListFileIcons: TImageList;
     imgListSmall: TImageList;
     MenuItem100: TMenuItem;
@@ -418,6 +421,8 @@ type
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; const Parameters: array of String);
     function GetSelectedFileTreePath:String;
+    function GetFileImageIndex(const FileName: String): Integer;
+    procedure UpdateGitChanges(const Path: String);
   private
     EditorFactory: TEditorFactory;
     MRU: TMRUMenuManager;
@@ -2442,6 +2447,77 @@ begin
 
 end;
 
+procedure TfMain.UpdateGitChanges(const Path: String);
+var
+  Git: TProcess;
+  Lines: TStringList;
+  StatusLine: String;
+  ChangedFile: String;
+  Item: TListItem;
+  ExitStatus: Integer;
+  i: Integer;
+begin
+  GitChangesList.Items.BeginUpdate;
+  try
+    GitChangesList.Clear;
+    GitChangesPanel.Visible := False;
+
+    if not DirectoryExists(Path) then
+      Exit;
+
+    Lines := TStringList.Create;
+    Git := TProcess.Create(nil);
+    try
+      Git.Executable := 'git';
+      Git.CurrentDirectory := ExpandFileName(Path);
+      Git.Parameters.Add('status');
+      Git.Parameters.Add('--porcelain');
+      Git.Parameters.Add('--untracked-files=all');
+      Git.Options := [poUsePipes, poWaitOnExit];
+      Git.Execute;
+      Lines.LoadFromStream(Git.Output);
+      ExitStatus := Git.ExitStatus;
+    finally
+      Git.Free;
+    end;
+    if ExitStatus <> 0 then
+    begin
+      Lines.Free;
+      Exit;
+    end;
+
+    try
+      for i := 0 to Lines.Count - 1 do
+      begin
+        StatusLine := Lines[i];
+        if Length(StatusLine) >= 4 then
+        begin
+          ChangedFile := Copy(StatusLine, 4, Length(StatusLine));
+          Item := GitChangesList.Items.Add;
+          Item.Caption := Copy(StatusLine, 1, 2) + ' ' + ChangedFile;
+          Item.ImageIndex := GetFileImageIndex(ChangedFile);
+        end
+        else if Length(StatusLine) > 0 then
+        begin
+          Item := GitChangesList.Items.Add;
+          Item.Caption := StatusLine;
+        end;
+      end;
+    finally
+      Lines.Free;
+    end;
+
+    if GitChangesList.Items.Count = 0 then
+    begin
+      Item := GitChangesList.Items.Add;
+      Item.Caption := '(keine Änderungen seit dem letzten Commit)';
+    end;
+    GitChangesPanel.Visible := True;
+  finally
+    GitChangesList.Items.EndUpdate;
+  end;
+end;
+
 procedure TfMain.LoadDir(Path:string);
 var i: Integer;
 begin
@@ -2453,6 +2529,7 @@ begin
   BrowsingPath := Path;
   FilesTree.Items.Clear;
   ExpandNode(nil,Path);
+  UpdateGitChanges(Path);
 
   miBookmarkAdd.Enabled := True;
   miBookmarkDel.Enabled := False;
@@ -2554,76 +2631,64 @@ myNode := TFileTreeNode(Node);
 
 end;
 
+function TfMain.GetFileImageIndex(const FileName: String): Integer;
+begin
+  Result := 2;
+  case LowerCase(ExtractFileExt(FileName)) of
+    '.go':    Result := 3;
+    '.cpp', '.c++': Result := 4;
+    '.c', '.cc': Result := 5;
+    '.h':     Result := 6;
+    '.hpp':   Result := 7;
+    '.hcl':   Result := 8;
+    '.yaml', '.yml': Result := 9;
+    '.json':  Result := 10;
+    '.nix':   Result := 11;
+    '.cmake': Result := 13;
+    '.md':    Result := 14;
+    '.xml':   Result := 15;
+    '.tf':    Result := 16;
+    '.ca':    Result := 17;
+    '.cs':    Result := 18;
+    '.css':   Result := 19;
+    '.java':  Result := 20;
+    '.pl':    Result := 22;
+    '.php':   Result := 23;
+    '.pdf':   Result := 24;
+    '.py':    Result := 25;
+    '.rb':    Result := 26;
+    '.sh', '.ps1': Result := 27;
+    '.html', '.htm': Result := 28;
+    '.zip', '.tar', '.gz': Result := 30;
+    '.log':   Result := 31;
+    '.tex':   Result := 35;
+  end;
+  case LowerCase(ExtractFileName(FileName)) of
+    '.gitignore', '.gitmodules', '.gitattributes': Result := 21;
+  end;
+  case LowerCase(ChangeFileExt(ExtractFileName(FileName), '')) of
+    'makefile':      Result := 12;
+    'cmake_install', 'cmakelists': Result := 13;
+    'dockerfile':    Result := 29;
+    'readme':        Result := 32;
+    'changelog':     Result := 33;
+    'contributing':  Result := 34;
+  end;
+end;
+
 procedure TfMain.FilesTreeGetImageIndex(Sender: TObject; Node: TTreeNode);
 var myNode: TFileTreeNode;
 begin
   myNode := TFileTreeNode(Node);
   if myNode = nil then
-     exit;
-
-  if (myNode.isDir) then
+    exit;
+  if myNode.isDir then
     if myNode.Expanded then
       myNode.ImageIndex := 0
     else
       myNode.ImageIndex := 1
   else
-  begin
-    case LowerCase(ExtractFileExt(myNode.FullPath)) of
-      '.go':    myNode.ImageIndex := 3;
-      '.cpp':   myNode.ImageIndex := 4;
-      '.c++':   myNode.ImageIndex := 4;
-      '.c':     myNode.ImageIndex := 5;
-      '.cc':    myNode.ImageIndex := 5;
-      '.h':     myNode.ImageIndex := 6;
-      '.hpp':   myNode.ImageIndex := 7;
-      '.hcl':   myNode.ImageIndex := 8;
-      '.yaml':  myNode.ImageIndex := 9;
-      '.yml':   myNode.ImageIndex := 9;
-      '.json':  myNode.ImageIndex := 10;
-      '.nix':   myNode.ImageIndex := 11;
-      '.cmake': myNode.ImageIndex := 13;
-      '.md':    myNode.ImageIndex := 14;
-      '.xml':   myNode.ImageIndex := 15;
-      '.tf':    myNode.ImageIndex := 16;
-      '.ca':    myNode.ImageIndex := 17;
-      '.cs':    myNode.ImageIndex := 18;
-      '.css':   myNode.ImageIndex := 19;
-      '.java':  myNode.ImageIndex := 20;
-      '.pl':    myNode.ImageIndex := 22;
-      '.php':   myNode.ImageIndex := 23;
-      '.pdf':   myNode.ImageIndex := 24;
-      '.py':    myNode.ImageIndex := 25;
-      '.rb':    myNode.ImageIndex := 26;
-      '.sh':    myNode.ImageIndex := 27;
-      '.ps1':   myNode.ImageIndex := 27;
-      '.html':  myNode.ImageIndex := 28;
-      '.htm':   myNode.ImageIndex := 28;
-      '.zip':   myNode.ImageIndex := 30;
-      '.tar':   myNode.ImageIndex := 30;
-      '.gz':    myNode.ImageIndex := 30;
-      '.log':   myNode.ImageIndex := 31;
-      '.tex':   myNode.ImageIndex := 35;
-    else
-      myNode.ImageIndex := 2;
-    end;
-
-    case LowerCase(ExtractFileName(myNode.FullPath)) of
-      '.gitignore':     myNode.ImageIndex := 21;
-      '.gitmodules':    myNode.ImageIndex := 21;
-      '.gitattributes': myNode.ImageIndex := 21;
-    end;
-
-    case LowerCase(ChangeFileExt(ExtractFileName(myNode.FullPath), '')) of
-      'makefile':      myNode.ImageIndex := 12;
-      'cmake_install': myNode.ImageIndex := 13;
-      'cmakelists':    myNode.ImageIndex := 13;
-      'dockerfile':    myNode.ImageIndex := 29;
-      'readme':        myNode.ImageIndex := 32;
-      'changelog':     myNode.ImageIndex := 33;
-      'contributing':  myNode.ImageIndex := 34;
-    end;
-  end;
-
+    myNode.ImageIndex := GetFileImageIndex(myNode.FullPath);
 end;
 
 procedure TfMain.FilesTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
