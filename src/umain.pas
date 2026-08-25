@@ -1551,14 +1551,19 @@ procedure TfMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   Timer1.Enabled := False;
 
-  FreeAndNil(EditorFactory);
   ReplaceDialog.Free;
 end;
 
 procedure TfMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  if Assigned(EditorFactory) and (EditorFactory.PageCount > 0) then
-    CanClose := EditorFactory.CloseAll
+  if Assigned(EditorFactory) then
+  begin
+    EditorFactory.BeginShutdown;
+    if EditorFactory.PageCount > 0 then
+      CanClose := EditorFactory.CloseAll
+    else
+      CanClose := True;
+  end
   else
     CanClose := True;
 
@@ -1874,7 +1879,9 @@ end;
 
 procedure TfMain.Timer1Timer(Sender: TObject);
 var LSPBox, CmdBox: TCmdBox;
-    Line: String;
+    Line, CompletionItem: String;
+    CompletionPos: TPoint;
+    i: Integer;
 begin
   if not EditorAvalaible then
     Exit;
@@ -1966,21 +1973,36 @@ begin
           EditorFactory.AddEditor(Line)
       end;
 
-      if EditorFactory.CurrentLSP.MessageList.Count > 1 then
+      if EditorFactory.CurrentLSP.MessageList.Count > 0 then
       begin
         EditorFactory.CurrentLSP.Suspend;
-
-        FLSPMessage.ShowMessageList(EditorFactory.CurrentLSP.MessageList);
-
-        if FLSPMessage.Visible then
-          FLSPMessage.Close;
-
-        if FLSPMessage.ShowModal = mrOk then
-        begin
-          EditorFactory.CurrentEditor.InsertTextAtCaret(FLSPMessage.LSPKey);
-          FLSPMessage.LSPKey := '';
+        EditorFactory.CurrentLSP.LockResults;
+        try
+          if Assigned(EditorFactory.CompletionEditor) and
+             (EditorFactory.CurrentEditor = EditorFactory.CompletionEditor) then
+          begin
+            EditorFactory.CompletionEditor.Completion.ItemList.BeginUpdate;
+            try
+              EditorFactory.CompletionEditor.Completion.ItemList.Clear;
+              for i := 0 to EditorFactory.CurrentLSP.MessageList.Count - 1 do
+              begin
+                CompletionItem := EditorFactory.CurrentLSP.MessageList[i];
+                if Length(CompletionItem) > 0 then
+                  EditorFactory.CompletionEditor.Completion.ItemList.Add(CompletionItem);
+              end;
+            finally
+              EditorFactory.CompletionEditor.Completion.ItemList.EndUpdate;
+            end;
+            CompletionPos := EditorFactory.CompletionEditor.ClientToScreen(
+              EditorFactory.CompletionEditor.RowColumnToPixels(
+                EditorFactory.CompletionEditor.LogicalCaretXY));
+            EditorFactory.CompletionEditor.Completion.Execute(
+              EditorFactory.CompletionPrefix, CompletionPos.X, CompletionPos.Y);
+          end;
+          EditorFactory.CurrentLSP.MessageList.Clear;
+        finally
+          EditorFactory.CurrentLSP.UnlockResults;
         end;
-        EditorFactory.CurrentLSP.MessageList.Clear;
       end;
     end;
   end;

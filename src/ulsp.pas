@@ -20,6 +20,11 @@ type
     OutputStream: TMemoryStream;
     LSPServer: TProcess;
     StopIt: Boolean;
+    FReceiveBuffer: AnsiString;
+    FNextRequestId: Integer;
+    FDocumentVersion: Integer;
+    FDataLock: TRTLCriticalSection;
+    FThreadStarted: Boolean;
     procedure RunLSPServer;
     function Send(Params: TJSONObject; const method: String): TJSONData;
     function SendNotification(Params: TJSONObject; const method: String): TJSONData;
@@ -47,6 +52,9 @@ type
     procedure Completion(const Line, Character, Trigger: Integer);
     procedure GoToDefinition(const Line, Character: Integer);
     procedure SetLanguage(const ALanguage: String);
+    procedure StartLSP;
+    procedure LockResults;
+    procedure UnlockResults;
     procedure Suspend;
     procedure Resume;
     procedure Stop;
@@ -69,26 +77,66 @@ begin
   FEvent := RTLEventCreate;
   Pause := False;
   StopIt := False;
+  FReceiveBuffer := '';
+  FNextRequestId := 1;
+  FDocumentVersion := 0;
+  FThreadStarted := False;
+  InitCriticalSection(FDataLock);
 end;
 
 destructor TLSP.Destroy;
 begin
+  Stop;
+  if Assigned(FEvent) then
+    RTLEventSetEvent(FEvent);
+  if FThreadStarted and not Finished then
+    WaitFor;
+  FreeAndNil(LSPServer);
+  FreeAndNil(InputStream);
+  FreeAndNil(OutputStream);
+  FreeAndNil(MessageList);
+  FreeAndNil(ServerParameter);
+  if Assigned(FEvent) then
+    RTLEventDestroy(FEvent);
+  DoneCriticalSection(FDataLock);
   inherited Destroy;
+end;
+
+procedure TLSP.LockResults;
+begin
+  EnterCriticalSection(FDataLock);
+end;
+
+procedure TLSP.UnlockResults;
+begin
+  LeaveCriticalSection(FDataLock);
+end;
+
+procedure TLSP.StartLSP;
+begin
+  if FThreadStarted then
+    Exit;
+  FThreadStarted := True;
+  Start;
 end;
 
 procedure TLSP.Stop;
 begin
+  StopIt := True;
+  Pause := False;
+  if Assigned(FEvent) then
+    RTLEventSetEvent(FEvent);
   if Assigned(LSPServer) then
   begin
     if LSPServer.Running then
       LSPServer.Terminate(1);
-    StopIt := True;
   end;
 end;
 
 procedure TLSP.Execute;
 var Response, Key, Value, tmpURI: String;
     ResponseJSON: TJSONObject;
+    ResponseData: TJSONData;
     i: Integer;
     Items, Item: TJSONArray;
     Obj: TJSONObject;
@@ -118,9 +166,11 @@ begin
       if Length(Response) > 0 then
       begin
         try
-          if GetJSON(Response).JSONType = jtObject then
+          ResponseData := GetJSON(Response);
+          try
+          if ResponseData.JSONType = jtObject then
           begin
-            ResponseJSON := TJSONObject(GetJSON(Response));
+            ResponseJSON := TJSONObject(ResponseData);
             if Assigned(ResponseJSON.FindPath('result.capabilities')) then
             begin
               Init := True;
@@ -136,10 +186,20 @@ begin
             begin
               Message := ResponseJSON.FindPath('result.contents.value').AsString;
               Suspend;
+            end
+            else if Assigned(ResponseJSON.FindPath('result.contents')) and
+                    (ResponseJSON.FindPath('result.contents').JSONType = jtString) then
+            begin
+              Message := ResponseJSON.FindPath('result.contents').AsString;
+              Suspend;
             end;
             if Assigned(ResponseJSON.FindPath('result.items')) then
             begin
               Items := ResponseJSON.FindPath('result.items') as TJSONArray;
+              LockResults;
+              try
+              MessageList.BeginUpdate;
+              MessageList.Clear;
               for i := 0 to Items.Count - 1 do
               begin
                 Obj := Items.Objects[i];
@@ -149,10 +209,18 @@ begin
                 if Obj.Find('label') <> nil then
                   Key := Obj.Strings['label'];
 
+                if Obj.Find('insertText') <> nil then
+                  Key := Obj.Strings['insertText'];
+
                 if Obj.Find('detail') <> nil then
                   Value := Obj.Strings['detail'];
 
-                MessageList.Add(Key + '=' + Value);
+                if Length(Key) > 0 then
+                  MessageList.Add(Key);
+              end;
+              MessageList.EndUpdate;
+              finally
+                UnlockResults;
               end;
               Suspend;
             end;
@@ -189,12 +257,16 @@ begin
                 if ResponseJSON.FindPath('error.code').AsInteger = -32600 then
                   OpenFile(FileName);
           end;
+          finally
+            ResponseData.Free;
+          end;
         except
           on E: Exception do
             OutputString := 'JSON Error: ' + E.Message;
         end;
       end;
-      sleep(10);
+      if Response = '' then
+        Sleep(10);
     end;
   except
     on E: Exception do
@@ -214,29 +286,57 @@ begin
 end;
 
 function TLSP.ReceiveData:String;
-var Buffer: Byte;
-    Line: String;
+var
+  Buffer: array[0..4095] of Byte;
+  BytesRead, HeaderEnd, ContentLength, Available: Integer;
+  Header, Payload: AnsiString;
 begin
   Result := '';
 
-  if not LSPServer.Running then
+  if Terminated or StopIt or not Assigned(LSPServer) or not LSPServer.Running then
     Exit;
 
-  Line := '';
-  Buffer := 0;
+  try
+    Available := LSPServer.Output.NumBytesAvailable;
+    if Available <= 0 then
+      Exit;
+    if Available > SizeOf(Buffer) then
+      Available := SizeOf(Buffer);
+    BytesRead := LSPServer.Output.Read(Buffer, Available);
+    if BytesRead <= 0 then
+      Exit;
+    SetString(Payload, PAnsiChar(@Buffer[0]), BytesRead);
+    FReceiveBuffer := FReceiveBuffer + Payload;
 
-  repeat
-    if Assigned(LSPServer.Output) then
-      try
-       Buffer := LSPServer.Output.ReadByte;
-      except
-        on E: Exception do
-          OutputString := 'Exec LSP Error: ' + E.Message;
-      end;
+    HeaderEnd := Pos(#13#10#13#10, FReceiveBuffer);
+    if HeaderEnd = 0 then
+      HeaderEnd := Pos(#10#10, FReceiveBuffer);
+    if HeaderEnd = 0 then
+      Exit;
 
-    Line := Line + Chr(Buffer);
-  until Length(ExtractJSON(Line)) > 0;
-  Result := ExtractJSON(Line);
+    Header := Copy(FReceiveBuffer, 1, HeaderEnd - 1);
+    if Pos('Content-Length:', Header) = 0 then
+      Exit;
+    ContentLength := StrToIntDef(Trim(Copy(Header,
+      Pos('Content-Length:', Header) + Length('Content-Length:'), MaxInt)), -1);
+    if ContentLength < 0 then
+    begin
+      Delete(FReceiveBuffer, 1, HeaderEnd + 1);
+      Exit;
+    end;
+
+    if Pos(#13#10#13#10, FReceiveBuffer) > 0 then
+      HeaderEnd := Pos(#13#10#13#10, FReceiveBuffer) + 3
+    else
+      HeaderEnd := Pos(#10#10, FReceiveBuffer) + 1;
+    if Length(FReceiveBuffer) - HeaderEnd < ContentLength then
+      Exit;
+    Result := UTF8Decode(Copy(FReceiveBuffer, HeaderEnd + 1, ContentLength));
+    Delete(FReceiveBuffer, 1, HeaderEnd + ContentLength);
+  except
+    on E: Exception do
+      OutputString := 'Exec LSP Error: ' + E.Message;
+  end;
 end;
 
 
@@ -328,7 +428,8 @@ begin
     on E: Exception do
       OutputString := 'Exec LSP Server Error: ' + E.Message;
   end;
-  Sleep(200);
+  if Assigned(LSPServer) and LSPServer.Running then
+    Sleep(50);
 end;
 
 procedure TLSP.SetLanguage(const ALanguage: String);
@@ -393,8 +494,8 @@ begin
   Folder := TJSONArray.Create;
   Folder.Add(FolderObject);
 
-  Params.Add('rootUri', 'file://'+AFilePath);
-  Params.Add('rootPath', FilePath);
+  Params.Add('rootUri', 'file://'+AWorkspacePath);
+  Params.Add('rootPath', AWorkspacePath);
   Params.Add('trace', 'on');
   Params.Add('workspaceFolders', Folder);
 
@@ -449,7 +550,8 @@ begin
   Changes := TJSONArray.Create;
 
   TextDoc.Add('uri', 'file://'+FileName);
-  TextDoc.Add('version', 2);
+  Inc(FDocumentVersion);
+  TextDoc.Add('version', FDocumentVersion);
 
   FolderObject := TJSONObject.Create;
   FolderObject.Add('text', Text);
@@ -516,7 +618,6 @@ begin
 
   SendNotification(Params, 'textDocument/didOpen');
 end;
-
 procedure TLSP.Hover(const Line, Character: Integer);
 var Params, TextDoc, Position: TJSONObject;
 begin
@@ -597,18 +698,19 @@ begin
   RequestJSON := TJSONObject.Create;
   try
     RequestJSON.Add('jsonrpc', '2.0');
-    RequestJSON.Add('id', 1);
+    RequestJSON.Add('id', FNextRequestId);
+    Inc(FNextRequestId);
     RequestJSON.Add('method', method);
     RequestJSON.Add('params', Params);
 
     RequestText := RequestJSON.AsJSON;
-    SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+Length(ServerCR)) + ServerCR+ServerCR + RequestText + ServerCR;
+    Data := TEncoding.UTF8.GetBytes(RequestText);
+    SendString := 'Content-Length: ' + IntToStr(Length(Data)) +
+                  #13#10#13#10 + RequestText;
     Data := TEncoding.UTF8.GetBytes(SendString);
-
-    //writeln(SendString);
-
     InputStream.Clear;
-    InputStream.Write(PChar(SendString)^, Length(SendString));
+    InputStream.Write(Data[0], Length(Data));
+    InputStream.Position := 0;
     InputStream.SaveToStream(LSPServer.Input);
 
   except
@@ -641,13 +743,14 @@ begin
       RequestJSON.Add('params', Params);
 
     RequestText := RequestJSON.AsJSON;
-    SendString := 'Content-Length: ' + IntToStr(Length(RequestText)+Length(ServerCR)) +
-                  ServerCR + ServerCR + RequestText + ServerCR;
-
+    Data := TEncoding.UTF8.GetBytes(RequestText);
+    SendString := 'Content-Length: ' + IntToStr(Length(Data)) +
+                  #13#10#13#10 + RequestText;
     Data := TEncoding.UTF8.GetBytes(SendString);
 
     InputStream.Clear;
-    InputStream.Write(PChar(SendString)^, Length(SendString));
+    InputStream.Write(Data[0], Length(Data));
+    InputStream.Position := 0;
     InputStream.SaveToStream(LSPServer.Input);
 
   except

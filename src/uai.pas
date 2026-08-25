@@ -34,6 +34,8 @@ type
     FIdHTTP: TIdHTTP;
     FURL: string;
     FMessageQueue: TThreadList; // Warteschlange (enthält PString)
+    FPendingResponse: string;
+    procedure ApplyResponse;
     procedure ProcessJSONMessage(const AJSON: string);
     function BuildJSONMessage(const msg: string): TJSONObject;
   protected
@@ -95,8 +97,7 @@ begin
   FIdHTTP.ReadTimeout := 30000;   // 30 Sekunden
   FIdHTTP.Request.ContentType := 'application/json';
 
-  FURL := Format('http://%s:%s/api/generate', [ConfigObj.OllamaHostname,
-    ConfigObj.OllamaPort]);
+  FURL := Format('http://%s:%s/api/generate', [ConfigObj.OllamaHostname, ConfigObj.OllamaPort]);
 
   FMessageQueue := TThreadList.Create;
 end;
@@ -110,20 +111,43 @@ end;
 
 procedure TAIThread.ProcessJSONMessage(const AJSON: string);
 var
+  ResponseData: TJSONData;
   ResponseJSON: TJSONObject;
   tmp: string;
 begin
-  ResponseJSON := TJSONObject(GetJSON(AJSON));
-  if Assigned(ResponseJSON.FindPath('response')) then
-  begin
-    if Length(ResponseJSON.FindPath('response').AsString) > 0 then
+  try
+    ResponseData := GetJSON(AJSON);
+    try
+      if not (ResponseData is TJSONObject) then
+        Exit;
+      ResponseJSON := TJSONObject(ResponseData);
+      if Assigned(ResponseJSON.FindPath('response')) then
+      begin
+        if Length(ResponseJSON.FindPath('response').AsString) > 0 then
+        begin
+          tmp := ResponseJSON.FindPath('response').AsString;
+          FPendingResponse := tmp;
+          if not Terminated then
+            Synchronize(@ApplyResponse);
+        end;
+      end;
+    finally
+      ResponseData.Free;
+    end;
+  except
+    on E: Exception do
     begin
-      tmp := ResponseJSON.FindPath('response').AsString;
-      Editor.SelText := tmp;
+      FPendingResponse := 'AI JSON Error: ' + E.Message;
     end;
   end;
 
   Terminate;
+end;
+
+procedure TAIThread.ApplyResponse;
+begin
+  if Assigned(Editor) and (not Terminated) then
+    Editor.SelText := FPendingResponse;
 end;
 
 function TAIThread.BuildJSONMessage(const msg: string): TJSONObject;
@@ -133,7 +157,12 @@ begin
   FJSON := TJSONObject.Create;
   FJSON.Add('model', ConfigObj.OllamaModel);
   FJSON.Add('stream', False);
-  FJSON.Add('prompt', msg);
+  FJSON.Add('prompt',
+    'You are a coding assistant. The following user request contains the developer instruction. ' +
+    'Respond ONLY with valid source code and inline code comments in English. ' +
+    'Do NOT provide explanations, markdown, introductions, summaries, or any text outside the code. ' +
+    'User request: ' + msg
+  );
 
   Result := FJSON;
 end;
@@ -156,8 +185,9 @@ var
   PostData: TStringStream;
   Response: string;
 begin
-  while not Terminated do
-  begin
+  try
+    while not Terminated do
+    begin
     list := FMessageQueue.LockList;
     try
       i := 0;
@@ -183,7 +213,20 @@ begin
     finally
       FMessageQueue.UnlockList;
     end;
-    Sleep(50); // Kurze Pause, um CPU zu schonen
+      Sleep(50); // Kurze Pause, um CPU zu schonen
+    end;
+  finally
+    list := FMessageQueue.LockList;
+    try
+      for i := 0 to list.Count - 1 do
+      begin
+        msgPtr := PString(list[i]);
+        Dispose(msgPtr);
+      end;
+      list.Clear;
+    finally
+      FMessageQueue.UnlockList;
+    end;
   end;
 end;
 

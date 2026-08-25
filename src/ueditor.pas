@@ -52,6 +52,7 @@ type
     fCaretPos: TPoint;
     MultiCaret: TSynPluginMultiCaret;
     SyncEdit: TSynPluginSyncroEdit;
+    FCompletion: TSynCompletion;
     fOldDiskEncoding: string;
     FDiskEncoding: String;
     fDiskLineEndingType : TSynLinesFileLineEndType;
@@ -78,6 +79,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Sheet: TEditorTabSheet read FSheet;
+    property Completion: TSynCompletion read FCompletion;
     property OnSearchReplace: TOnSearchReplaceEvent read FOnSearchReplace write SetOnSearcReplace;
     //-- Helper functions//
     procedure SetLineText(Index: integer; NewText: string);
@@ -130,6 +132,11 @@ type
     FonStatusChange: TStatusChangeEvent;
     fUntitledCounter: integer;
     FWatcher: TFileWatcher;
+    FLastCompletionTick: QWord;
+    FClosing: Boolean;
+
+    FCompletionEditor: TEditor;
+    FCompletionPrefix: String;
     function GetCurrentEditor: TEditor;
     function GetCurrenTCmdBoxThread: TCmdBoxThread;
     function GetCurrentLSP: TLSP;
@@ -143,6 +150,8 @@ type
     procedure ShowHintEvent(Sender: TObject; HintInfo: PHintInfo);
     procedure OnFileChange(Sender: TObject; FileName: TFileName; Data: Pointer; State: TFWStateChange);
     procedure EditorOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorOnChange(Sender: TObject);
+
     procedure EditorOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure SetCurrentCmdBoxThread(AThread: TCmdBoxThread);
   protected
@@ -157,6 +166,9 @@ type
     property CurrentLSPBox: TCmdBoxCustom read GetCurrentLSPBox;
     property CurrentCmdBox: TCmdBoxCustom read GetCurrentCmdBox;
     property CurrentMessageBox: TPageControl read GetCurrentMessageBox;
+
+    property CompletionEditor: TEditor read FCompletionEditor;
+    property CompletionPrefix: String read FCompletionPrefix;
     property OnStatusChange: TStatusChangeEvent read FonStatusChange write FOnStatusChange;
     property OnBeforeClose: TOnBeforeClose read FOnBeforeClose write SetOnBeforeClose;
     property OnNewEditor: TOnEditorEvent read FOnNewEditor write SetOnNewEditor;
@@ -181,6 +193,7 @@ type
     {$ENDIF}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginShutdown;
   end;
 
 implementation
@@ -298,6 +311,12 @@ begin
   SyncEdit := TSynPluginSyncroEdit.Create(self);
   SyncEdit.Editor := self;
   SyncEdit.CaseSensitive := False;
+  { Keep the completion plugin independent from the editor owner.  The
+    plugin stores an editor pointer and must be detached before destruction. }
+  FCompletion := TSynCompletion.Create(nil);
+  FCompletion.Editor := Self;
+  FCompletion.AutoUseSingleIdent := False;
+  FCompletion.EndOfTokenChr := '()[]{}.,:;+-*/=<>|&';
   Gutter.Visible:= ConfigObj.ShowRowNumber;
 
   OnReplaceText := @OnReplace;
@@ -308,6 +327,9 @@ destructor TEditor.Destroy;
 begin
   MultiCaret.Free;
   SyncEdit.Free;
+  if Assigned(FCompletion) then
+    FCompletion.Editor := nil;
+  FCompletion.Free;
   inherited Destroy;
 end;
 
@@ -791,6 +813,8 @@ procedure TEditorFactory.DoChange;
 var Node: TFileTreeNode;
     i: Integer;
 begin
+  if FClosing or (csDestroying in ComponentState) or not Assigned(ActivePage) then
+    Exit;
   inherited DoChange;
   //  Hint := TEditorTabSheet(ActivePage).Editor.FileName;
   if Assigned(OnStatusChange) then
@@ -915,6 +939,7 @@ begin
         Sheet.Editor.Options := [eoBracketHighlight,eoGroupUndo,eoScrollPastEol,eoTrimTrailingSpaces];
         Sheet.Editor.Options2 := [eoFoldedCopyPaste,eoOverwriteBlock,eoAcceptDragDropEditing];
         Sheet.Editor.OnKeyDown := @EditorOnKeyDown;
+
         Sheet.Editor.OnMouseDown := @EditorOnMouseDown;
         Sheet.Editor.OnSpecialLineColors := @Sheet.Editor.SpecialLineColors;
         FileType := ConfigObj.getHighLighter(ExtractFileExt(FileName));
@@ -925,15 +950,15 @@ begin
             Sheet.FLSP := TLSP.Create;
 
           if configObj.EnableLSP then
-            Sheet.LSP.Start;
-
-          Sheet.LSP.SetLanguage(FileType.LanguageName);
-
-          if Length(ExtractFilePath(FileName)) <= 0 then
-            Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
-          else
-            Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
-          Sheet.LSP.OpenFile(FileName);
+          begin
+            Sheet.LSP.SetLanguage(FileType.LanguageName);
+            Sheet.LSP.StartLSP;
+            if Length(ExtractFilePath(FileName)) <= 0 then
+              Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
+            else
+              Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
+            Sheet.LSP.OpenFile(FileName);
+          end;
 
           // create message box
           if not Assigned(Sheet.FMessageBox) then
@@ -980,6 +1005,8 @@ begin
   Result.Gutter.Color := clBtnFace;
   Result.Beautifier := Beauty;
   Result.OnKeyDown := @EditorOnKeyDown;
+  Result.OnChange := @EditorOnChange;
+
   Result.OnMouseDown := @EditorOnMouseDown;
   Result.OnSpecialLineColors := @Result.SpecialLineColors;
 
@@ -1037,14 +1064,16 @@ begin
       if not Assigned(Result.Sheet.FLSP) then
         Result.Sheet.FLSP := TLSP.Create;
 
-      Result.Sheet.LSP.Start;
-      Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
-
-      if Length(ExtractFilePath(FileName)) <= 0 then
-       Result.Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
-      else
-        Result.Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
-      Result.Sheet.LSP.OpenFile(FileName);
+      if ConfigObj.EnableLSP then
+      begin
+        Result.Sheet.LSP.SetLanguage(FileType.LanguageName);
+        Result.Sheet.LSP.StartLSP;
+        if Length(ExtractFilePath(FileName)) <= 0 then
+         Result.Sheet.LSP.Initialize(GetCurrentDir, BrowsingPath)
+        else
+          Result.Sheet.LSP.Initialize(ExtractFilePath(FileName), BrowsingPath);
+        Result.Sheet.LSP.OpenFile(FileName);
+      end;
 
       if (X > 0) and (Y > 0) then
       begin
@@ -1087,10 +1116,29 @@ end;
 procedure TEditorFactory.EditorOnKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var Ed: TEditor;
+    LineText, Prefix: String;
+    PrefixIndex: Integer;
 begin
   Ed := GetCurrentEditor;
-  if not Assigned(Ed) then
+  if not Assigned(Ed) or not Assigned(Ed.Sheet.LSP) then
     Exit;
+
+  Prefix := '';
+  if (Ed.CaretY >= 1) and (Ed.CaretY <= Ed.Lines.Count) then
+  begin
+    LineText := Ed.Lines[Ed.CaretY - 1];
+    PrefixIndex := Ed.CaretX - 1;
+    if PrefixIndex > Length(LineText) then
+      PrefixIndex := Length(LineText);
+    while (PrefixIndex > 0) and
+          (LineText[PrefixIndex] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) do
+    begin
+      Prefix := LineText[PrefixIndex] + Prefix;
+      Dec(PrefixIndex);
+    end;
+  end;
+  FCompletionEditor := Ed;
+  FCompletionPrefix := Prefix;
 
   if (Key = VK_OEM_MINUS) and (Shift = [ssAlt]) then
   begin
@@ -1098,12 +1146,51 @@ begin
     Ed.Sheet.LSP.Hover(Ed.CaretY, Ed.CaretX);
   end;
 
-  if (Key = VK_OEM_PERIOD) and (Shift = [ssAlt]) then
+  if ((Key = VK_SPACE) and (ssCtrl in Shift)) or
+     ((Key = VK_OEM_PERIOD) and (Shift = [ssAlt])) then
   begin
     Ed.Sheet.LSP.Resume;
     Ed.Sheet.LSP.Change(Ed.Text);
-    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1)
+    Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 1);
   end;
+end;
+
+procedure TEditorFactory.EditorOnChange(Sender: TObject);
+var
+  Ed: TEditor;
+  LineText: String;
+  Prefix: String;
+  PrefixIndex: Integer;
+begin
+  if not (Sender is TEditor) or not ConfigObj.EnableLSP then
+    Exit;
+  Ed := TEditor(Sender);
+  if not Assigned(Ed.Sheet.LSP) or (Ed.CaretY < 1) or
+     (Ed.CaretY > Ed.Lines.Count) then
+    Exit;
+  LineText := Ed.Lines[Ed.CaretY - 1];
+  if (Ed.CaretX <= 1) or (Ed.CaretX - 1 > Length(LineText)) then
+    Exit;
+  Prefix := '';
+  PrefixIndex := Ed.CaretX - 1;
+  while (PrefixIndex > 0) and
+        (LineText[PrefixIndex] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) do
+  begin
+    Prefix := LineText[PrefixIndex] + Prefix;
+    Dec(PrefixIndex);
+  end;
+  if not (LineText[Ed.CaretX - 1] in
+          ['A'..'Z', 'a'..'z', '0'..'9', '_', '.']) then
+    Exit;
+  if (FLastCompletionTick <> 0) and
+     (GetTickCount64 < FLastCompletionTick + 200) then
+    Exit;
+  FLastCompletionTick := GetTickCount64;
+  FCompletionEditor := Ed;
+  FCompletionPrefix := Prefix;
+  Ed.Sheet.LSP.Resume;
+  Ed.Sheet.LSP.Change(Ed.Text);
+  Ed.Sheet.LSP.Completion(Ed.CaretY, Ed.CaretX, 2);
 end;
 
 procedure TEditorFactory.EditorOnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1149,6 +1236,13 @@ begin
   if (not Cancel) or Force then
   begin
     Sheet := Editor.FSheet;
+    if FCompletionEditor = Editor then
+    begin
+      Editor.Completion.Deactivate;
+      FCompletionEditor := nil;
+      FCompletionPrefix := '';
+    end;
+
     if Assigned(Sheet.LSP) then
       Sheet.LSP.Stop;
     Editor.PopupMenu := nil;
@@ -1391,8 +1485,23 @@ begin
   OnShowHint := @ShowHintEvent;
 end;
 
-destructor TEditorFactory.Destroy;
+procedure TEditorFactory.BeginShutdown;
 begin
+  FClosing := True;
+  OnChange := nil;
+  OnShowHint := nil;
+end;
+
+destructor TEditorFactory.Destroy;
+var
+  i: Integer;
+begin
+  FClosing := True;
+  OnChange := nil;
+  OnShowHint := nil;
+  for i := 0 to PageCount - 1 do
+    if Assigned(TEditorTabSheet(Pages[i]).LSP) then
+      TEditorTabSheet(Pages[i]).LSP.Stop;
   FWatcher.Free;
   inherited Destroy;
 end;
