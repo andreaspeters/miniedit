@@ -1667,13 +1667,15 @@ begin
     end;
 
   EditorFactory := TEditorFactory.Create(Self);
-  EditorFactory.Align := alClient;
+  EditorFactory.Constraints.MinWidth := 0;
+  EditorFactory.Constraints.MinHeight := 0;
   EditorFactory.OnStatusChange := @EditorStatusChange;
   EditorFactory.OnBeforeClose := @BeforeCloseEditor;
   EditorFactory.OnNewEditor := @NewEditor;
   EditorFactory.OnContextPopup := @ContextPopup;
   EditorFactory.Images := imgListBig;
   EditorFactory.Parent := PSSEditor;
+  EditorFactory.Align := alClient;
 
 
   // Parameters
@@ -1825,7 +1827,9 @@ procedure TfMain.FormResize(Sender: TObject);
 begin
   ConfigObj.Dirty := true;
 
-  if not EditorAvalaible then
+  // A diff tab has no CurrentEditor, but the outer splitters must still
+  // follow form resizes while the diff is active.
+  if not Assigned(EditorFactory) then
     exit;
 
   if EditorSplitterPos = 0 then
@@ -2464,6 +2468,7 @@ var
   Git: TProcess;
   Lines: TStringList;
   StatusLine: String;
+  StatusPrefix: String;
   ChangedFile: String;
   Parts: TStringList;
   ParentNode, Node: TTreeNode;
@@ -2550,9 +2555,18 @@ begin
             begin
               GitNode.FullPath := ExcludeTrailingPathDelimiter(
                 GitNode.FullPath);
-              GitNode.Text := Copy(StatusLine, 1, 2) + ' ' + Parts[j];
+              StatusPrefix := Copy(StatusLine, 1, 2);
+              if StatusPrefix = '??' then
+                GitNode.Text := Parts[j]
+              else
+                GitNode.Text := StatusPrefix + ' ' + Parts[j];
               GitNode.ImageIndex := GetFileImageIndex(GitNode.FullPath);
               GitNode.SelectedIndex := GitNode.ImageIndex;
+            end;
+            if GitNode.isDir then
+            begin
+              GitNode.ImageIndex := 1;
+              GitNode.SelectedIndex := 1;
             end;
             Node := GitNode;
           end;

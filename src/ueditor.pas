@@ -1043,7 +1043,6 @@ begin
 
   Result.FSheet := Sheet;
 
-  Result.Align := alClient;
   Sheet.FEditor := Result;
 
   Result.Font.Color := DefaultAttr.Foreground;
@@ -1056,6 +1055,7 @@ begin
     OnStatusChange(Result, [scCaretX, scCaretY, scModified, scInsertMode]);
 
   Result.Parent := Sheet;
+  Result.Align := alClient;
   if FileName = EmptyStr then
   begin
     Sheet.Caption := Format(RSNewFile, [fUntitledCounter])
@@ -1240,10 +1240,14 @@ var
 begin
   Sheet := TEditorTabSheet.Create(Self);
   Sheet.PageControl := Self;
+  Sheet.Constraints.MinWidth := 0;
+  Sheet.Constraints.MinHeight := 0;
   Sheet.Caption := 'Diff - ' + ExtractFileName(FileName);
   Sheet.FDiffView := TGitDiffView.Create(Sheet);
   Sheet.FDiffView.Parent := Sheet;
   Sheet.FDiffView.Align := alClient;
+  Sheet.FDiffView.Constraints.MinWidth := 0;
+  Sheet.FDiffView.Constraints.MinHeight := 0;
   
   // Make sure the tab is activated and visible before showing diff data
   ActivePage := Sheet;

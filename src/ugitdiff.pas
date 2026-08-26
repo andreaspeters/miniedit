@@ -18,6 +18,7 @@ type
     FLeftChanged: TBits;
     FRightChanged: TBits;
     FSyncingScroll: Boolean;
+    FUpdatingLayout: Boolean;
     procedure LeftStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure RightStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure LeftSpecialLineColors(Sender: TObject; Line: Integer;
@@ -32,16 +33,24 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Resize; override;
     procedure ShowDiff(const FileName: String);
     procedure EqualColumns;
   end;
 
 implementation
 
+type
+  TDiffStringArray = array of String;
+  TDiffIntegerArray = array of Integer;
+  TDiffMatrix = array of TDiffIntegerArray;
+
 constructor TGitDiffView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Align := alClient;
+  Constraints.MinWidth := 0;
+  Constraints.MinHeight := 0;
   BevelOuter := bvNone;
   Caption := '';
 
@@ -59,18 +68,32 @@ begin
   FLeftEditor := TSynEdit.Create(Self);
   ConfigureEditor(FLeftEditor);
   FLeftEditor.Parent := Self;
+  FLeftEditor.Align := alLeft;
+  FLeftEditor.Constraints.MinWidth := 0;
+  FLeftEditor.ScrollBars := ssBoth;
   FLeftEditor.OnSpecialLineColors := @LeftSpecialLineColors;
   FLeftEditor.OnStatusChange := @LeftStatusChange;
 
   FSplitter := TSplitter.Create(Self);
   FSplitter.Parent := Self;
+  FSplitter.Align := alLeft;
+  FSplitter.MinSize := 0;
   FSplitter.Width := 4;
 
   FRightEditor := TSynEdit.Create(Self);
   ConfigureEditor(FRightEditor);
   FRightEditor.Parent := Self;
+  FRightEditor.Align := alClient;
+  FRightEditor.Constraints.MinWidth := 0;
+  FRightEditor.ScrollBars := ssBoth;
   FRightEditor.OnSpecialLineColors := @RightSpecialLineColors;
   FRightEditor.OnStatusChange := @RightStatusChange;
+end;
+
+procedure TGitDiffView.Resize;
+begin
+  inherited Resize;
+  EqualColumns;
 end;
 
 procedure TGitDiffView.LeftStatusChange(Sender: TObject;
@@ -109,21 +132,21 @@ end;
 
 procedure TGitDiffView.EqualColumns;
 var
-  TopOffset, AvailableWidth, ColumnWidth, AvailableHeight: Integer;
+  AvailableWidth, ColumnWidth: Integer;
 begin
-  if not Assigned(FLeftEditor) or not Assigned(FRightEditor) or
-    not Assigned(FSplitter) then
+  if FUpdatingLayout or not Assigned(FLeftEditor) or not Assigned(FSplitter) then
     Exit;
-  TopOffset := FTitleLabel.Height;
   AvailableWidth := ClientWidth - FSplitter.Width;
   ColumnWidth := AvailableWidth div 2;
-  AvailableHeight := ClientHeight - TopOffset;
-  if (ColumnWidth <= 0) or (AvailableHeight <= 0) then
-    Exit;
-  FLeftEditor.SetBounds(0, TopOffset, ColumnWidth, AvailableHeight);
-  FSplitter.SetBounds(ColumnWidth, TopOffset, FSplitter.Width, AvailableHeight);
-  FRightEditor.SetBounds(ColumnWidth + FSplitter.Width, TopOffset,
-    AvailableWidth - ColumnWidth, AvailableHeight);
+  if ColumnWidth > 0 then
+  begin
+    FUpdatingLayout := True;
+    try
+      FLeftEditor.Width := ColumnWidth;
+    finally
+      FUpdatingLayout := False;
+    end;
+  end;
 end;
 
 destructor TGitDiffView.Destroy;
@@ -212,12 +235,47 @@ begin
   end;
 end;
 
+function NormalizeDiffLine(const Value: String): String;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 1 to Length(Value) do
+    if not (Value[I] in [' ', #9, #10, #13]) then
+      Result := Result + Value[I];
+end;
+
+procedure BuildDiffSequence(const Lines: TStringList;
+  out Values: TDiffStringArray; out LineNumbers: TDiffIntegerArray);
+var
+  I, Count: Integer;
+  Normalized: String;
+begin
+  Count := 0;
+  SetLength(Values, Lines.Count);
+  SetLength(LineNumbers, Lines.Count);
+  for I := 0 to Lines.Count - 1 do
+  begin
+    Normalized := NormalizeDiffLine(Lines[I]);
+    if Normalized = '' then
+      Continue;
+    Values[Count] := Normalized;
+    LineNumbers[Count] := I;
+    Inc(Count);
+  end;
+  SetLength(Values, Count);
+  SetLength(LineNumbers, Count);
+end;
+
 procedure TGitDiffView.ShowDiff(const FileName: String);
 var
   Root, RelativeName, OldText: String;
   CurrentLines, OldLines: TStringList;
   LeftText, RightText: TStringList;
-  I, MaxLines: Integer;
+  OldSequence, CurrentSequence: TDiffStringArray;
+  OldNumbers, CurrentNumbers: TDiffIntegerArray;
+  LCS: TDiffMatrix;
+  I, J, OldCount, CurrentCount: Integer;
   CurrentExists, OldAvailable: Boolean;
 begin
   FTitleLabel.Caption := 'Diff - ' + ExtractFileName(FileName);
@@ -240,35 +298,62 @@ begin
     if CurrentExists then
       CurrentLines.LoadFromFile(FileName);
 
-    MaxLines := OldLines.Count;
-    if CurrentLines.Count > MaxLines then
-      MaxLines := CurrentLines.Count;
-    if not OldAvailable then
-      OldLines.Insert(0, 'HEAD-Version nicht verfügbar: ' + OldText);
-    if not CurrentExists then
-      CurrentLines.Insert(0, 'Datei nicht gefunden: ' + FileName);
+    BuildDiffSequence(OldLines, OldSequence, OldNumbers);
+    BuildDiffSequence(CurrentLines, CurrentSequence, CurrentNumbers);
+    OldCount := Length(OldSequence);
+    CurrentCount := Length(CurrentSequence);
+    SetLength(LCS, OldCount + 1);
+    for I := 0 to OldCount do
+      SetLength(LCS[I], CurrentCount + 1);
+    for I := OldCount - 1 downto 0 do
+      for J := CurrentCount - 1 downto 0 do
+        if OldSequence[I] = CurrentSequence[J] then
+          LCS[I][J] := LCS[I + 1][J + 1] + 1
+        else if LCS[I + 1][J] >= LCS[I][J + 1] then
+          LCS[I][J] := LCS[I + 1][J]
+        else
+          LCS[I][J] := LCS[I][J + 1];
 
-    MaxLines := OldLines.Count;
-    if CurrentLines.Count > MaxLines then
-      MaxLines := CurrentLines.Count;
-    FLeftChanged.Size := MaxLines;
-    FRightChanged.Size := MaxLines;
-
-    for I := 0 to MaxLines - 1 do
+    FLeftChanged.Size := 0;
+    FRightChanged.Size := 0;
+    I := 0;
+    J := 0;
+    while (I < OldCount) or (J < CurrentCount) do
     begin
-      if I < OldLines.Count then
-        LeftText.Add(OldLines[I])
-      else
-        LeftText.Add('');
-      if I < CurrentLines.Count then
-        RightText.Add(CurrentLines[I])
-      else
-        RightText.Add('');
-      if (I >= OldLines.Count) or (I >= CurrentLines.Count) or
-        (OldLines[I] <> CurrentLines[I]) then
+      if (I < OldCount) and (J < CurrentCount) and
+        (OldSequence[I] = CurrentSequence[J]) then
       begin
-        FLeftChanged[I] := I < OldLines.Count;
-        FRightChanged[I] := I < CurrentLines.Count;
+        LeftText.Add(OldLines[OldNumbers[I]]);
+        RightText.Add(CurrentLines[CurrentNumbers[J]]);
+        FLeftChanged.Size := FLeftChanged.Size + 1;
+        FRightChanged.Size := FRightChanged.Size + 1;
+        FLeftChanged[FLeftChanged.Size - 1] := False;
+        FRightChanged[FRightChanged.Size - 1] := False;
+        Inc(I);
+        Inc(J);
+      end
+      else if (J < CurrentCount) and
+        ((I >= OldCount) or (LCS[I][J + 1] >= LCS[I + 1][J])) then
+      begin
+        LeftText.Add('');
+        RightText.Add(CurrentLines[CurrentNumbers[J]]);
+        FLeftChanged.Size := FLeftChanged.Size + 1;
+        FRightChanged.Size := FRightChanged.Size + 1;
+        FLeftChanged[FLeftChanged.Size - 1] := False;
+        FRightChanged[FRightChanged.Size - 1] := False;
+        FRightChanged[FRightChanged.Size - 1] := True;
+        Inc(J);
+      end
+      else
+      begin
+        LeftText.Add(OldLines[OldNumbers[I]]);
+        RightText.Add('');
+        FLeftChanged.Size := FLeftChanged.Size + 1;
+        FRightChanged.Size := FRightChanged.Size + 1;
+        FLeftChanged[FLeftChanged.Size - 1] := False;
+        FRightChanged[FRightChanged.Size - 1] := False;
+        FLeftChanged[FLeftChanged.Size - 1] := True;
+        Inc(I);
       end;
     end;
 
