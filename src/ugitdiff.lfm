@@ -1,0 +1,57 @@
+object TGitDiffView: TGitDiffView
+  Left = 0
+  Height = 480
+  Top = 0
+  Width = 800
+  Align = alClient
+  BevelOuter = bvNone
+  Caption = ''
+  ClientHeight = 480
+  ClientWidth = 800
+  Constraints.MinHeight = 0
+  Constraints.MinWidth = 0
+  object FTitleLabel: TLabel
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 800
+    Align = alTop
+    BorderSpacing.Left = 8
+    Caption = 'Diff'
+    Layout = tlCenter
+  end
+  object FLeftEditor: TSynEdit
+    Left = 0
+    Height = 456
+    Top = 24
+    Width = 398
+    Align = alLeft
+    Constraints.MinHeight = 0
+    Constraints.MinWidth = 0
+    Gutter.Visible = True
+    Options = [eoBracketHighlight, eoGroupUndo, eoScrollPastEol]
+    ReadOnly = True
+    ScrollBars = ssBoth
+  end
+  object FSplitter: TSplitter
+    Left = 398
+    Height = 456
+    Top = 24
+    Width = 4
+    Align = alLeft
+    MinSize = 0
+  end
+  object FRightEditor: TSynEdit
+    Left = 402
+    Height = 456
+    Top = 24
+    Width = 398
+    Align = alClient
+    Constraints.MinHeight = 0
+    Constraints.MinWidth = 0
+    Gutter.Visible = True
+    Options = [eoBracketHighlight, eoGroupUndo, eoScrollPastEol]
+    ReadOnly = True
+    ScrollBars = ssBoth
+  end
+end
