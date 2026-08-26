@@ -2,19 +2,22 @@ unit ugitdiff;
 
 {$mode objfpc}{$H+}
 
+{$R *.lfm}
+
 interface
 
 uses
   Classes, SysUtils, Controls, ExtCtrls, Graphics, Process, SynEdit, StdCtrls,
-  SynEditTypes;
+  SynEditTypes, LResources;
 
 type
   TGitDiffView = class(TPanel)
-  private
+  published
     FLeftEditor: TSynEdit;
     FRightEditor: TSynEdit;
     FSplitter: TSplitter;
     FTitleLabel: TLabel;
+  private
     FLeftChanged: TBits;
     FRightChanged: TBits;
     FSyncingScroll: Boolean;
@@ -48,44 +51,15 @@ type
 constructor TGitDiffView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Align := alClient;
-  Constraints.MinWidth := 0;
-  Constraints.MinHeight := 0;
-  BevelOuter := bvNone;
-  Caption := '';
+  if not InitInheritedComponent(Self, TPanel) then
+    raise EComponentError.Create('Unable to load the TGitDiffView form resource');
 
   FLeftChanged := TBits.Create;
   FRightChanged := TBits.Create;
-
-  FTitleLabel := TLabel.Create(Self);
-  FTitleLabel.Parent := Self;
-  FTitleLabel.Align := alTop;
-  FTitleLabel.Height := 24;
-  FTitleLabel.Layout := tlCenter;
-  FTitleLabel.BorderSpacing.Left := 8;
-  FTitleLabel.Caption := 'Diff';
-
-  FLeftEditor := TSynEdit.Create(Self);
   ConfigureEditor(FLeftEditor);
-  FLeftEditor.Parent := Self;
-  FLeftEditor.Align := alLeft;
-  FLeftEditor.Constraints.MinWidth := 0;
-  FLeftEditor.ScrollBars := ssBoth;
+  ConfigureEditor(FRightEditor);
   FLeftEditor.OnSpecialLineColors := @LeftSpecialLineColors;
   FLeftEditor.OnStatusChange := @LeftStatusChange;
-
-  FSplitter := TSplitter.Create(Self);
-  FSplitter.Parent := Self;
-  FSplitter.Align := alLeft;
-  FSplitter.MinSize := 0;
-  FSplitter.Width := 4;
-
-  FRightEditor := TSynEdit.Create(Self);
-  ConfigureEditor(FRightEditor);
-  FRightEditor.Parent := Self;
-  FRightEditor.Align := alClient;
-  FRightEditor.Constraints.MinWidth := 0;
-  FRightEditor.ScrollBars := ssBoth;
   FRightEditor.OnSpecialLineColors := @RightSpecialLineColors;
   FRightEditor.OnStatusChange := @RightStatusChange;
 end;
@@ -166,31 +140,68 @@ end;
 
 function TGitDiffView.RunGit(const WorkingDir: String;
   const Parameters: array of String; out Output: String): Boolean;
+const
+  ReadBufferSize = 8192;
+  MaxGitRuntimeMs = 10000;
 var
   Git: TProcess;
   Buffer: TStringList;
+  OutputStream: TMemoryStream;
+  ReadBuffer: array[0..ReadBufferSize - 1] of Byte;
+  BytesRead: Integer;
+  StartTick: QWord;
+  TimedOut: Boolean;
   I: Integer;
 begin
   Output := '';
   Result := False;
+  TimedOut := False;
   Buffer := TStringList.Create;
+  OutputStream := TMemoryStream.Create;
   Git := TProcess.Create(nil);
   try
     Git.Executable := 'git';
     Git.CurrentDirectory := WorkingDir;
     for I := Low(Parameters) to High(Parameters) do
       Git.Parameters.Add(Parameters[I]);
-    Git.Options := [poUsePipes, poWaitOnExit, poStderrToOutPut];
+    Git.Options := [poUsePipes, poStderrToOutPut];
     try
       Git.Execute;
-      Buffer.LoadFromStream(Git.Output);
+      StartTick := GetTickCount64;
+      while Git.Running do
+      begin
+        while Git.Output.NumBytesAvailable > 0 do
+        begin
+          BytesRead := Git.Output.Read(ReadBuffer, SizeOf(ReadBuffer));
+          if BytesRead <= 0 then
+            Break;
+          OutputStream.WriteBuffer(ReadBuffer, BytesRead);
+        end;
+        if GetTickCount64 - StartTick >= MaxGitRuntimeMs then
+        begin
+          TimedOut := True;
+          Git.Terminate(1);
+          Break;
+        end;
+        Sleep(1);
+      end;
+      while Git.Output.NumBytesAvailable > 0 do
+      begin
+        BytesRead := Git.Output.Read(ReadBuffer, SizeOf(ReadBuffer));
+        if BytesRead <= 0 then
+          Break;
+        OutputStream.WriteBuffer(ReadBuffer, BytesRead);
+      end;
+      OutputStream.Position := 0;
+      Buffer.LoadFromStream(OutputStream);
       Output := Buffer.Text;
-      Result := Git.ExitStatus = 0;
+      Result := not TimedOut and (Git.ExitStatus = 0);
     except
       Result := False;
     end;
   finally
     Git.Free;
+    OutputStream.Free;
     Buffer.Free;
   end;
 end;
@@ -275,17 +286,18 @@ var
   OldSequence, CurrentSequence: TDiffStringArray;
   OldNumbers, CurrentNumbers: TDiffIntegerArray;
   LCS: TDiffMatrix;
-  I, J, OldCount, CurrentCount: Integer;
-  CurrentExists, OldAvailable: Boolean;
+  I, J, OldCount, CurrentCount, FallbackCount: Integer;
+  CurrentExists: Boolean;
+const
+  MaxLCSCells: Int64 = 4000000;
 begin
   FTitleLabel.Caption := 'Diff - ' + ExtractFileName(FileName);
   Root := GetRepositoryRoot(FileName);
   OldText := '';
-  OldAvailable := False;
   if Root <> '' then
   begin
     RelativeName := GetRepositoryFileName(Root, FileName);
-    OldAvailable := RunGit(Root, ['show', 'HEAD:' + RelativeName], OldText);
+    RunGit(Root, ['show', 'HEAD:' + RelativeName], OldText);
   end;
 
   OldLines := TStringList.Create;
@@ -302,58 +314,88 @@ begin
     BuildDiffSequence(CurrentLines, CurrentSequence, CurrentNumbers);
     OldCount := Length(OldSequence);
     CurrentCount := Length(CurrentSequence);
-    SetLength(LCS, OldCount + 1);
-    for I := 0 to OldCount do
-      SetLength(LCS[I], CurrentCount + 1);
-    for I := OldCount - 1 downto 0 do
-      for J := CurrentCount - 1 downto 0 do
-        if OldSequence[I] = CurrentSequence[J] then
-          LCS[I][J] := LCS[I + 1][J + 1] + 1
-        else if LCS[I + 1][J] >= LCS[I][J + 1] then
-          LCS[I][J] := LCS[I + 1][J]
-        else
-          LCS[I][J] := LCS[I][J + 1];
-
     FLeftChanged.Size := 0;
     FRightChanged.Size := 0;
-    I := 0;
-    J := 0;
-    while (I < OldCount) or (J < CurrentCount) do
+    if Int64(OldCount) * Int64(CurrentCount) > MaxLCSCells then
     begin
-      if (I < OldCount) and (J < CurrentCount) and
-        (OldSequence[I] = CurrentSequence[J]) then
+      FallbackCount := OldLines.Count;
+      if CurrentLines.Count > FallbackCount then
+        FallbackCount := CurrentLines.Count;
+      for I := 0 to FallbackCount - 1 do
       begin
-        LeftText.Add(OldLines[OldNumbers[I]]);
-        RightText.Add(CurrentLines[CurrentNumbers[J]]);
+        if I < OldLines.Count then
+          LeftText.Add(OldLines[I])
+        else
+          LeftText.Add('');
+        if I < CurrentLines.Count then
+          RightText.Add(CurrentLines[I])
+        else
+          RightText.Add('');
         FLeftChanged.Size := FLeftChanged.Size + 1;
         FRightChanged.Size := FRightChanged.Size + 1;
         FLeftChanged[FLeftChanged.Size - 1] := False;
         FRightChanged[FRightChanged.Size - 1] := False;
-        Inc(I);
-        Inc(J);
+        if (I >= OldLines.Count) or (I >= CurrentLines.Count) or
+          (NormalizeDiffLine(OldLines[I]) <> NormalizeDiffLine(CurrentLines[I])) then
+        begin
+          FLeftChanged[FLeftChanged.Size - 1] := True;
+          FRightChanged[FRightChanged.Size - 1] := True;
+        end;
       end
-      else if (J < CurrentCount) and
-        ((I >= OldCount) or (LCS[I][J + 1] >= LCS[I + 1][J])) then
+    end
+    else
+    begin
+      SetLength(LCS, OldCount + 1);
+      for I := 0 to OldCount do
+        SetLength(LCS[I], CurrentCount + 1);
+      for I := OldCount - 1 downto 0 do
+        for J := CurrentCount - 1 downto 0 do
+          if OldSequence[I] = CurrentSequence[J] then
+            LCS[I][J] := LCS[I + 1][J + 1] + 1
+          else if LCS[I + 1][J] >= LCS[I][J + 1] then
+            LCS[I][J] := LCS[I + 1][J]
+          else
+            LCS[I][J] := LCS[I][J + 1];
+
+      I := 0;
+      J := 0;
+      while (I < OldCount) or (J < CurrentCount) do
       begin
-        LeftText.Add('');
-        RightText.Add(CurrentLines[CurrentNumbers[J]]);
-        FLeftChanged.Size := FLeftChanged.Size + 1;
-        FRightChanged.Size := FRightChanged.Size + 1;
-        FLeftChanged[FLeftChanged.Size - 1] := False;
-        FRightChanged[FRightChanged.Size - 1] := False;
-        FRightChanged[FRightChanged.Size - 1] := True;
-        Inc(J);
-      end
-      else
-      begin
-        LeftText.Add(OldLines[OldNumbers[I]]);
-        RightText.Add('');
-        FLeftChanged.Size := FLeftChanged.Size + 1;
-        FRightChanged.Size := FRightChanged.Size + 1;
-        FLeftChanged[FLeftChanged.Size - 1] := False;
-        FRightChanged[FRightChanged.Size - 1] := False;
-        FLeftChanged[FLeftChanged.Size - 1] := True;
-        Inc(I);
+        if (I < OldCount) and (J < CurrentCount) and
+          (OldSequence[I] = CurrentSequence[J]) then
+        begin
+          LeftText.Add(OldLines[OldNumbers[I]]);
+          RightText.Add(CurrentLines[CurrentNumbers[J]]);
+          FLeftChanged.Size := FLeftChanged.Size + 1;
+          FRightChanged.Size := FRightChanged.Size + 1;
+          FLeftChanged[FLeftChanged.Size - 1] := False;
+          FRightChanged[FRightChanged.Size - 1] := False;
+          Inc(I);
+          Inc(J);
+        end
+        else if (J < CurrentCount) and
+          ((I >= OldCount) or (LCS[I][J + 1] >= LCS[I + 1][J])) then
+        begin
+          LeftText.Add('');
+          RightText.Add(CurrentLines[CurrentNumbers[J]]);
+          FLeftChanged.Size := FLeftChanged.Size + 1;
+          FRightChanged.Size := FRightChanged.Size + 1;
+          FLeftChanged[FLeftChanged.Size - 1] := False;
+          FRightChanged[FRightChanged.Size - 1] := False;
+          FRightChanged[FRightChanged.Size - 1] := True;
+          Inc(J);
+        end
+        else
+        begin
+          LeftText.Add(OldLines[OldNumbers[I]]);
+          RightText.Add('');
+          FLeftChanged.Size := FLeftChanged.Size + 1;
+          FRightChanged.Size := FRightChanged.Size + 1;
+          FLeftChanged[FLeftChanged.Size - 1] := False;
+          FRightChanged[FRightChanged.Size - 1] := False;
+          FLeftChanged[FLeftChanged.Size - 1] := True;
+          Inc(I);
+        end;
       end;
     end;
 
@@ -371,5 +413,10 @@ begin
     RightText.Free;
   end;
 end;
+
+initialization
+  RegisterClass(TLabel);
+  RegisterClass(TSynEdit);
+  RegisterClass(TSplitter);
 
 end.
