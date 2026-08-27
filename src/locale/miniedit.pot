@@ -914,6 +914,10 @@ msgstr ""
 msgid "Ollama Port"
 msgstr ""
 
+#: tgitdiffview.ftitlelabel.caption
+msgid "Diff"
+msgstr ""
+
 #: ttfinfo.caption
 msgid "FlexPacket - Info"
 msgstr ""

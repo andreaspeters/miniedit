@@ -16,18 +16,27 @@ type
     FLeftEditor: TSynEdit;
     FRightEditor: TSynEdit;
     FSplitter: TSplitter;
-    FTitleLabel: TLabel;
+    FMinimap: TPaintBox;
   private
     FLeftChanged: TBits;
     FRightChanged: TBits;
     FSyncingScroll: Boolean;
     FUpdatingLayout: Boolean;
+    FMinimapDragging: Boolean;
     procedure LeftStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure RightStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure LeftSpecialLineColors(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
     procedure RightSpecialLineColors(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
+    procedure MinimapPaint(Sender: TObject);
+    procedure MinimapMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure MinimapMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure MinimapMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ScrollToMinimapPosition(Y: Integer);
+    procedure InvalidateMinimap;
     procedure ConfigureEditor(Editor: TSynEdit);
     function RunGit(const WorkingDir: String; const Parameters: array of String;
       out Output: String): Boolean;
@@ -62,6 +71,10 @@ begin
   FLeftEditor.OnStatusChange := @LeftStatusChange;
   FRightEditor.OnSpecialLineColors := @RightSpecialLineColors;
   FRightEditor.OnStatusChange := @RightStatusChange;
+  FMinimap.OnPaint := @MinimapPaint;
+  FMinimap.OnMouseDown := @MinimapMouseDown;
+  FMinimap.OnMouseMove := @MinimapMouseMove;
+  FMinimap.OnMouseUp := @MinimapMouseUp;
 end;
 
 procedure TGitDiffView.Resize;
@@ -102,6 +115,79 @@ begin
   finally
     FSyncingScroll := False;
   end;
+end;
+
+procedure TGitDiffView.InvalidateMinimap;
+begin
+  if Assigned(FMinimap) then
+    FMinimap.Invalidate;
+end;
+
+procedure TGitDiffView.MinimapPaint(Sender: TObject);
+var
+  I, Total, Y, TopY, BottomY: Integer;
+begin
+  Total := FLeftChanged.Size;
+  FMinimap.Canvas.Brush.Color := clBtnFace;
+  FMinimap.Canvas.FillRect(FMinimap.ClientRect);
+  if (Total = 0) or (FMinimap.ClientHeight = 0) then Exit;
+  for I := 0 to Total - 1 do
+  begin
+    Y := (I * FMinimap.ClientHeight) div Total;
+    if FLeftChanged[I] then
+    begin
+      FMinimap.Canvas.Pen.Color := RGBToColor(210, 80, 80);
+      FMinimap.Canvas.Line(1, Y, (FMinimap.ClientWidth div 2) - 1, Y);
+    end;
+    if FRightChanged[I] then
+    begin
+      FMinimap.Canvas.Pen.Color := RGBToColor(70, 170, 90);
+      FMinimap.Canvas.Line(FMinimap.ClientWidth div 2, Y, FMinimap.ClientWidth - 2, Y);
+    end;
+  end;
+  TopY := ((FLeftEditor.TopLine - 1) * FMinimap.ClientHeight) div Total;
+  BottomY := ((FLeftEditor.TopLine + 20) * FMinimap.ClientHeight) div Total;
+  FMinimap.Canvas.Brush.Style := bsClear;
+  FMinimap.Canvas.Pen.Color := clGray;
+  FMinimap.Canvas.Rectangle(0, TopY, FMinimap.ClientWidth - 1, BottomY);
+  FMinimap.Canvas.Brush.Style := bsSolid;
+end;
+
+procedure TGitDiffView.ScrollToMinimapPosition(Y: Integer);
+var
+  Total, Target: Integer;
+begin
+  Total := FLeftChanged.Size;
+  if (Total = 0) or (FMinimap.ClientHeight = 0) then Exit;
+  Target := 1 + ((Y * Total) div FMinimap.ClientHeight) - 10;
+  if Target < 1 then Target := 1;
+  if Target > Total then Target := Total;
+  FSyncingScroll := True;
+  try
+    FLeftEditor.TopLine := Target;
+    FRightEditor.TopLine := Target;
+  finally
+    FSyncingScroll := False;
+  end;
+  InvalidateMinimap;
+end;
+
+procedure TGitDiffView.MinimapMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FMinimapDragging := Button = mbLeft;
+  if FMinimapDragging then ScrollToMinimapPosition(Y);
+end;
+
+procedure TGitDiffView.MinimapMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+  if FMinimapDragging and (ssLeft in Shift) then ScrollToMinimapPosition(Y);
+end;
+
+procedure TGitDiffView.MinimapMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then FMinimapDragging := False;
 end;
 
 procedure TGitDiffView.EqualColumns;
@@ -291,7 +377,6 @@ var
 const
   MaxLCSCells: Int64 = 4000000;
 begin
-  FTitleLabel.Caption := 'Diff - ' + ExtractFileName(FileName);
   Root := GetRepositoryRoot(FileName);
   OldText := '';
   if Root <> '' then
@@ -418,5 +503,6 @@ initialization
   RegisterClass(TLabel);
   RegisterClass(TSynEdit);
   RegisterClass(TSplitter);
+  RegisterClass(TPaintBox);
 
 end.
